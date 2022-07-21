@@ -1,19 +1,44 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import ReactDOM from "react-dom/client";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import App from "./App";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
+import reset from "styled-reset";
+import { RecoilRoot } from "recoil";
+import { theme } from "./theme";
+import "./index.css";
+
+const queryClient = new QueryClient();
+
+const GlobalStyle = createGlobalStyle`
+
+${reset}
+
+* {
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Oswald','Holtwood One SC', sans-serif;
+  font-weight: 400;
+  color:${(props) => props.theme.origin.darker};
+  line-height: 1.2;
+  background-color: white;
+}
+a {
+  text-decoration: none;
+  color:inherit;
+}
+`;
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById("root") as HTMLElement
 );
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  <RecoilRoot>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={theme}>
+        <GlobalStyle />
+        <App />
+      </ThemeProvider>
+    </QueryClientProvider>
+  </RecoilRoot>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
