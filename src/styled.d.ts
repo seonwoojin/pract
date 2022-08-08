@@ -16,5 +16,15 @@ declare module "styled-components" {
       darker: string;
       lighter: string;
     };
+    device: {
+      mobile: string;
+      tablet: string;
+      laptop: string;
+    };
+    deviceSizes: {
+      mobile: string;
+      tablet: string;
+      laptop: string;
+    };
   }
 }

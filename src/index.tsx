@@ -17,7 +17,7 @@ ${reset}
   box-sizing: border-box;
 }
 body {
-  font-family: 'Oswald','Holtwood One SC', sans-serif;
+  font-family: 'Oswald','Holtwood One SC', 'Open Sans', sans-serif;
   font-weight: 400;
   color:${(props) => props.theme.origin.darker};
   line-height: 1.2;
