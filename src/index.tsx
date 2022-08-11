@@ -6,6 +6,8 @@ import reset from "styled-reset";
 import { RecoilRoot } from "recoil";
 import { theme } from "./theme";
 import "./index.css";
+import { CookiesProvider } from "react-cookie";
+import { isShow } from "./atom";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +24,7 @@ body {
   color:${(props) => props.theme.origin.darker};
   line-height: 1.2;
   background-color: white;
+  overflow-x: hidden;
 }
 a {
   text-decoration: none;
@@ -34,11 +37,13 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <RecoilRoot>
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
-        <GlobalStyle />
-        <App />
-      </ThemeProvider>
-    </QueryClientProvider>
+    <CookiesProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={theme}>
+          <GlobalStyle />
+          <App />
+        </ThemeProvider>
+      </QueryClientProvider>
+    </CookiesProvider>
   </RecoilRoot>
 );

@@ -1,11 +1,9 @@
 import axios from "axios";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useCookies } from "react-cookie";
-import { useRecoilValue } from "recoil";
-import { isLogined } from "./../atom";
+import { useState } from "react";
+import { response } from "./../constnats/response";
 
 const HomeContainer = styled.div`
   display: flex;
@@ -71,7 +69,7 @@ const Input = styled.input`
 
 const Button = styled.button`
   border: none;
-  width: 30%;
+  width: 50%;
   height: 5vh;
   border-radius: 5px;
   font-size: 20px;
@@ -83,7 +81,6 @@ const Button = styled.button`
 `;
 
 const ErrorMessage = styled.div`
-  margin-top: 10px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -94,40 +91,35 @@ const ErrorMessage = styled.div`
 
 interface IForm {
   username: string;
+  name: string;
   password: string;
+  confirm_password: string;
 }
 
-function Login() {
-  const isLogin = useRecoilValue(isLogined);
-  const [token, setToken, removeToken] = useCookies(["token", "refreshToken"]);
+function Join() {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
   const { register, handleSubmit } = useForm<IForm>();
-  const onValid = ({ username, password }: IForm) => {
+  const onValid = ({ username, name, password, confirm_password }: IForm) => {
     const body = {
       username,
+      name,
       password,
+      confirm_password,
     };
     axios
-      .post("http://localhost:4000/api/v1/user/login", body)
+      .post("http://localhost:4000/api/v1/user/join", body)
       .then((response) => {
-        axios.defaults.headers.common["Authorization"] =
-          "Bearer " + response.data.accessToken;
-        setToken("refreshToken", response.data.refreshToken);
-        setToken("token", response.data.accessToken);
         if (response.status === 200) {
           navigate("/");
         }
       })
       .catch((error) => setErrorMessage(error.response.data));
   };
-  if (isLogin) {
-    navigate("/");
-  }
   return (
     <HomeContainer>
       <Form onSubmit={handleSubmit(onValid)}>
-        <Title>Sign in to Ninfo</Title>
+        <Title>Sign up to Ninfo</Title>
         <LabelWrapper>
           <Label htmlFor="username">Username</Label>
         </LabelWrapper>
@@ -135,6 +127,14 @@ function Login() {
           {...register("username", { required: true })}
           placeholder="Username"
           id="username"
+        ></Input>
+        <LabelWrapper>
+          <Label htmlFor="name">Name</Label>
+        </LabelWrapper>
+        <Input
+          {...register("name", { required: true })}
+          placeholder="Name"
+          id="name"
         ></Input>
         <LabelWrapper>
           <Label htmlFor="password">Password</Label>
@@ -146,15 +146,21 @@ function Login() {
           id="password"
         ></Input>
         <LabelWrapper>
-          <Link to="/join">Or sign up now</Link>
+          <Label htmlFor="confirm_password">Confirm password</Label>
         </LabelWrapper>
+        <Input
+          {...register("confirm_password", { required: true })}
+          type="password"
+          placeholder="confirm_password"
+          id="confirm_password"
+        ></Input>
         <ErrorMessage>{errorMessage}</ErrorMessage>
         <LabelWrapper>
-          <Button>Sign In</Button>
+          <Button>Create account</Button>
         </LabelWrapper>
       </Form>
     </HomeContainer>
   );
 }
 
-export default Login;
+export default Join;
