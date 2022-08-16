@@ -31,6 +31,7 @@ export const postLogin = async (ctx: Context) => {
     ctx.body = { accessToken, refreshToken };
     ctx.status = response.HTTP_OK;
   } catch (error) {
+    console.log(error);
     ctx.status = response.HTTP_BAD_REQUEST;
   }
 };

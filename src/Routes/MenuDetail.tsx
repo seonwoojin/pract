@@ -2,7 +2,7 @@ import { motion, Variants } from "framer-motion";
 import styled from "styled-components";
 import { useRecoilValue } from "recoil";
 import { isShow } from "../atom";
-import DetailNftBox from "./DetailNftBox";
+import DetailNftBox from "../Components/DetailNftBox";
 import { AllNft } from "../AllNft";
 import { title } from "process";
 
@@ -23,9 +23,10 @@ const HomeWrapper = styled.div<{ show: boolean }>`
   }
 `;
 
-const Title = styled.div`
+const Title = styled.div<{ logoColor: string }>`
   height: auto;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   width: 60%;
   min-height: 100px;
@@ -34,7 +35,7 @@ const Title = styled.div`
   font-size: 60px;
   margin-bottom: 5vh;
   h1 {
-    background: rgba(0, 0, 0, 0.8);
+    background: ${(props) => props.logoColor};
     box-shadow: 5px 5px 5px black;
     color: white;
     padding: 10px;
@@ -59,19 +60,44 @@ const TitleLogo = styled.div<{ url: string }>`
 
 interface IProps {
   chain: string;
-  chainNum: number;
-  logoUrl: string;
+  logoColor: string;
 }
 
-function MenuDetail({ chain, chainNum, logoUrl }: IProps) {
+interface nftType {
+  [key: string]: { url: string; fullChain: string };
+}
+
+interface logoColor {
+  [key: string]: string;
+}
+
+function MenuDetail({ chain }: IProps) {
+  const logoColor: logoColor = {
+    eth: "linear-gradient(to right, rgb(140,140,140), rgb(20,20,20))",
+    sol: "linear-gradient(to right, #9945FF, #14F195)",
+    klay: "linear-gradient(to right, #BA2118, #FFA929)",
+  };
+  const logo: nftType = {
+    eth: {
+      url: "https://ethereum.org/static/6b935ac0e6194247347855dc3d328e83/cdbe4/eth-diamond-black.webp",
+      fullChain: "Ethereum",
+    },
+    sol: {
+      url: "https://cryptologos.cc/logos/solana-sol-logo.png?v=023",
+      fullChain: "Solana",
+    },
+    klay: {
+      url: "https://s2.coinmarketcap.com/static/img/coins/200x200/4256.png",
+      fullChain: "Klaytn",
+    },
+  };
   const show = useRecoilValue(isShow);
-  const datas2 = Object.entries(AllNft);
-  const datas = Object.entries(datas2[chainNum][1]);
+  const datas = Object.entries(AllNft[chain]);
   return (
     <HomeWrapper show={show}>
-      <Title>
-        <h1>{chain}</h1>
-        <TitleLogo url={logoUrl}></TitleLogo>
+      <Title logoColor={logoColor[chain]}>
+        <h1>{logo[chain].fullChain}</h1>
+        <TitleLogo url={logo[chain].url}></TitleLogo>
       </Title>
       {datas.map((data) => (
         <DetailNftBox

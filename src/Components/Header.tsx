@@ -115,6 +115,7 @@ const DetailContainer = styled(motion.div)`
   justify-content: center;
   border-top: 2px solid rgba(0, 0, 0, 0.1);
   border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+  min-height: 300px;
   height: 50vh;
   @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
     flex-direction: column;
@@ -280,7 +281,7 @@ function Header() {
                   {index === 1 ? <Border layoutId="border" /> : null}
                 </NavTitle>
               </Link>
-              <Link to="/ethereum">
+              <Link to="/eth">
                 <NavTitle
                   onMouseOver={() => {
                     setIndex(2);
@@ -291,7 +292,7 @@ function Header() {
                   {index === 2 ? <Border layoutId="border" /> : null}
                 </NavTitle>
               </Link>
-              <Link to="/solana">
+              <Link to="/sol">
                 <NavTitle
                   onMouseOver={() => {
                     setIndex(3);
@@ -302,7 +303,7 @@ function Header() {
                   {index === 3 ? <Border layoutId="border" /> : null}
                 </NavTitle>
               </Link>
-              <Link to="/klaytn">
+              <Link to="/klay">
                 <NavTitle
                   onMouseOver={() => {
                     setIndex(4);
@@ -458,7 +459,7 @@ function Header() {
                 {Object.entries(Object.entries(AllNft)[0][1]).map((data) => (
                   <HeaderDetailContext
                     key={data[1].title}
-                    chain="ethereum"
+                    chain="eth"
                     title={data[1].title}
                   />
                 ))}
@@ -485,7 +486,7 @@ function Header() {
                 {Object.entries(Object.entries(AllNft)[1][1]).map((data) => (
                   <HeaderDetailContext
                     key={data[1].title}
-                    chain="solana"
+                    chain="sol"
                     title={data[1].title}
                   />
                 ))}
@@ -512,7 +513,7 @@ function Header() {
                 {Object.entries(Object.entries(AllNft)[2][1]).map((data) => (
                   <HeaderDetailContext
                     key={data[1].title}
-                    chain="klaytn"
+                    chain="klay"
                     title={data[1].title}
                   />
                 ))}

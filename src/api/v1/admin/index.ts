@@ -1,8 +1,9 @@
 import Router from "koa-router";
-import { postAdmin } from "./adminController";
+import { adminChecker, postAdmin } from "./adminController";
 
 const admin = new Router();
 
 admin.post("/upload", postAdmin);
+admin.get("/check", adminChecker);
 
 export default admin;

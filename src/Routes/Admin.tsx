@@ -4,6 +4,10 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { response } from "./../constnats/response";
+import { useCookies } from "react-cookie";
+import { useQuery } from "@tanstack/react-query";
+import { getAdminCheck } from "../axios";
+import PageNotFound from "./PageNotFound";
 
 const HomeContainer = styled.div`
   display: flex;
@@ -156,14 +160,21 @@ export interface INftInfo {
   createdTime: string;
 }
 
+interface IDate {
+  data: boolean;
+}
+
 function Admin() {
   const params = useParams();
-
   const navigate = useNavigate();
+  const [token] = useCookies(["token"]);
   const [errorMessage, setErrorMessage] = useState("");
   const [selectedChain, setSelectedChain] = useState("ETH");
+  const { isLoading, data } = useQuery<IDate>(["check"], () =>
+    getAdminCheck(token["token"])
+  );
+  const [admin, setAdmin] = useState(false);
   const { register, handleSubmit, setValue } = useForm<INftInfo>();
-
   const onValid = ({
     chain,
     nft,
@@ -208,136 +219,142 @@ function Admin() {
     "0" +
     (today.getMonth() + 1)
   ).slice(-2)}-${("0" + today.getDate()).slice(-2)}`;
-  useEffect(() => {
-    if (params.nft === "31212") {
-      navigate("/");
-    }
-  }, []);
+  if (token["token"] == undefined) {
+    return <PageNotFound />;
+  }
   return (
-    <HomeContainer>
-      <Form onSubmit={handleSubmit(onValid)}>
-        <Title>Admin</Title>
-        <SelectWrapper>
-          <LabelWrapper>
-            <Label htmlFor="chain">Chain</Label>
-          </LabelWrapper>
-          <div>
-            <Select
-              {...register("chain", { required: true })}
-              id="chain"
-              onChange={(event) => setSelectedChain(event.currentTarget.value)}
-            >
-              <option value="ETH">Ethereum</option>
-              <option value="SOL">Solana</option>
-              <option value="KLAY">Klaytn</option>
-            </Select>
-          </div>
-        </SelectWrapper>
-        <SelectWrapper>
-          <LabelWrapper>
-            <Label htmlFor="nft">NFT</Label>
-          </LabelWrapper>
-          <div>
-            <Select id="nft" {...register("nft", { required: true })}>
-              {selectedChain === "ETH" ? (
-                <>
-                  <option value="CryptoPunks">CryptoPunks</option>
-                  <option value="Bored-Ape-Yacht-Club">
-                    Bored-Ape-Yacht-Club
-                  </option>
-                  <option value="Otherdeed-for-Otherside">
-                    Otherdeed-for-Otherside
-                  </option>
-                  <option value="Azuki">Azuki</option>
-                  <option value="CLONE-X">CLONE-X</option>
-                </>
-              ) : null}
-              {selectedChain === "SOL" ? (
-                <>
-                  <option value="Okay-Bears">Okay-Bears</option>
-                  <option value="DeGods">DeGods</option>
-                  <option value="Trippin-Ape-Tribe">Trippin-Ape-Tribe</option>
-                  <option value="Cets-on-Creck">Cets-on-Creck</option>
-                  <option value="Primates">Primates</option>
-                </>
-              ) : null}
-              {selectedChain === "KLAY" ? (
-                <>
-                  <option value="THE-META-KONGZ-KLAYTN">
-                    THE-META-KONGZ-KLAYTN
-                  </option>
-                  <option value="Meta-Toy-DragonZ">Meta-Toy-DragonZ</option>
-                  <option value="Sunmmiya-Club-Official">
-                    Sunmmiya-Club-Official
-                  </option>
-                  <option value="SheepFarm">SheepFarm</option>
-                </>
-              ) : null}
-            </Select>
-          </div>
-        </SelectWrapper>
-        <CheckBoxWrapper>
-          <div>Twitter</div>
-          <Input
-            {...register("SNS", { required: true })}
-            type="checkbox"
-            name="SNS"
-            value="twitter"
-            onClick={(event) => checkOnlyOne(event.currentTarget)}
-          ></Input>
-          <h1>Discord</h1>
-          <Input
-            {...register("SNS", { required: true })}
-            name="SNS"
-            type="checkbox"
-            value="discord"
-            onClick={(event) => checkOnlyOne(event.currentTarget)}
-          ></Input>
-        </CheckBoxWrapper>
-        <LabelWrapper>
-          <Label htmlFor="title">Title</Label>
-        </LabelWrapper>
-        <Input
-          {...register("title", { required: true })}
-          placeholder="Title"
-          id="title"
-        ></Input>
-        <LabelWrapper>
-          <Label htmlFor="thumbnail">Img URL</Label>
-        </LabelWrapper>
-        <Input
-          {...register("thumbnail", { required: true })}
-          placeholder="Img URL"
-          id="thumbnail"
-        ></Input>
-        <LabelWrapper>
-          <Label htmlFor="description">Description</Label>
-        </LabelWrapper>
-        <TextArea
-          {...register("description", { required: true })}
-          placeholder="Description"
-          id="description"
-        ></TextArea>
-        <TimeWrapper>
-          <Input
-            {...register("createdAt", { required: true })}
-            defaultValue={defaultToday}
-            type="date"
-            style={{ marginTop: "10px" }}
-          ></Input>
-          <Input
-            {...register("createdTime", { required: true })}
-            defaultValue="00:00"
-            type="time"
-            style={{ marginTop: "10px" }}
-          ></Input>
-        </TimeWrapper>
-        <ErrorMessage>{errorMessage}</ErrorMessage>
-        <LabelWrapper>
-          <Button>Upload</Button>
-        </LabelWrapper>
-      </Form>
-    </HomeContainer>
+    <>
+      {isLoading ? null : data?.data ? (
+        <HomeContainer>
+          <Form onSubmit={handleSubmit(onValid)}>
+            <Title>Admin</Title>
+            <SelectWrapper>
+              <LabelWrapper>
+                <Label htmlFor="chain">Chain</Label>
+              </LabelWrapper>
+              <div>
+                <Select
+                  {...register("chain", { required: true })}
+                  id="chain"
+                  onChange={(event) =>
+                    setSelectedChain(event.currentTarget.value)
+                  }
+                >
+                  <option value="ETH">Ethereum</option>
+                  <option value="SOL">Solana</option>
+                  <option value="KLAY">Klaytn</option>
+                </Select>
+              </div>
+            </SelectWrapper>
+            <SelectWrapper>
+              <LabelWrapper>
+                <Label htmlFor="nft">NFT</Label>
+              </LabelWrapper>
+              <div>
+                <Select id="nft" {...register("nft", { required: true })}>
+                  {selectedChain === "ETH" ? (
+                    <>
+                      <option value="cryptopunks">CryptoPunks</option>
+                      <option value="boredapeyachtclub">
+                        Bored-Ape-Yacht-Club
+                      </option>
+                      <option value="otherdeedforotherside">
+                        Otherdeed-for-Otherside
+                      </option>
+                      <option value="azuki">Azuki</option>
+                      <option value="clone-x">CLONE-X</option>
+                    </>
+                  ) : null}
+                  {selectedChain === "SOL" ? (
+                    <>
+                      <option value="okaybears">Okay-Bears</option>
+                      <option value="degods">DeGods</option>
+                      <option value="trippinapetribe">Trippin-Ape-Tribe</option>
+                      <option value="cetsoncreck">Cets-on-Creck</option>
+                      <option value="primates">Primates</option>
+                    </>
+                  ) : null}
+                  {selectedChain === "KLAY" ? (
+                    <>
+                      <option value="themetakongzklaytn">
+                        THE-META-KONGZ-KLAYTN
+                      </option>
+                      <option value="metatoydragonz">Meta-Toy-DragonZ</option>
+                      <option value="sunmmiyaclubofficial">
+                        Sunmmiya-Club-Official
+                      </option>
+                      <option value="sheepfarm">SheepFarm</option>
+                    </>
+                  ) : null}
+                </Select>
+              </div>
+            </SelectWrapper>
+            <CheckBoxWrapper>
+              <div>Twitter</div>
+              <Input
+                {...register("SNS", { required: true })}
+                type="checkbox"
+                name="SNS"
+                value="twitter"
+                onClick={(event) => checkOnlyOne(event.currentTarget)}
+              ></Input>
+              <h1>Discord</h1>
+              <Input
+                {...register("SNS", { required: true })}
+                name="SNS"
+                type="checkbox"
+                value="discord"
+                onClick={(event) => checkOnlyOne(event.currentTarget)}
+              ></Input>
+            </CheckBoxWrapper>
+            <LabelWrapper>
+              <Label htmlFor="title">Title</Label>
+            </LabelWrapper>
+            <Input
+              {...register("title", { required: true })}
+              placeholder="Title"
+              id="title"
+            ></Input>
+            <LabelWrapper>
+              <Label htmlFor="thumbnail">Img URL</Label>
+            </LabelWrapper>
+            <Input
+              {...register("thumbnail", { required: true })}
+              placeholder="Img URL"
+              id="thumbnail"
+            ></Input>
+            <LabelWrapper>
+              <Label htmlFor="description">Description</Label>
+            </LabelWrapper>
+            <TextArea
+              {...register("description", { required: true })}
+              placeholder="Description"
+              id="description"
+            ></TextArea>
+            <TimeWrapper>
+              <Input
+                {...register("createdAt", { required: true })}
+                defaultValue={defaultToday}
+                type="date"
+                style={{ marginTop: "10px" }}
+              ></Input>
+              <Input
+                {...register("createdTime", { required: true })}
+                defaultValue="00:00"
+                type="time"
+                style={{ marginTop: "10px" }}
+              ></Input>
+            </TimeWrapper>
+            <ErrorMessage>{errorMessage}</ErrorMessage>
+            <LabelWrapper>
+              <Button>Upload</Button>
+            </LabelWrapper>
+          </Form>
+        </HomeContainer>
+      ) : (
+        <PageNotFound />
+      )}
+    </>
   );
 }
 

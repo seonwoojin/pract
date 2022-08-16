@@ -111,7 +111,7 @@ function Join() {
       .post("http://localhost:4000/api/v1/user/join", body)
       .then((response) => {
         if (response.status === 200) {
-          navigate("/");
+          navigate("/login");
         }
       })
       .catch((error) => setErrorMessage(error.response.data));

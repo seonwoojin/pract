@@ -1,4 +1,12 @@
-export const AllNft = {
+export interface nftType {
+  [key: string]: { title: string; logourl: string; rgba: string };
+}
+
+interface chainType {
+  [key: string]: nftType;
+}
+
+export const AllNft: chainType = {
   eth: {
     CryptoPunks: {
       title: "CryptoPunks",

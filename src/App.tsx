@@ -8,10 +8,13 @@ import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { isLogined } from "./atom";
 import Admin from "./Routes/Admin";
-import MenuDetail from "./Components/MenuDetail";
+import MenuDetail from "./Routes/MenuDetail";
 import Info from "./Routes/Info";
+import PageNotFound from "./Routes/PageNotFound";
+import { AllNft } from "./AllNft";
 
 function App() {
+  const nfts = Object.keys(AllNft);
   const [isLogin, setIsLogin] = useRecoilState(isLogined);
   const [cookies, setCookies, removeCokkies] = useCookies([
     "token",
@@ -30,38 +33,21 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/join" element={<Join />} />
         <Route path="/admin" element={<Admin />} />
-        <Route
-          path="/ethereum"
-          element={
-            <MenuDetail
-              chain="Ethereum"
-              chainNum={0}
-              logoUrl="https://ethereum.org/static/6b935ac0e6194247347855dc3d328e83/cdbe4/eth-diamond-black.webp"
-            />
-          }
-        />
-        <Route
-          path="/solana"
-          element={
-            <MenuDetail
-              chain="Solana"
-              chainNum={1}
-              logoUrl="https://cryptologos.cc/logos/solana-sol-logo.png?v=023"
-            />
-          }
-        />
-        <Route
-          path="/klaytn"
-          element={
-            <MenuDetail
-              chain="Klaytn"
-              chainNum={2}
-              logoUrl="https://s2.coinmarketcap.com/static/img/coins/200x200/4256.png"
-            />
-          }
-        />
+        {nfts.map((nft, index) => (
+          <Route
+            key={"nft" + index}
+            path={`/${nft}`}
+            element={
+              <MenuDetail
+                logoColor="linear-gradient(to right, rgb(140,140,140), rgb(20,20,20));"
+                chain={nft}
+              />
+            }
+          />
+        ))}
         <Route path="/:chain/:nft" element={<Info />}></Route>
         <Route path="/" element={<Home />} />
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Router>
   );
