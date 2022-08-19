@@ -1,8 +1,10 @@
 import Koa, { Context } from "koa";
-import User from "../../../models/User";
+import User, { IUser } from "../../../models/User";
 import { response } from "./../../../constnats/response";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import nft from "./../nft/index";
+import { userChecker } from "./../../../middlewares";
 
 export const postLogin = async (ctx: Context) => {
   try {
@@ -63,5 +65,37 @@ export const postJoin = async (ctx: Context) => {
     ctx.status = response.HTTP_BAD_REQUEST;
     ctx.body = error;
     return;
+  }
+};
+
+export const userFavoriteNft = async (ctx: Context) => {
+  const params = ctx.query;
+  const user: IUser = ctx.user;
+  const preNfts: string[] = [];
+  if (user.favoriteNft.includes(params.nft as string)) {
+    user.favoriteNft.map((nft) => {
+      if (nft !== params.nft) preNfts.push(nft);
+    });
+    user.favoriteNft = preNfts;
+  } else {
+    user.favoriteNft.push(params.nft as string);
+  }
+  user.save();
+  ctx.status = response.HTTP_OK;
+};
+
+export const showUserFavorite = async (ctx: Context) => {
+  const user: IUser = ctx.user;
+  ctx.body = user.favoriteNft;
+  ctx.status = response.HTTP_OK;
+};
+
+export const getUserData = async (ctx: Context) => {
+  try {
+    const user: IUser = ctx.user;
+    ctx.body = user;
+    ctx.status = response.HTTP_OK;
+  } catch {
+    ctx.status = response.HTTP_BAD_REQUEST;
   }
 };

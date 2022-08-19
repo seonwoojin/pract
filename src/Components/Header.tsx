@@ -443,7 +443,7 @@ function Header() {
                 setIndex(2);
               }}
             >
-              <Link to="/ethereum">
+              <Link to="/eth">
                 <DetailTitle
                   onClick={() => {
                     tabletIndex === 2 ? setTabletIndex(0) : setTabletIndex(2);
@@ -470,7 +470,7 @@ function Header() {
                 setIndex(3);
               }}
             >
-              <Link to="/solana">
+              <Link to="/sol">
                 <DetailTitle
                   onClick={() =>
                     tabletIndex === 3 ? setTabletIndex(0) : setTabletIndex(3)
@@ -497,7 +497,7 @@ function Header() {
                 setIndex(4);
               }}
             >
-              <Link to="/klaytn">
+              <Link to="/klay">
                 {" "}
                 <DetailTitle
                   onClick={() =>

@@ -220,7 +220,13 @@ function Admin() {
     (today.getMonth() + 1)
   ).slice(-2)}-${("0" + today.getDate()).slice(-2)}`;
   if (token["token"] == undefined) {
+    console.error("404 Page Not Found");
     return <PageNotFound />;
+  }
+  if (!isLoading) {
+    if (!data?.data) {
+      console.error("404 Page Not Found");
+    }
   }
   return (
     <>

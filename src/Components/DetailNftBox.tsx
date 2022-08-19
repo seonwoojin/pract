@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const NftWrapper = styled(motion.div)`
+  position: relative;
   display: flex;
   width: 60vw;
   min-height: 200px;
@@ -12,10 +13,6 @@ const NftWrapper = styled(motion.div)`
   cursor: pointer;
   @media ${(props) => props.theme.device.tablet} {
     width: 90%;
-  }
-  a {
-    width: 100%;
-    height: 100%;
   }
 `;
 
@@ -75,10 +72,12 @@ const NftDetail = styled(motion.div)`
 `;
 
 const Svg = styled(motion.svg)`
-  width: 3%;
+  position: absolute;
+  right: -4vw;
+  width: 50px;
   margin-right: 20px;
-  fill: rgb(255, 255, 255);
-  opacity: 0;
+  opacity: 1;
+  z-index: 99;
 `;
 
 const detailVariants: Variants = {
@@ -135,13 +134,6 @@ function DetailNftBox({ chain, url, title, rgba }: IProps) {
           <h1>{title}</h1>
           <div>
             <h2>WELCOME TO THE {title}</h2>
-            <Svg
-              variants={svgVariants}
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 384 512"
-            >
-              <path d="M342.6 182.6C336.4 188.9 328.2 192 319.1 192s-16.38-3.125-22.62-9.375L224 109.3V432c0 44.13-35.89 80-80 80H32c-17.67 0-32-14.31-32-32s14.33-32 32-32h112C152.8 448 160 440.8 160 432V109.3L86.62 182.6c-12.5 12.5-32.75 12.5-45.25 0s-12.5-32.75 0-45.25l127.1-128c12.5-12.5 32.75-12.5 45.25 0l128 128C355.1 149.9 355.1 170.1 342.6 182.6z" />
-            </Svg>
           </div>
         </NftDetail>
       </NftWrapper>

@@ -4,6 +4,7 @@ import NftInfo from "./../../../models/NftInfo";
 import { response } from "../../../constnats/response";
 import jwt from "jsonwebtoken";
 import User from "./../../../models/User";
+import { userChecker } from "../../../middlewares";
 
 const accessKey = process.env.ACCESS_SECRET_KEY;
 
@@ -44,14 +45,8 @@ export const postAdmin = async (ctx: Context) => {
 
 export const adminChecker = async (ctx: Context) => {
   try {
-    const token = ctx.req.headers.authorization?.replace("Bearer ", "");
-    if (token == "undefined") {
-      ctx.status = response.HTTP_OK;
-      return;
-    }
-    const decoded = jwt.verify(token!, accessKey!) as IDecoded;
-    const user = await User.findOne({ username: decoded.username }).exec();
-    ctx.body = user?.admin;
+    const user = ctx.user;
+    ctx.body = user.admin;
     ctx.status = response.HTTP_OK;
   } catch (error) {
     ctx.status = response.HTTP_BAD_REQUEST;

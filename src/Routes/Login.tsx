@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { useCookies } from "react-cookie";
 import { useRecoilValue } from "recoil";
 import { isLogined } from "./../atom";
+import { response } from "./../constnats/response";
 
 const HomeContainer = styled.div`
   display: flex;
