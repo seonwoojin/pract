@@ -2,19 +2,14 @@ import styled, { keyframes } from "styled-components";
 import { useNavigate, useParams } from "react-router-dom";
 import { AllNft } from "./../AllNft";
 import PageNotFound from "./PageNotFound";
-import { title } from "process";
 import { NftChecker } from "./../NftChecker";
-import { useQuery } from "@tanstack/react-query";
-import { getNftInfo, IData } from "../axios";
-import nft from "./../api/v1/nft/index";
-import { transform } from "typescript";
+import { IData } from "../axios";
 import DetailInfo from "../Components/DetailInfo";
 import axios from "axios";
 import { useCookies } from "react-cookie";
-import { response } from "./../constnats/response";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { IUser } from "./../context/DataProvider";
-import { getUser } from "./../axios";
+
 const starAnim = keyframes`
   0% {
     scale: 1;
