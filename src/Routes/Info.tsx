@@ -59,10 +59,6 @@ const Title = styled.div<{ favorite: boolean }>`
   }
 `;
 
-interface IUserData {
-  data: IUser;
-}
-
 function Info() {
   const params = useParams();
   const navigate = useNavigate();
@@ -73,16 +69,7 @@ function Info() {
   const [token] = useCookies(["token"]);
   const allNft = AllNft;
   const check = NftChecker(params.chain, params.nft);
-  const { isLoading: isLoadingUser, data: userData } = useQuery<IUserData>(
-    [`${params.nft}user`],
-    () => getUser(token["token"])
-  );
 
-  useEffect(() => {
-    if (!isLoadingUser) {
-      setUser(userData?.data);
-    }
-  }, [isLoadingUser]);
   useEffect(() => {
     async function getNft() {
       if (token["token"] && token["token"] !== "undefined") {
@@ -94,7 +81,20 @@ function Info() {
           });
       }
     }
+    async function getUser() {
+      axios
+        .get<IUser>(`http://localhost:4000/api/v1/user/data/`, {
+          headers: {
+            Authorization: `Bearer ${token["token"]}`,
+          },
+        })
+        .then((response) => {
+          setUser(response.data);
+          setFavorite(response.data.favoriteNft.includes(params.nft!));
+        });
+    }
     getNft();
+    getUser();
   }, [params]);
 
   const onClick = () => {
@@ -145,7 +145,7 @@ function Info() {
           </svg>
         )}
       </Title>
-      {isLoading || isLoadingUser
+      {isLoading
         ? null
         : Object.values(data!).map((nft, index) => (
             <DetailInfo
