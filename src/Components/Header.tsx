@@ -261,7 +261,7 @@ function Header() {
           initial={{ opacity: 1, y: -100 }}
           exit={{ opacity: 0 }}
           animate={{ opacity: 1, y: 0, transition: { duration: 0.3 } }}
-          onMouseEnter={() => setShow(true)}
+          onMouseEnter={() => setShow(false)}
         >
           <LogoContainer>
             <h1>

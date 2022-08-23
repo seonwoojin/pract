@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { AllNft } from "../AllNft";
 import { IInfo } from "./../Routes/Home";
+import { motion, Variants } from "framer-motion";
+import useInterval from "../useInterval";
 
 const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 100%;
-  padding-left: 300px;
-  padding-right: 300px;
+  width: 90%;
   margin-bottom: 50px;
 `;
 
@@ -29,12 +29,11 @@ const InfoTitle = styled.div`
 const InfoWrapper = styled.div`
   display: flex;
   justify-content: center;
-  background-color: rgba(0, 0, 0, 0.1);
   padding-top: 50px;
   margin-bottom: 20px;
 `;
 
-const Info = styled.div`
+const Info = styled(motion.div)`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -45,12 +44,50 @@ const Info = styled.div`
   cursor: pointer;
 `;
 
-const InfoImage = styled.div<{ url: string }>`
+const InfoHover = styled(motion.div)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 500px;
+  width: 500px;
+  height: 800px;
+  margin-right: 20px;
+  cursor: pointer;
+`;
+
+const InfoImage = styled.div<{ url: string; detail: boolean }>`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   height: 60%;
-  background: url(${(props) => props.url});
+  background-image: url(${(props) => props.url});
+  background-blend-mode: multiply;
   background-position: center center;
   background-size: cover;
+  font-family: sans-serif;
+  color: ${(props) => (props.detail ? "white" : "transparent")};
+  background-color: ${(props) =>
+    props.detail ? "rgba(0, 0, 0, 0.5)" : "transparent"};
+  transition: all 1s ease 0.1s;
+`;
+
+const InfoImageContext = styled.div`
+  display: flex;
+  width: 100%;
+  height: 80%;
+  padding: 20px;
+  overflow: hidden;
+`;
+
+const InfoImageHashTag = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 20%;
+  padding: 10px;
+  opacity: 0.9;
 `;
 
 const InfoMain = styled.div`
@@ -134,7 +171,43 @@ const InfoNext = styled.div`
 
 const AllNfts = AllNft;
 
-const offset = 4;
+const offset = 3;
+
+const infoImageVariants: Variants = {
+  initial: {
+    backgroundColor: "rgba(0, 0, 0, 0)",
+    color: "rgba(255,255,255,0)",
+    transition: { repeat: Infinity },
+  },
+  animate: {
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    color: "rgba(255,255,255,1)",
+    transition: {
+      duration: 0.5,
+      delay: 5,
+      repeat: Infinity,
+      repeatType: "reverse",
+      repeatDelay: 5,
+    },
+  },
+};
+
+const infoImageContextVariants: Variants = {
+  initial: {
+    backgroundColor: "rgba(0, 0, 0, 0)",
+    transition: { repeat: Infinity },
+  },
+  animate: {
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    transition: {
+      duration: 1,
+      delay: 5,
+      repeat: Infinity,
+      repeatType: "reverse",
+      repeatDelay: 5,
+    },
+  },
+};
 
 interface IProps {
   nftData: IInfo;
@@ -148,6 +221,11 @@ function HomeInfo({ nftData, nft }: IProps) {
   const [index, setIndex] = useState(0);
   const [indexLoading, setIndexLoading] = useState(true);
   const [indexArray, setIndexArray] = useState<number[]>([]);
+  const [detail, setDetail] = useState(false);
+  const [hover, setHover] = useState("");
+  useInterval(() => {
+    setDetail((prev) => !prev);
+  }, 8000);
 
   maxIndex = Math.floor(
     Object.values(nftData?.data!).filter((infos) => infos.nft === nft).length /
@@ -174,9 +252,11 @@ function HomeInfo({ nftData, nft }: IProps) {
   }, [index]);
 
   useEffect(() => {
+    const prevArray: number[] = [];
     for (let i = 0; i < maxIndex + 1; i++) {
-      setIndexArray((prevArray) => [...prevArray, i + 1]);
+      prevArray.push(i + 1);
     }
+    setIndexArray([...prevArray]);
     setIndexLoading(false);
   }, []);
   const onClickNext = () => {
@@ -197,23 +277,55 @@ function HomeInfo({ nftData, nft }: IProps) {
           .filter((infos) => infos.nft === nft)
           .slice(sliceFirst, sliceSecond)
           .map((info) => (
-            <Info key={info._id}>
-              <InfoImage url={info.thumbnail}></InfoImage>
-              <InfoMain>
-                <InfoMainLogo
-                  logourl={AllNfts[info.chain.toLowerCase()][nft].logourl}
-                ></InfoMainLogo>
-                <InfoMainText>
-                  <InfoMainTitle>
-                    <div>{info.title}</div>
-                  </InfoMainTitle>
-                  <InfoMainSubText>
-                    <h1>{AllNfts["eth"][nft].title}</h1>
-                    <h1>{info.createdAt}</h1>
-                  </InfoMainSubText>
-                </InfoMainText>
-              </InfoMain>
-            </Info>
+            <div
+              key={info._id}
+              onMouseOver={() => setHover(info._id)}
+              onMouseOut={() => setHover("")}
+            >
+              {hover === info._id ? (
+                <InfoHover layoutId={`info${info._id}`}>
+                  <InfoImage url={info.thumbnail} detail={detail}>
+                    <InfoImageContext>{info.title}</InfoImageContext>
+                    <InfoImageHashTag>#eth #event</InfoImageHashTag>
+                  </InfoImage>
+                  <InfoMain>
+                    <InfoMainLogo
+                      logourl={AllNfts[info.chain.toLowerCase()][nft].logourl}
+                    ></InfoMainLogo>
+                    <InfoMainText>
+                      <InfoMainTitle>
+                        <div>{info.title}</div>
+                      </InfoMainTitle>
+                      <InfoMainSubText>
+                        <h1>{AllNfts["eth"][nft].title}</h1>
+                        <h1>{info.createdAt}</h1>
+                      </InfoMainSubText>
+                    </InfoMainText>
+                  </InfoMain>
+                </InfoHover>
+              ) : (
+                <Info layoutId={`info${info._id}`}>
+                  <InfoImage url={info.thumbnail} detail={detail}>
+                    <InfoImageContext>{info.title}</InfoImageContext>
+                    <InfoImageHashTag>#eth #event</InfoImageHashTag>
+                  </InfoImage>
+                  <InfoMain>
+                    <InfoMainLogo
+                      logourl={AllNfts[info.chain.toLowerCase()][nft].logourl}
+                    ></InfoMainLogo>
+                    <InfoMainText>
+                      <InfoMainTitle>
+                        <div>{info.title}</div>
+                      </InfoMainTitle>
+                      <InfoMainSubText>
+                        <h1>{AllNfts["eth"][nft].title}</h1>
+                        <h1>{info.createdAt}</h1>
+                      </InfoMainSubText>
+                    </InfoMainText>
+                  </InfoMain>
+                </Info>
+              )}
+            </div>
           ))}
         <InfoNext onClick={onClickNext}></InfoNext>
       </InfoWrapper>
