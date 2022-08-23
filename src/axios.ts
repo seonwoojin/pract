@@ -30,6 +30,12 @@ export function getNftInfo(nft: string) {
   return data;
 }
 
+export function getAllNft() {
+  const data = axios.get("http://localhost:4000/api/v1/nft/all");
+
+  return data;
+}
+
 export function getUser(token: string) {
   const data = axios.get(`http://localhost:4000/api/v1/user/data/`, {
     headers: {

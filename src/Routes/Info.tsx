@@ -67,14 +67,12 @@ function Info() {
 
   useEffect(() => {
     async function getNft() {
-      if (token["token"] && token["token"] !== "undefined") {
-        const data = await axios
-          .get(`http://localhost:4000/api/v1/nft/?nft=${params.nft}`)
-          .then((response) => {
-            setData(response.data);
-            setIsLoading(false);
-          });
-      }
+      const data = await axios
+        .get(`http://localhost:4000/api/v1/nft/?nft=${params.nft}`)
+        .then((response) => {
+          setData(response.data);
+          setIsLoading(false);
+        });
     }
     async function getUser() {
       axios

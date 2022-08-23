@@ -12,6 +12,14 @@ export const getNftInfo = async (ctx: Context) => {
   ctx.status = response.HTTP_OK;
 };
 
+export const getAllNftInfo = async (ctx: Context) => {
+  const nftInfo = await NftInfo.find({}).sort({
+    createdAt: -1,
+  });
+  ctx.body = nftInfo;
+  ctx.status = response.HTTP_OK;
+};
+
 export const userLikeDetailInfo = async (ctx: Context) => {
   try {
     const user: IUser = ctx.user;

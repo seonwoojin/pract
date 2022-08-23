@@ -1,0 +1,58 @@
+[{
+  "_id": {
+    "$oid": "62faff16019a9b387bbeff0f"
+  },
+  "username": "wlstjsdn12",
+  "name": "seonwoo",
+  "password": "$2b$05$1a0pufBFyvup3OjyrqWFKuvujVx8T60s5Xy4tLAykQpxSX3ILITTW",
+  "admin": true,
+  "__v": 223,
+  "favoriteNft": [
+    "metatoydragonz",
+    "sunmiyaclubofficial",
+    "cryptopunks"
+  ],
+  "likes": [
+    "62f361a1b1b0282f9855e5f1",
+    "62f36222b1b0282f9855e5f3",
+    "62fb4f3ea8c1e84f45f56ed1",
+    "62fb4f9da8c1e84f45f56edc",
+    "62fb4f6ba8c1e84f45f56ed7",
+    "62f36254b1b0282f9855e5f5"
+  ]
+},{
+  "_id": {
+    "$oid": "62ff25ba75d601c82a828a11"
+  },
+  "username": "wlstjsdn13",
+  "name": "진선우",
+  "password": "$2b$05$AXGPIMIl5JZDzbtjF.4fresGhCMwvB/OraiVIsiuypegVFWo.nRhG",
+  "admin": false,
+  "favoriteNft": [],
+  "likes": [
+    "62f361a1b1b0282f9855e5f1",
+    "62fb4f9da8c1e84f45f56edc",
+    "62fb4f6ba8c1e84f45f56ed7",
+    "62f36222b1b0282f9855e5f3",
+    "62f36254b1b0282f9855e5f5"
+  ],
+  "__v": 11
+},{
+  "_id": {
+    "$oid": "63004fdf646512964bfa6bb0"
+  },
+  "username": "wlstjsdn14",
+  "name": "선우",
+  "password": "$2b$05$0arnDSdfcjkavt6v4kZBCOn2fn8fZdmXvl2KThpR45MPLJcuUCpV6",
+  "admin": false,
+  "favoriteNft": [
+    "cryptopunks",
+    "boredapeyachtclub",
+    "metatoydragonz",
+    "sunmiyaclubofficial"
+  ],
+  "likes": [
+    "62f36254b1b0282f9855e5f5"
+  ],
+  "__v": 5
+}]

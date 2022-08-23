@@ -1,0 +1,166 @@
+[{
+  "_id": {
+    "$oid": "62f361a1b1b0282f9855e5f1"
+  },
+  "chain": "ETH",
+  "nft": "cryptopunks",
+  "title": "A slice of the punk: CryptoPunk NFT to be split into thousands of pieces fasdlkjklf askdjfkljvklc klajkldsfxczv ",
+  "thumbnail": "https://images.cointelegraph.com/images/717_aHR0cHM6Ly9zMy5jb2ludGVsZWdyYXBoLmNvbS91cGxvYWRzLzIwMjItMDgvMWQxNmRhNTUtOTkxYi00MzRlLWE2MGYtZDY1NGU3YzQ2NjY4LmpwZw==.jpg",
+  "description": "Nonfungible tokens (NFTs) continue to capture the imagination of the cryptocurrency space, with some of the most popular projects attracting hundreds of millions of dollars from investors. Projects such as CryptoPunks and the Bored Ape Yacht Club epitomize the exclusivity of the most lucrative collections, with each NFT far from accessible to the average investor.\n\nA new campaign intends to give a wider base of investors a stake in some of the most valuable NFTs by fractionalizing ownership to reinstate accessibility. Unique Network, an NFT infrastructure running on the Kusama and Polkadot networks, will split the ownership of a CryptoPunk to more than 56,000 addresses that have signed up for a share.\n\nThe campaign offers users a chance to participate in what has become a highly siloed environment, as Unique Network CEO Alexander Mitrovich explained in a statement:",
+  "SNS": "twitter",
+  "createdAt": "2022-08-08 16:02",
+  "__v": 23,
+  "likes": [
+    "62faff16019a9b387bbeff0f"
+  ],
+  "unlikes": [
+    "62ff25ba75d601c82a828a11"
+  ]
+},{
+  "_id": {
+    "$oid": "62f36222b1b0282f9855e5f3"
+  },
+  "chain": "ETH",
+  "nft": "cryptopunks",
+  "title": "CryptoPunk Ethereum NFT Sales Jump 248% After Tiffany Launch",
+  "thumbnail": "https://cdn.decrypt.co/resize/1536/wp-content/uploads/2022/03/cryptopunks-ethereum-blue-nfts-gID_6.png.webp",
+  "description": "The sales volume of the CryptoPunks NFT collection has spiked over 248% in the last 24 hours, sparked by an exclusive offer from iconic luxury jewelry and specialty retailer Tiffany & Co. for CryptoPunks NFT holders, according to data from CryptoSlam.\n\n“We’re taking NFTs to the next level,” Tiffany wrote on Twitter on Sunday. “Exclusive to CryptoPunks holders, NFTiff transforms your NFT into a bespoke pendant handcrafted by Tiffany & Co. artisans. You’ll also receive an additional NFT version of the pendant.”",
+  "SNS": "discord",
+  "createdAt": "2022-08-02 17:27",
+  "__v": 20,
+  "likes": [
+    "62faff16019a9b387bbeff0f"
+  ],
+  "unlikes": [
+    "62ff25ba75d601c82a828a11"
+  ]
+},{
+  "_id": {
+    "$oid": "62f36254b1b0282f9855e5f5"
+  },
+  "chain": "ETH",
+  "nft": "cryptopunks",
+  "title": "CryptoPunks Floor Price Tops $100K in Ethereum for First Time in Two Months",
+  "thumbnail": "https://cdn.decrypt.co/resize/1536/wp-content/uploads/2022/07/cryptopunks-magnifying-lens-shutterstock-gID_4.png.webp",
+  "description": "All of the major “blue chip” Ethereum NFT collections have taken a massive hit in value over the last couple months amid the wider crypto market crash, and CryptoPunks was no exception. But following a pair of multi-million-dollar sales in the collection, the price for even the cheapest NFTs from the project has grown substantially over the last week.\n\nOn Sunday, the price floor for CryptoPunks—that is, the cheapest available NFT listed on a secondary marketplace—rose above $100,000 worth of ETH for the first time in two months, since May 18, according to data from NFT Price Floor. As of this writing, the floor price for CryptoPunks sits at 84.85 ETH, or about $113,500.",
+  "SNS": "discord",
+  "createdAt": "2022-08-19 13:02",
+  "__v": 249,
+  "likes": [
+    "62faff16019a9b387bbeff0f"
+  ],
+  "unlikes": [
+    "62ff25ba75d601c82a828a11",
+    "63004fdf646512964bfa6bb0"
+  ]
+},{
+  "_id": {
+    "$oid": "62fb4f3ea8c1e84f45f56ed1"
+  },
+  "chain": "ETH",
+  "nft": "boredapeyachtclub",
+  "title": "Bored Ape Yacht Club NFTs Explained",
+  "thumbnail": "https://www.cnet.com/a/img/resize/2afe55aa97fa36afa8cab15a4601b824c15ae6ce/2022/04/29/81bd537b-707f-41e4-98cf-38734b4f6922/screenshot-2022-04-29-100049.png?auto=webp&fit=crop&height=675&width=1200",
+  "description": "NFTs have been around for five years, but the nonfungible token boom only truly began in 2021. It coincided almost perfectly with the launch of Bored Ape Yacht Club, a collection of 10,000 cartoon ape NFTs that's come to embody the whole industry. BAYC has over the past year become a bellwether for NFTs, just like bitcoin is for the crypto market at large. \n\nWhen NFTs were at their hottest, in April, the entry price for Bored Ape Yacht Club NFTs was $400,000. Following the crypto crash, caused by the Federal Reserve's hiking of inflation rates to tackle inflation, that's fallen closer to $150,000. Far from the all-time-high, but insane considering these NFTs sold for about $200 apiece last April. \n\nYou've probably seen a BAYC, even if you didn't realize you were looking at one.\n\nBored Ape owners currently using their NFT as a Twiter profile picture include Timbaland (1.6 million followers), Eminem (22.6 million followers) and footballer Neyman Jr. (55 million followers). Jimmy Fallon and Paris Hilton are also BAYC holders, discussing their Apes in a (cringey) Tonight Show segment. Justin Bieber made headlines with his purchase of a $1.29 million Bored Ape Yacht Club NFT in February. \n\nIn June, Eminem and Snoop Dogg released a video clip in which the rappers are depicted by their respective Bored Apes. ",
+  "SNS": "twitter",
+  "createdAt": "2022-08-11 19:43",
+  "__v": 20,
+  "likes": [
+    "62faff16019a9b387bbeff0f"
+  ],
+  "unlikes": [
+    "62ff25ba75d601c82a828a11"
+  ]
+},{
+  "_id": {
+    "$oid": "62fb4f6ba8c1e84f45f56ed7"
+  },
+  "chain": "ETH",
+  "nft": "boredapeyachtclub",
+  "title": "adidas Expands Its Metaverse Journey With New Four-Way Collaboration",
+  "thumbnail": "https://image-cdn.hypb.st/https%3A%2F%2Fhypebeast.com%2Fimage%2F2021%2F11%2FAdidas-Metaverse-New-Four-Way-Collaboration-1.jpg?q=90&w=1400&cbr=1&fit=max",
+  "description": "adidas (XETRA:ADS.DE -1.17%) is expanding its journey into the metaverse with a new four-way collaboration with Bored Ape Yacht Club, Pixel Vault’s Punks Comic and crypto investor Gmoney.\n\nThis morning, the collaborators took to social media to reveal images of a forthcoming collaboration with the sportswear company. The posts from their respective accounts only revealed sneak peek imagery with no additional details about the nature of the collaboration.",
+  "SNS": "twitter",
+  "createdAt": "2022-08-14 01:43",
+  "__v": 50,
+  "likes": [
+    "62faff16019a9b387bbeff0f"
+  ],
+  "unlikes": [
+    "62ff25ba75d601c82a828a11"
+  ]
+},{
+  "_id": {
+    "$oid": "62fb4f9da8c1e84f45f56edc"
+  },
+  "chain": "ETH",
+  "nft": "boredapeyachtclub",
+  "title": "Bored Apes Yacht Club’s creators unveil ApeCoin crypto token",
+  "thumbnail": "https://images.lifestyleasia.com/wp-content/uploads/sites/6/2022/03/17190410/bored-ape-yacht-club.jpeg",
+  "description": "The launch of ApeCoin\nThe launch of APE took place after the company gained one hundred percent of the commercial rights to NFT projects – CryptoPunks and Meebits.\n\nThe token will be operated and controlled by a decentralised autonomous organisation (DAO) called ApeCoin DAO, independent of founding company Yuga Labs. Additionally, a fund-managing organisation called APE Foundation will be responsible for supervising, regulating and conducting the group decisions of the DAO.\n\nHow will the ApeCoin Token work?\nIn the beginning, ApeCoin will be exercised as an in-game token for Yuga Labs’ mobile games such as the action-adventure game Benji Bananas. Their long-term vision is to use ApeCoin sales to finance an array of physical and digital projects and add them to their diverse portfolio.\n\nEach token will be equal to one vote, authorising individual stakeholders to have a say on future ventures and democratically participate in dealings. The holders get to put a vote in on governance and use of the Ecosystem Fund. Holding ApeCoin is the only requirement for membership in the ApeCoin DAO as said by the company.\n\nA cap of 1 billion tokens will be put on the minting process of ApeCoins in perpetuity. Out of this, 9.75% of the ownership will be assigned to Yuga Labs, 14% will be held by patrons involved in the launch of the token, 8% will go to Yuga Labs founders, Wylie Aronow and Greg Solano and lastly 6.25% will be dedicated to a charity fund for the Jane Goodall Legacy Foundation.\n\nThe donations will be done with the goal to protect chimpanzee reserves and habitats and to motivate the young population to care and campaign for a noble cause such as saving the wildlife and our planet.\n\nAs per the ApeCoin website, “The possibilities for blockchain’s impact on culture are so endless that they can’t possibly all be predicted yet.” The company says that APE is created to be able to embrace the future of crypto exchange, that will be operated and progressively developed by the many contributors comprising the community.\n\nThey believe that it will “serve as a decentralised protocol layer for community-led initiatives that drive culture forward into the metaverse.”",
+  "SNS": "discord",
+  "createdAt": "2022-08-01 15:04",
+  "__v": 21,
+  "likes": [
+    "62faff16019a9b387bbeff0f"
+  ],
+  "unlikes": [
+    "62ff25ba75d601c82a828a11"
+  ]
+},{
+  "_id": {
+    "$oid": "6302f8243a0c12b61b4defea"
+  },
+  "chain": "ETH",
+  "nft": "cryptopunks",
+  "title": "Cryptopunks and BAYC Floor Values Go Head-to-Head, as the Punks Briefly Surpass Bored Apes",
+  "thumbnail": "https://static.news.bitcoin.com/wp-content/uploads/2022/08/hhhhh.jpg",
+  "description": "On Sunday, August 21, 2022, the floor value of the Cryptopunks non-fungible token (NFT) collection briefly surpassed the Bored Ape Yacht Club (BAYC) NFT collection’s floor value. While it’s not by a huge amount, at the time, Cryptopunks floor was ​​66.45 ether, while BAYC’s least expensive NFT was 64.99 ether.\n\nCryptopunks Fleetingly Reclaims the Throne It Held Last Year by Flipping BAYC’s Floor Value\nNon-fungible token (NFT) sales are not doing so well this week as sales are down 18.75% lower than the week prior’s sale volume, according to cryptoslam.io statistics. Bored Ape Yacht Club (BAYC) holds the top sales this week with $15,087,189 million in sales, up 61.47% higher than last week.While Cryptopunks is the sixth largest collection in terms of this week’s NFT sales with $4,517,133 in sales this week, sales are down 52.38% lower than the week prior. Despite the lower number of sales this past week, Cryptopunks has briefly managed to flip BAYC in terms of floor value.\n\nOn August 21, at 1:45 p.m. (EST), Cryptopunks’ floor value was 66.45 ETH or $107,866. BAYC’s floor value slipped down to 64.99 ETH or $105,623 at that time. The head-to-head action has been going on for most of the day, and later in the afternoon, BAYC managed to regain the top floor.",
+  "SNS": "twitter",
+  "createdAt": "2022-08-22 08:00",
+  "likes": [],
+  "unlikes": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6302f83d3a0c12b61b4deff0"
+  },
+  "chain": "ETH",
+  "nft": "cryptopunks",
+  "title": "CryptoPunk Ethereum NFTs Floor Price Flips Bored Apes for First Time in 5 Months",
+  "thumbnail": "https://cdn.decrypt.co/resize/1536/wp-content/uploads/2022/08/Crypto-Rap-Battle-gID_7.png.webp",
+  "description": "For a brief, shining moment Sunday morning, the CryptoPunks flipped the Bored Ape Yacht Club, the floor price of the veteran NFT collection topping that of the celebrity-coveted primates for the first time since March, according to NFT Price Floor. As with the last short-lived flip, the Bored Apes quickly regained the top spot, which they've effectively held all year. Still, CryptoPunks has been closing on the Bored Ape Yacht Club since June, and if the trend continues, CryptoPunks may soon retake the lead—and hold it.\n\nThe CryptoPunks were created by Canadian software developers Matt Hall and John Watkinson of Larva Labs in June 2017. The collection of non-fungible tokens (NFTs) on the Ethereum blockchain is widely credited with sparking the NFT craze, inspiring the ERC-721 standard as well as prominent collections that followed—including the Bored Ape Yacht Club, which launched in April 2021.",
+  "SNS": "discord",
+  "createdAt": "2022-08-22 05:00",
+  "likes": [],
+  "unlikes": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6302f85b3a0c12b61b4deff6"
+  },
+  "chain": "ETH",
+  "nft": "cryptopunks",
+  "title": "Nearly $55M worth of Bored Ape, CryptoPunks NFTs risk liquidation amid debt crisis",
+  "thumbnail": "https://d1-invdn-com.investing.com/content/picc7f08b40825131feed2250834da05db1.jpg",
+  "description": "Many owners of precious Bored Ape Yacht Club (BAYC) and CryptoPunks nonfungible tokens (NFTs), who used them as collateral to take out loans in Ether (ETH), have failed to repay their debts. The situation could lead up to the NFT sector's first massive liquidation event.\n\nDoubleQ, the founder of Web3 launchpad Double Studio, says lending service BendDAO could liquidate up to $55 million worth of NFTs to recover its loans, fearing the so-called \"health factor\" of these debts could fall below 1.\n\nBendDAO's NFT liquidation protocol. Source: Official Website\nBendDAO NFT holdings distribution. Source: doubleQ",
+  "SNS": "discord",
+  "createdAt": "2022-08-21 11:40",
+  "likes": [],
+  "unlikes": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "63030bd3de318c808fc6aeb1"
+  },
+  "chain": "ETH",
+  "nft": "cryptopunks",
+  "title": "Yuga Labs Release IP Rights Agreement for CryptoPunks & Meebits",
+  "thumbnail": "https://www.cryptotimes.io/wp-content/uploads/2022/08/Cryptopunks-meebits-IP-rights-get-released-Website.jpg.webp",
+  "description": "Yuga Labs released intellectual property (IP) rights of two of the leading non-fungible token (NFT) collections, CryptoPunks and Meebits for their NFT holders. This will allow them to use their digital collectibles wherever they want.",
+  "SNS": "twitter",
+  "createdAt": "2022-08-16 18:39",
+  "likes": [],
+  "unlikes": [],
+  "__v": 0
+}]
