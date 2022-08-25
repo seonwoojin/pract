@@ -3,7 +3,17 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AllNft } from "../AllNft";
 import { useRecoilState } from "recoil";
-import { isFilterShow } from "../atom";
+import {
+  isFilterShow,
+  pastString,
+  projectString,
+  snstString,
+  todayString,
+} from "../atom";
+import { chainString } from "./../atom";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { AnimatePresence, motion } from "framer-motion";
 
 const Wrapper = styled.div`
   position: fixed;
@@ -32,7 +42,7 @@ const Container = styled.div`
   }
 `;
 
-const DetailContainer = styled.form`
+const DetailContainer = styled(motion.form)`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -62,7 +72,7 @@ const FilterContainer = styled.div`
   border-radius: 10px;
   background-color: white;
   box-shadow: 2px 3px rgba(0, 0, 0, 0.2);
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 `;
 
 const FilterTitle = styled.div`
@@ -98,17 +108,82 @@ const FilterSelect = styled.select`
   white-space: nowrap;
 `;
 
+const FilterInput = styled.input`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  width: 90%;
+  height: 50%;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+`;
+
+const CheckBoxWrapper = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 90%;
+  height: 50%;
+  font-size: 15px;
+  font-weight: 600;
+`;
+
+const DateBoxWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  height: 50%;
+  font-size: 15px;
+  font-weight: 600;
+  .datePicker {
+    display: flex;
+    text-align: center;
+    width: 100px;
+    font-size: 15px;
+    border: none;
+    font-weight: 500;
+  }
+`;
+
 function SideBar() {
   const allNfts = AllNft;
   const [show, setShow] = useRecoilState(isFilterShow);
-  const [chain, setChain] = useState("");
-  const [project, setProject] = useState("");
+  const [chain, setChain] = useRecoilState(chainString);
+  const [project, setProject] = useRecoilState(projectString);
+  const [sns, setSns] = useRecoilState(snstString);
+  const [today, setToday] = useRecoilState(todayString);
+  const [past, setPast] = useRecoilState(pastString);
   const onChangeChain = (value: string) => {
     setChain(value);
   };
   const onChangeProject = (value: string) => {
     setProject(value);
   };
+  const checkOnlyOne = (element: HTMLInputElement) => {
+    const checkBoxes = document.getElementsByName(
+      "SNS"
+    ) as NodeListOf<HTMLInputElement>;
+    if (element.checked !== false) {
+      checkBoxes.forEach((cb) => {
+        cb.checked = false;
+      });
+      element.checked = true;
+      setSns(element.value);
+    } else {
+      setSns("");
+    }
+  };
+  useEffect(() => {
+    const today = new Date();
+    const past = new Date();
+    past.setMonth(today.getMonth() - 6);
+    setToday(today);
+    setPast(past);
+  }, []);
+
   return (
     <Wrapper>
       <Container>
@@ -132,39 +207,88 @@ function SideBar() {
           <path d="M3.853 54.87C10.47 40.9 24.54 32 40 32H472C487.5 32 501.5 40.9 508.1 54.87C514.8 68.84 512.7 85.37 502.1 97.33L320 320.9V448C320 460.1 313.2 471.2 302.3 476.6C291.5 482 278.5 480.9 268.8 473.6L204.8 425.6C196.7 419.6 192 410.1 192 400V320.9L9.042 97.33C-.745 85.37-2.765 68.84 3.854 54.87L3.853 54.87z" />
         </svg>
       </Container>
-      {show ? (
-        <DetailContainer>
-          <DetailTitle>Filter</DetailTitle>
-          <FilterContainer>
-            <FilterTitle>Chain</FilterTitle>
-            <FilterSelect
-              onChange={(event) => onChangeChain(event.currentTarget.value)}
-              value={chain}
-            >
-              <option value="">All</option>
-              <option value="eth">ETH</option>
-              <option value="sol">SOL</option>
-              <option value="klay">KLAY</option>
-            </FilterSelect>
-          </FilterContainer>
-          <FilterContainer>
-            <FilterTitle>Project</FilterTitle>
-            <FilterSelect
-              onChange={(event) => onChangeProject(event.currentTarget.value)}
-              value={project}
-            >
-              <option value="">All</option>
-              {chain === ""
-                ? null
-                : Object.values(allNfts[chain]).map((data) => (
-                    <option key={data.title} value={data.title}>
-                      {data.title}
-                    </option>
-                  ))}
-            </FilterSelect>
-          </FilterContainer>
-        </DetailContainer>
-      ) : null}
+      <AnimatePresence>
+        {show ? (
+          <DetailContainer
+            initial={{ opacity: 0 }}
+            exit={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <DetailTitle>Filter</DetailTitle>
+            <FilterContainer>
+              <FilterTitle>Chain</FilterTitle>
+              <FilterSelect
+                onChange={(event) => {
+                  onChangeChain(event.currentTarget.value);
+                  setProject("");
+                }}
+                value={chain}
+              >
+                <option value="">All</option>
+                <option value="eth">ETH</option>
+                <option value="sol">SOL</option>
+                <option value="klay">KLAY</option>
+              </FilterSelect>
+            </FilterContainer>
+            <FilterContainer>
+              <FilterTitle>Project</FilterTitle>
+              <FilterSelect
+                onChange={(event) => onChangeProject(event.currentTarget.value)}
+                value={project}
+              >
+                <option value="">All</option>
+                {chain === ""
+                  ? null
+                  : Object.values(allNfts[chain]).map((data) => (
+                      <option key={data.title} value={data.title}>
+                        {data.title}
+                      </option>
+                    ))}
+              </FilterSelect>
+            </FilterContainer>
+            <FilterContainer>
+              <FilterTitle>Channel</FilterTitle>
+              <CheckBoxWrapper>
+                <div>Twitter</div>
+                <FilterInput
+                  type="checkbox"
+                  value="twitter"
+                  name="SNS"
+                  onClick={(event) => checkOnlyOne(event.currentTarget)}
+                ></FilterInput>
+                <div>Discord</div>
+                <FilterInput
+                  type="checkbox"
+                  value="discord"
+                  name="SNS"
+                  onClick={(event) => checkOnlyOne(event.currentTarget)}
+                ></FilterInput>
+              </CheckBoxWrapper>
+            </FilterContainer>
+            <FilterContainer>
+              <FilterTitle>Period</FilterTitle>
+              <DateBoxWrapper>
+                <DatePicker
+                  className="datePicker"
+                  selected={today}
+                  onChange={(date: Date) => setToday(date)}
+                />
+                ~
+                {/* <FilterDateInput
+                type="date"
+                defaultValue={defaultToday(past)}
+                style={{ marginTop: "10px" }}
+              ></FilterDateInput> */}
+                <DatePicker
+                  className="datePicker"
+                  selected={past}
+                  onChange={(date: Date) => setPast(date)}
+                />
+              </DateBoxWrapper>
+            </FilterContainer>
+          </DetailContainer>
+        ) : null}
+      </AnimatePresence>
     </Wrapper>
   );
 }

@@ -19,3 +19,28 @@ export const isFilterShow = atom({
   key: "isFilter",
   default: false,
 });
+
+export const chainString = atom({
+  key: "chainString",
+  default: "",
+});
+
+export const projectString = atom({
+  key: "projectString",
+  default: "",
+});
+
+export const snstString = atom({
+  key: "snstString",
+  default: "",
+});
+
+export const todayString = atom({
+  key: "today",
+  default: new Date(),
+});
+
+export const pastString = atom({
+  key: "past",
+  default: new Date(),
+});

@@ -12,6 +12,7 @@ export interface IData {
     createdAt: string;
     likes: [string];
     unlikes: [string];
+    SNS: string;
   };
 }
 

@@ -4,7 +4,15 @@ import { AllNft } from "../AllNft";
 import { IInfo } from "./../Routes/Home";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import useInterval from "../useInterval";
-import { isFilterShow, isSelected } from "./../atom";
+import {
+  chainString,
+  isFilterShow,
+  isSelected,
+  pastString,
+  projectString,
+  snstString,
+  todayString,
+} from "./../atom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import useWindowDimensions from "../useWindowDimensions";
 
@@ -86,7 +94,7 @@ const InfoImage = styled.div<{ url: string; detail: boolean }>`
   transition: all 1s ease 0.1s;
 `;
 
-const InfoImageContext = styled.div`
+const InfoImageContext = styled(motion.div)`
   display: flex;
   width: 100%;
   height: 80%;
@@ -94,7 +102,7 @@ const InfoImageContext = styled.div`
   overflow: hidden;
 `;
 
-const InfoImageHashTag = styled.div`
+const InfoImageHashTag = styled(motion.div)`
   display: flex;
   align-items: center;
   width: 100%;
@@ -190,16 +198,92 @@ interface IProps {
   nftData: IInfo;
 }
 
+interface IData {
+  _id: string;
+  chain: string;
+  nft: string;
+  title: string;
+  thumbnail: string;
+  description: string;
+  createdAt: string;
+  likes: [string];
+  unlikes: [string];
+  SNS: string;
+}
+
+const hoverVariants: Variants = {
+  initial: {
+    y: -100,
+    scale: 0.6,
+  },
+  animate: {
+    scale: 1,
+    transition: {
+      duration: 0.5,
+      type: "tween",
+    },
+  },
+  exit: {
+    scale: 0.6,
+  },
+};
+
+const nonHoverVariants: Variants = {
+  initial: {
+    scale: 1.5,
+  },
+  animate: {
+    scale: 1,
+    transition: {
+      duration: 0.5,
+      type: "tween",
+    },
+  },
+};
+
 function HomeInfo({ nftData }: IProps) {
   const AllNfts = AllNft;
   const [detail, setDetail] = useState(false);
   const [hover, setHover] = useState("");
+  const [timeoutId, setTimeoutId] = useState<ReturnType<typeof setTimeout>[]>(
+    []
+  );
+  const [data, setData] = useState<IData[]>(Object.values(nftData?.data));
   const [hoveredId, sethoverdId] = useRecoilState(isSelected);
   const [indexArray, setIndexArray] = useState<number[]>([]);
   const { height, width } = useWindowDimensions();
   const [offset, setOffset] = useState(5);
   const [maxIndex, setMaxIndex] = useState(1);
   const isShow = useRecoilValue(isFilterShow);
+  const chain = useRecoilValue(chainString);
+  const project = useRecoilValue(projectString);
+  const sns = useRecoilValue(snstString);
+  const today = useRecoilValue(todayString);
+  const past = useRecoilValue(pastString);
+
+  const filter = (info: IData) => {
+    let chainBool: boolean = true;
+    let projectBool: boolean = true;
+    let snsBool: boolean = true;
+    let dateBool: boolean = true;
+    const date = new Date(Date.parse(info.createdAt)).getTime();
+    if (chain !== "") {
+      chainBool = info.chain === chain.toUpperCase();
+    }
+    if (project !== "") {
+      projectBool =
+        info.nft ===
+        project.replaceAll(" ", "").replaceAll("-", "").toLowerCase();
+    }
+    if (sns !== "") {
+      snsBool = info.SNS === sns;
+    }
+    if (today.getTime() - date < 0 || date - past.getTime() < 0) {
+      dateBool = false;
+    }
+    return chainBool && projectBool && snsBool && dateBool;
+  };
+
   useInterval(() => {
     setDetail((prev) => !prev);
   }, 8000);
@@ -211,7 +295,6 @@ function HomeInfo({ nftData }: IProps) {
     }
     setIndexArray([...prevArray]);
   }, [maxIndex]);
-
   useEffect(() => {
     if (width >= 2200) {
       setOffset(5);
@@ -232,28 +315,42 @@ function HomeInfo({ nftData }: IProps) {
   useEffect(() => {
     setMaxIndex(Math.ceil(Object.values(nftData?.data!).length / offset));
   }, [offset]);
+
+  useEffect(() => {
+    setData(Object.values(nftData?.data).filter(filter));
+  }, [chain, project, sns, today, past]);
   return (
     <>
       {indexArray.map((i) => (
         <InfoContainer key={i}>
           <InfoWrapper>
-            {Object.values(nftData?.data!)
-              .slice(i * offset, (i + 1) * offset)
-              .map((info, index) => (
-                <Info
-                  key={info._id + index}
-                  onMouseOver={() => {
-                    setHover(info._id);
-                    sethoverdId(info._id);
-                  }}
-                  onMouseOut={() => setHover("")}
-                >
+            {data.slice(i * offset, (i + 1) * offset).map((info, index) => (
+              <Info
+                key={info._id + index}
+                onMouseEnter={() => {
+                  setTimeoutId((prev) => [
+                    ...prev,
+                    setTimeout(() => {
+                      setHover(info._id);
+                      sethoverdId(info._id);
+                    }, 500),
+                  ]);
+                }}
+                onMouseLeave={() => {
+                  setHover("");
+                  timeoutId.map((id) => clearTimeout(id));
+                }}
+              >
+                <AnimatePresence>
                   {hover === info._id ? (
                     <InfoHover
-                      layoutId={info._id + index}
-                      transition={{
-                        type: "tween",
-                        duration: 0.5,
+                      variants={hoverVariants}
+                      initial="initial"
+                      animate="animate"
+                      exit="exit"
+                      onMouseLeave={() => {
+                        setHover("");
+                        timeoutId.map((id) => clearTimeout(id));
                       }}
                     >
                       <InfoImage url={info.thumbnail} detail={true}>
@@ -284,9 +381,14 @@ function HomeInfo({ nftData }: IProps) {
                     </InfoHover>
                   ) : (
                     <InfoNonHover
-                      layoutId={info._id + index}
-                      transition={{ type: "tween", duration: 0.5 }}
+                      variants={nonHoverVariants}
+                      initial="initial"
+                      animate="animate"
                       ishovered={info._id === hoveredId ? "true" : "false"}
+                      onMouseLeave={() => {
+                        setHover("");
+                        timeoutId.map((id) => clearTimeout(id));
+                      }}
                     >
                       <InfoImage url={info.thumbnail} detail={detail}>
                         <InfoImageContext>{info.title}</InfoImageContext>
@@ -315,8 +417,9 @@ function HomeInfo({ nftData }: IProps) {
                       </InfoMain>
                     </InfoNonHover>
                   )}
-                </Info>
-              ))}
+                </AnimatePresence>
+              </Info>
+            ))}
           </InfoWrapper>
         </InfoContainer>
       ))}
