@@ -45,3 +45,11 @@ export function getUser(token: string) {
 
   return data;
 }
+
+export function getSearch(keyword: string) {
+  const data = axios.get(
+    `http://localhost:4000/api/v1/nft/search/?keyword=${keyword}`
+  );
+
+  return data;
+}

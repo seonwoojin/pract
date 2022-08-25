@@ -43,6 +43,9 @@ export const userChecker = async (
     ctx.user = user;
     await next(ctx);
   } catch (error) {
+    console.log(error);
+    ctx.body = error;
+    ctx.status = response.HTTP_BAD_REQUEST;
     return false;
   }
 };

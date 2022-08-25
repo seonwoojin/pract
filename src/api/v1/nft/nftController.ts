@@ -96,3 +96,18 @@ export const userRecommendDetailInfo = async (ctx: Context) => {
     return;
   }
 };
+
+export const searchNftInfo = async (ctx: Context) => {
+  try {
+    const params = ctx.query;
+    let nfts = [];
+    nfts = await NftInfo.find({
+      title: { $regex: new RegExp(params.keyword as string, "i") },
+    });
+    ctx.body = nfts;
+    ctx.status = response.HTTP_OK;
+  } catch (error) {
+    ctx.body = error;
+    ctx.status = response.HTTP_BAD_REQUEST;
+  }
+};

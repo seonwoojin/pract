@@ -2,6 +2,7 @@ import Router from "koa-router";
 import {
   getAllNftInfo,
   getNftInfo,
+  searchNftInfo,
   userLikeDetailInfo,
   userRecommendDetailInfo,
 } from "./nftController";
@@ -14,5 +15,6 @@ nft.get("/", getNftInfo);
 nft.get("/all", getAllNftInfo);
 nft.get("/like", userChecker, userLikeDetailInfo);
 nft.get("/recommend", userChecker, userRecommendDetailInfo);
+nft.get("/search", searchNftInfo);
 
 export default nft;

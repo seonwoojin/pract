@@ -268,7 +268,7 @@ function Admin() {
                         Otherdeed-for-Otherside
                       </option>
                       <option value="azuki">Azuki</option>
-                      <option value="clone-x">CLONE-X</option>
+                      <option value="clonex">CLONE-X</option>
                     </>
                   ) : null}
                   {selectedChain === "SOL" ? (

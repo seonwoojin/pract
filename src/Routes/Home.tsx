@@ -25,43 +25,15 @@ export interface IInfo {
   data: IData;
 }
 
-const AllNfts = AllNft;
-
-const offset = 3;
-
 function Home() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [data, setData] = useState<IData>();
-  const [user, setUser] = useState<IUser>();
-  const [token] = useCookies(["token"]);
-
-  const [lastIndex, setLastIndex] = useState(false);
   const { isLoading: isLoadingNft, data: NftData } = useQuery<IInfo>(
     ["homeInfo"],
     getAllNft
   );
 
-  // useEffect(() => {
-  //   async function getUser() {
-  //     axios
-  //       .get<IUser>(`http://localhost:4000/api/v1/user/data/`, {
-  //         headers: {
-  //           Authorization: `Bearer ${token["token"]}`,
-  //         },
-  //       })
-  //       .then((response) => {
-  //         setUser(response.data);
-  //       });
-  //   }
-  //   getUser();
-  // }, []);
   return (
     <HomeContainer>
-      {isLoadingNft
-        ? null
-        : Object.keys(AllNfts["eth"]).map((key) => (
-            <HomeInfo key={key} nftData={NftData!} nft={key}></HomeInfo>
-          ))}
+      {isLoadingNft ? null : <HomeInfo nftData={NftData!}></HomeInfo>}
     </HomeContainer>
   );
 }

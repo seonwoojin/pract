@@ -14,6 +14,8 @@ import PageNotFound from "./Routes/PageNotFound";
 import { AllNft } from "./AllNft";
 import InfoDetail from "./Routes/InfoDetail";
 import DataProvider from "./context/DataProvider";
+import Search from "./Routes/Search";
+import SideBar from "./Components/SideBar";
 
 function App() {
   const nfts = Object.keys(AllNft);
@@ -32,6 +34,7 @@ function App() {
     <DataProvider>
       <Router>
         <Header />
+        <SideBar />
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/join" element={<Join />} />
@@ -50,6 +53,7 @@ function App() {
           ))}
           <Route path="/:chain/:nft" element={<Info />}></Route>
           <Route path="/:chain/:nft/:id" element={<InfoDetail />}></Route>
+          <Route path="/results" element={<Search />} />
           <Route path="/" element={<Home />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>

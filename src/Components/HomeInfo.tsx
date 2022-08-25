@@ -2,8 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { AllNft } from "../AllNft";
 import { IInfo } from "./../Routes/Home";
-import { motion, Variants } from "framer-motion";
+import { AnimatePresence, motion, Variants } from "framer-motion";
 import useInterval from "../useInterval";
+import { isFilterShow, isSelected } from "./../atom";
+import { useRecoilState, useRecoilValue } from "recoil";
+import useWindowDimensions from "../useWindowDimensions";
 
 const InfoContainer = styled.div`
   display: flex;
@@ -33,7 +36,8 @@ const InfoWrapper = styled.div`
   margin-bottom: 20px;
 `;
 
-const Info = styled(motion.div)`
+const Info = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -45,14 +49,23 @@ const Info = styled(motion.div)`
 `;
 
 const InfoHover = styled(motion.div)`
+  z-index: 98;
+  position: absolute;
+  top: -20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-width: 500px;
-  width: 500px;
-  height: 800px;
+  width: 600px;
+  height: 600px;
   margin-right: 20px;
   cursor: pointer;
+`;
+
+const InfoNonHover = styled(motion.div)<{ ishovered: string }>`
+  width: 100%;
+  height: 100%;
+  z-index: ${(props) => (props.ishovered === "true" ? 98 : 0)};
 `;
 
 const InfoImage = styled.div<{ url: string; detail: boolean }>`
@@ -69,7 +82,7 @@ const InfoImage = styled.div<{ url: string; detail: boolean }>`
   font-family: sans-serif;
   color: ${(props) => (props.detail ? "white" : "transparent")};
   background-color: ${(props) =>
-    props.detail ? "rgba(0, 0, 0, 0.5)" : "transparent"};
+    props.detail ? "rgba(0, 0, 0, 0.8)" : "transparent"};
   transition: all 1s ease 0.1s;
 `;
 
@@ -96,6 +109,7 @@ const InfoMain = styled.div`
   width: 100%;
   height: 40%;
   padding: 10px;
+  background-color: white;
 `;
 
 const InfoMainLogo = styled.div<{ logourl: string }>`
@@ -163,192 +177,150 @@ const IndexBox = styled.div<{ selected: boolean }>`
 `;
 
 const InfoNext = styled.div`
-  width: 5%;
+  width: 30px;
   height: 350px;
   background-color: black;
-  opacity: 0.4;
+  opacity: 0.2;
+  :hover {
+    opacity: 0.8;
+  }
 `;
-
-const AllNfts = AllNft;
-
-const offset = 3;
-
-const infoImageVariants: Variants = {
-  initial: {
-    backgroundColor: "rgba(0, 0, 0, 0)",
-    color: "rgba(255,255,255,0)",
-    transition: { repeat: Infinity },
-  },
-  animate: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    color: "rgba(255,255,255,1)",
-    transition: {
-      duration: 0.5,
-      delay: 5,
-      repeat: Infinity,
-      repeatType: "reverse",
-      repeatDelay: 5,
-    },
-  },
-};
-
-const infoImageContextVariants: Variants = {
-  initial: {
-    backgroundColor: "rgba(0, 0, 0, 0)",
-    transition: { repeat: Infinity },
-  },
-  animate: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    transition: {
-      duration: 1,
-      delay: 5,
-      repeat: Infinity,
-      repeatType: "reverse",
-      repeatDelay: 5,
-    },
-  },
-};
 
 interface IProps {
   nftData: IInfo;
-  nft: string;
 }
 
-function HomeInfo({ nftData, nft }: IProps) {
-  let maxIndex = 0;
-  const [sliceFirst, setSliceFirst] = useState(0);
-  const [sliceSecond, setSliceSecond] = useState(0);
-  const [index, setIndex] = useState(0);
-  const [indexLoading, setIndexLoading] = useState(true);
-  const [indexArray, setIndexArray] = useState<number[]>([]);
+function HomeInfo({ nftData }: IProps) {
+  const AllNfts = AllNft;
   const [detail, setDetail] = useState(false);
   const [hover, setHover] = useState("");
+  const [hoveredId, sethoverdId] = useRecoilState(isSelected);
+  const [indexArray, setIndexArray] = useState<number[]>([]);
+  const { height, width } = useWindowDimensions();
+  const [offset, setOffset] = useState(5);
+  const [maxIndex, setMaxIndex] = useState(1);
+  const isShow = useRecoilValue(isFilterShow);
   useInterval(() => {
     setDetail((prev) => !prev);
   }, 8000);
 
-  maxIndex = Math.floor(
-    Object.values(nftData?.data!).filter((infos) => infos.nft === nft).length /
-      offset
-  );
-
-  useEffect(() => {
-    if (maxIndex === 0) {
-      setSliceFirst(0);
-      setSliceSecond(offset - 1);
-    } else if (index === maxIndex) {
-      setSliceFirst(
-        Object.values(nftData?.data!).filter((infos) => infos.nft === nft)
-          .length - offset
-      );
-      setSliceSecond(
-        Object.values(nftData?.data!).filter((infos) => infos.nft === nft)
-          .length
-      );
-    } else {
-      setSliceFirst(offset * index);
-      setSliceSecond(offset * index + offset);
-    }
-  }, [index]);
-
   useEffect(() => {
     const prevArray: number[] = [];
-    for (let i = 0; i < maxIndex + 1; i++) {
-      prevArray.push(i + 1);
+    for (let i = 0; i < maxIndex; i++) {
+      prevArray.push(i);
     }
     setIndexArray([...prevArray]);
-    setIndexLoading(false);
-  }, []);
-  const onClickNext = () => {
-    setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
-  };
+  }, [maxIndex]);
 
-  const onClickIndex = (selectedIndex: number) => {
-    setIndex(selectedIndex);
-  };
+  useEffect(() => {
+    if (width >= 2200) {
+      setOffset(5);
+    } else if (width >= 1800) {
+      setOffset(4);
+    } else if (width >= 1400) {
+      setOffset(3);
+    } else if (width >= 1000) {
+      setOffset(2);
+    } else if (width >= 600) {
+      setOffset(1);
+    }
+    if (isShow && offset != 1) {
+      setOffset((prev) => prev - 1);
+    }
+  }, [width, isShow]);
 
+  useEffect(() => {
+    setMaxIndex(Math.ceil(Object.values(nftData?.data!).length / offset));
+  }, [offset]);
   return (
-    <InfoContainer>
-      <InfoTitle>
-        <h1>{AllNfts["eth"][nft].title}</h1>
-      </InfoTitle>
-      <InfoWrapper>
-        {Object.values(nftData?.data!)
-          .filter((infos) => infos.nft === nft)
-          .slice(sliceFirst, sliceSecond)
-          .map((info) => (
-            <div
-              key={info._id}
-              onMouseOver={() => setHover(info._id)}
-              onMouseOut={() => setHover("")}
-            >
-              {hover === info._id ? (
-                <InfoHover layoutId={`info${info._id}`}>
-                  <InfoImage url={info.thumbnail} detail={detail}>
-                    <InfoImageContext>{info.title}</InfoImageContext>
-                    <InfoImageHashTag>#eth #event</InfoImageHashTag>
-                  </InfoImage>
-                  <InfoMain>
-                    <InfoMainLogo
-                      logourl={AllNfts[info.chain.toLowerCase()][nft].logourl}
-                    ></InfoMainLogo>
-                    <InfoMainText>
-                      <InfoMainTitle>
-                        <div>{info.title}</div>
-                      </InfoMainTitle>
-                      <InfoMainSubText>
-                        <h1>{AllNfts["eth"][nft].title}</h1>
-                        <h1>{info.createdAt}</h1>
-                      </InfoMainSubText>
-                    </InfoMainText>
-                  </InfoMain>
-                </InfoHover>
-              ) : (
-                <Info layoutId={`info${info._id}`}>
-                  <InfoImage url={info.thumbnail} detail={detail}>
-                    <InfoImageContext>{info.title}</InfoImageContext>
-                    <InfoImageHashTag>#eth #event</InfoImageHashTag>
-                  </InfoImage>
-                  <InfoMain>
-                    <InfoMainLogo
-                      logourl={AllNfts[info.chain.toLowerCase()][nft].logourl}
-                    ></InfoMainLogo>
-                    <InfoMainText>
-                      <InfoMainTitle>
-                        <div>{info.title}</div>
-                      </InfoMainTitle>
-                      <InfoMainSubText>
-                        <h1>{AllNfts["eth"][nft].title}</h1>
-                        <h1>{info.createdAt}</h1>
-                      </InfoMainSubText>
-                    </InfoMainText>
-                  </InfoMain>
+    <>
+      {indexArray.map((i) => (
+        <InfoContainer key={i}>
+          <InfoWrapper>
+            {Object.values(nftData?.data!)
+              .slice(i * offset, (i + 1) * offset)
+              .map((info, index) => (
+                <Info
+                  key={info._id + index}
+                  onMouseOver={() => {
+                    setHover(info._id);
+                    sethoverdId(info._id);
+                  }}
+                  onMouseOut={() => setHover("")}
+                >
+                  {hover === info._id ? (
+                    <InfoHover
+                      layoutId={info._id + index}
+                      transition={{
+                        type: "tween",
+                        duration: 0.5,
+                      }}
+                    >
+                      <InfoImage url={info.thumbnail} detail={true}>
+                        <InfoImageContext>{info.title}</InfoImageContext>
+                        <InfoImageHashTag>#eth #event</InfoImageHashTag>
+                      </InfoImage>
+                      <InfoMain>
+                        <InfoMainLogo
+                          logourl={
+                            AllNfts[info.chain.toLowerCase()][info.nft].logourl
+                          }
+                        ></InfoMainLogo>
+                        <InfoMainText>
+                          <InfoMainTitle>
+                            <div>{info.title}</div>
+                          </InfoMainTitle>
+                          <InfoMainSubText>
+                            <h1>
+                              {
+                                AllNfts[info.chain.toLowerCase()][info.nft]
+                                  .title
+                              }
+                            </h1>
+                            <h1>{info.createdAt}</h1>
+                          </InfoMainSubText>
+                        </InfoMainText>
+                      </InfoMain>
+                    </InfoHover>
+                  ) : (
+                    <InfoNonHover
+                      layoutId={info._id + index}
+                      transition={{ type: "tween", duration: 0.5 }}
+                      ishovered={info._id === hoveredId ? "true" : "false"}
+                    >
+                      <InfoImage url={info.thumbnail} detail={detail}>
+                        <InfoImageContext>{info.title}</InfoImageContext>
+                        <InfoImageHashTag>#eth #event</InfoImageHashTag>
+                      </InfoImage>
+                      <InfoMain>
+                        <InfoMainLogo
+                          logourl={
+                            AllNfts[info.chain.toLowerCase()][info.nft].logourl
+                          }
+                        ></InfoMainLogo>
+                        <InfoMainText>
+                          <InfoMainTitle>
+                            <div>{info.title}</div>
+                          </InfoMainTitle>
+                          <InfoMainSubText>
+                            <h1>
+                              {
+                                AllNfts[info.chain.toLowerCase()][info.nft]
+                                  .title
+                              }
+                            </h1>
+                            <h1>{info.createdAt}</h1>
+                          </InfoMainSubText>
+                        </InfoMainText>
+                      </InfoMain>
+                    </InfoNonHover>
+                  )}
                 </Info>
-              )}
-            </div>
-          ))}
-        <InfoNext onClick={onClickNext}></InfoNext>
-      </InfoWrapper>
-      <IndexContainer>
-        {indexLoading
-          ? null
-          : indexArray.map((allindex) =>
-              allindex === index + 1 ? (
-                <IndexBox
-                  onClick={() => onClickIndex(allindex - 1)}
-                  key={allindex}
-                  selected={true}
-                ></IndexBox>
-              ) : (
-                <IndexBox
-                  onClick={() => onClickIndex(allindex - 1)}
-                  key={allindex}
-                  selected={false}
-                ></IndexBox>
-              )
-            )}
-      </IndexContainer>
-    </InfoContainer>
+              ))}
+          </InfoWrapper>
+        </InfoContainer>
+      ))}
+    </>
   );
 }
 

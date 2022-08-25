@@ -33,7 +33,7 @@ export const AllNft: chainType = {
       rgba: "#BC3748",
     },
     clonex: {
-      title: "CLONE X",
+      title: "CLONE-X",
       logourl:
         "https://lh3.googleusercontent.com/XN0XuD8Uh3jyRWNtPTFeXJg_ht8m5ofDx6aHklOiy4amhFuWUa0JaR6It49AH8tlnYS386Q0TW_-Lmedn0UET_ko1a3CbJGeu5iHMg=s168",
       rgba: "#009ADF",
