@@ -5,6 +5,10 @@ import { useLocation, useParams } from "react-router-dom";
 import HomeInfo from "../Components/HomeInfo";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
+import { AllNft, AllNftNonChain } from "../AllNft";
+import DetailInfo from "../Components/DetailInfo";
+import DetailNftBox from "../Components/DetailNftBox";
+import { title } from "process";
 
 const HomeContainer = styled.div`
   display: flex;
@@ -22,21 +26,58 @@ interface ILocation {
 }
 
 function Search() {
+  const allNft = AllNftNonChain;
+  const params = useParams();
   const [empty, setEmpty] = useState(false);
-  const { state } = useLocation() as ILocation;
+  const [isProjcet, setIsProject] = useState<string[]>([]);
   const { isLoading, data: searchedNft } = useQuery<IInfo>(
-    [`search${state.search}`],
-    () => getSearch(state.search)
+    [`search${params.search}`],
+    () => getSearch(params.search!)
   );
+  useEffect(() => {
+    setIsProject([]);
+    if (params.search!.length > 0) {
+      Object.values(allNft).map((project) => {
+        if (project.title.toLowerCase().includes(params.search!)) {
+          setIsProject((prev) => [
+            ...prev,
+            project.title
+              .toLowerCase()
+              .replaceAll(" ", "")
+              .replaceAll("-", "")
+              .replaceAll("`", ""),
+          ]);
+        }
+      });
+    }
+  }, [params.search]);
   useEffect(() => {
     if (!isLoading) {
       if (Object.values(searchedNft?.data!).length === 0) {
         setEmpty(true);
+      } else {
+        setEmpty(false);
       }
     }
-  }, [isLoading]);
+  }, [searchedNft]);
   return (
     <HomeContainer>
+      {isProjcet.length === 0 ? null : (
+        <>
+          {isProjcet.map((title) => (
+            <DetailNftBox
+              key={Object(allNft)[title].title}
+              chain={Object(allNft)[title].chain}
+              url={Object(allNft)[title].logourl}
+              rgba={Object(allNft)[title].rgba}
+              title={Object(allNft)[title].title}
+            />
+          ))}
+          <hr
+            style={{ border: "1px solid rgba(0,0,0,0.5)", width: "85vw" }}
+          ></hr>
+        </>
+      )}
       {isLoading ? null : empty ? (
         <div>없음</div>
       ) : (

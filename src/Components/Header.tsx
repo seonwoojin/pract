@@ -130,7 +130,7 @@ function Header() {
     setIsLogin(false);
   };
   const onSearch = ({ keyword }: ISearch) => {
-    navigate(`/results`, { state: { search: keyword } });
+    navigate(`/results/${keyword}`);
   };
   return (
     <HeaderWrapper>

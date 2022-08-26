@@ -288,6 +288,8 @@ function HomeInfo({ nftData }: IProps) {
     setDetail((prev) => !prev);
   }, 8000);
 
+  useEffect(() => setData(Object.values(nftData.data)), [nftData]);
+
   useEffect(() => {
     const prevArray: number[] = [];
     for (let i = 0; i < maxIndex; i++) {
@@ -325,22 +327,7 @@ function HomeInfo({ nftData }: IProps) {
         <InfoContainer key={i}>
           <InfoWrapper>
             {data.slice(i * offset, (i + 1) * offset).map((info, index) => (
-              <Info
-                key={info._id + index}
-                onMouseEnter={() => {
-                  setTimeoutId((prev) => [
-                    ...prev,
-                    setTimeout(() => {
-                      setHover(info._id);
-                      sethoverdId(info._id);
-                    }, 500),
-                  ]);
-                }}
-                onMouseLeave={() => {
-                  setHover("");
-                  timeoutId.map((id) => clearTimeout(id));
-                }}
-              >
+              <Info key={info._id + index}>
                 <AnimatePresence>
                   {hover === info._id ? (
                     <InfoHover
@@ -390,7 +377,23 @@ function HomeInfo({ nftData }: IProps) {
                         timeoutId.map((id) => clearTimeout(id));
                       }}
                     >
-                      <InfoImage url={info.thumbnail} detail={detail}>
+                      <InfoImage
+                        onMouseEnter={() => {
+                          setTimeoutId((prev) => [
+                            ...prev,
+                            setTimeout(() => {
+                              setHover(info._id);
+                              sethoverdId(info._id);
+                            }, 500),
+                          ]);
+                        }}
+                        onMouseLeave={() => {
+                          setHover("");
+                          timeoutId.map((id) => clearTimeout(id));
+                        }}
+                        url={info.thumbnail}
+                        detail={detail}
+                      >
                         <InfoImageContext>{info.title}</InfoImageContext>
                         <InfoImageHashTag>#eth #event</InfoImageHashTag>
                       </InfoImage>

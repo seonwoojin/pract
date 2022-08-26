@@ -7,7 +7,7 @@ const NftWrapper = styled(motion.div)`
   display: flex;
   width: 60vw;
   min-height: 200px;
-  height: 25vh;
+  height: 200px;
   background-color: rgba(0, 0, 0, 0.05);
   margin-bottom: 2vh;
   cursor: pointer;

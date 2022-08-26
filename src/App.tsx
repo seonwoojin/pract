@@ -53,7 +53,7 @@ function App() {
           ))}
           <Route path="/:chain/:nft" element={<Info />}></Route>
           <Route path="/:chain/:nft/:id" element={<InfoDetail />}></Route>
-          <Route path="/results" element={<Search />} />
+          <Route path="/results/:search" element={<Search />} />
           <Route path="/" element={<Home />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
