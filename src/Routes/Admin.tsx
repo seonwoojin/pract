@@ -2,7 +2,7 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { response } from "./../constnats/response";
 import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
@@ -10,11 +10,14 @@ import { getAdminCheck } from "../axios";
 import PageNotFound from "./PageNotFound";
 import { AllNft } from "../AllNft";
 import Editor from "../Components/Editor";
+import ReactQuill, { Quill } from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const HomeContainer = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
-  height: auto;
+  height: 200vh;
   width: 100vw;
   font-family: "Open Sans";
   padding-top: 100px;
@@ -32,11 +35,15 @@ const LeftHome = styled.div`
 const RightHome = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+
   height: 100vh;
   width: 50%;
   font-family: "Open Sans";
   padding: 100px;
+  .editor {
+    width: 800px;
+    min-height: 500px;
+  }
 `;
 
 const Title = styled.div`
@@ -63,6 +70,7 @@ const Form = styled.form`
     width: 80vw;
     height: 50vh;
   }
+  margin-bottom: 30px;
 `;
 
 const LabelWrapper = styled.div`
@@ -302,8 +310,26 @@ const InfoMainSubText = styled.div`
   }
 `;
 
+const NewsContainer = styled.div`
+  width: 1200px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const NewsTitleWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 1200px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+`;
+
 const NewsTitle = styled.div`
-  width: 80%;
+  width: 1200px;
   height: auto;
   word-break: break-all;
   word-wrap: break-word;
@@ -316,22 +342,109 @@ const NewsTitle = styled.div`
   font-family: sans-serif;
 `;
 
+const NewsTitleLogoWrapper = styled.div`
+  display: flex;
+  width: 1200px;
+  height: 50px;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 500;
+`;
+
+const NewsTitleLogo = styled.div<{ url: string }>`
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  background: url(${(props) => props.url});
+  background-position: center center;
+  background-size: cover;
+`;
+
+const NewsTitleProjcetName = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  width: 600px;
+  height: 50px;
+  opacity: 0.6;
+`;
+
+const NewsTitleCreatedAt = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 550px;
+  height: 50px;
+  opacity: 0.6;
+`;
+
+const NewsDescription = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 1200px;
+  height: auto;
+  min-height: 500px;
+  padding-top: 20px;
+  p {
+    display: flex;
+  }
+  .ql-align-center {
+    justify-content: center;
+  }
+  .ql-align-right {
+    justify-content: flex-end;
+  }
+`;
+
 export interface INftInfo {
   chain: string;
   nft: string;
   title: string;
   thumbnail: string;
-  description: string;
   SNS: string[];
   createdAt: Date;
   createdTime: string;
+  description: string;
 }
 
 interface IDate {
   data: boolean;
 }
 
+const toolbarOptions = [
+  [{ font: [] }],
+  ["link", "image", "video"],
+  [{ header: [1, 2, 3, false] }],
+  ["bold", "italic", "underline", "strike"],
+  ["blockquote"],
+  [{ list: "ordered" }, { list: "bullet" }],
+  [{ color: [] }, { background: [] }],
+  [{ align: [] }],
+];
+
+const formats = [
+  "header",
+  "font",
+  "size",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "align",
+  "blockquote",
+  "list",
+  "bullet",
+  "indent",
+  "background",
+  "color",
+  "link",
+  "image",
+  "video",
+  "width",
+];
+
 function Admin() {
+  const quillRef = useRef<ReactQuill>();
   const AllNfts = AllNft;
   const today = new Date();
   const defaultToday = `${today.getFullYear()}-${(
@@ -357,13 +470,13 @@ function Admin() {
   const [createdAt, setCreatedAt] = useState("");
   const [createdDate, setCreatedDate] = useState(defaultToday);
   const [createdTime, setCreatedTime] = useState(" 00:00");
+  const [descriptionValue, setDescriptionValue] = useState("");
   const { register, handleSubmit, setValue } = useForm<INftInfo>();
   const onValid = ({
     chain,
     nft,
     title,
     thumbnail,
-    description,
     SNS,
     createdAt,
     createdTime,
@@ -384,7 +497,6 @@ function Admin() {
         }
         setValue("title", "");
         setValue("thumbnail", "");
-        setValue("description", "");
       })
       .catch((error) => setErrorMessage(error.response.data));
   };
@@ -397,12 +509,52 @@ function Admin() {
     });
     element.checked = true;
   };
-
+  useEffect(() => {
+    setDescription(descriptionValue);
+    console.log(descriptionValue);
+  }, [descriptionValue]);
   useEffect(
     () => setCreatedAt(`${createdDate} ${createdTime}`),
     [createdDate, createdTime]
   );
 
+  const imageHandler = () => {
+    const input = document.createElement("input");
+
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click();
+
+    input.addEventListener("change", async (event) => {
+      if (input.files) {
+        const file = input.files[0];
+        const formData = new FormData();
+        formData.append("img", file);
+        try {
+          const result = await axios.post(
+            "http://localhost:4000/api/v1/admin/img",
+            formData
+          );
+          const IMG_URL = result.data;
+          const editor = quillRef.current?.getEditor(); // 에디터 객체 가져오기
+          const range = editor?.getSelection();
+          editor?.insertEmbed(range?.index!, "image", IMG_URL);
+          // const range = editor.getSelection();
+          // editor.insertEmbed(range.index, "image", IMG_URL);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    });
+  };
+  const modules = useMemo(() => {
+    return {
+      toolbar: {
+        container: [...toolbarOptions],
+        handlers: { image: imageHandler },
+      },
+    };
+  }, []);
   if (token["token"] == undefined) {
     console.error("404 Page Not Found");
     return <PageNotFound />;
@@ -417,217 +569,268 @@ function Admin() {
     <>
       {isLoading ? null : data?.data ? (
         <HomeContainer>
-          <LeftHome>
-            <Form onSubmit={handleSubmit(onValid)}>
-              <Title>Admin</Title>
-              <SelectWrapper>
-                <LabelWrapper>
-                  <Label htmlFor="chain">Chain</Label>
-                </LabelWrapper>
-                <div>
-                  <Select
-                    {...register("chain", { required: true })}
-                    id="chain"
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              height: "auto",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <LeftHome>
+              <Form onSubmit={handleSubmit(onValid)}>
+                <Title>Admin</Title>
+                <SelectWrapper>
+                  <LabelWrapper>
+                    <Label htmlFor="chain">Chain</Label>
+                  </LabelWrapper>
+                  <div>
+                    <Select
+                      {...register("chain", { required: true })}
+                      id="chain"
+                      onChange={(event) => {
+                        setChain(event.currentTarget.value);
+                        setSelectedChain(event.currentTarget.value);
+                        if (event.currentTarget.value === "ETH") {
+                          setProject("cryptopunks");
+                        } else if (event.currentTarget.value === "SOL") {
+                          setProject("okaybears");
+                        } else if (event.currentTarget.value === "KLAY") {
+                          setProject("themetakongzklaytn");
+                        }
+                      }}
+                    >
+                      <option value="ETH">Ethereum</option>
+                      <option value="SOL">Solana</option>
+                      <option value="KLAY">Klaytn</option>
+                    </Select>
+                  </div>
+                </SelectWrapper>
+                <SelectWrapper>
+                  <LabelWrapper>
+                    <Label htmlFor="nft">NFT</Label>
+                  </LabelWrapper>
+                  <div>
+                    <Select
+                      id="nft"
+                      {...register("nft", { required: true })}
+                      onChange={(event) => {
+                        setProject(event.currentTarget.value);
+                      }}
+                    >
+                      {selectedChain === "ETH" ? (
+                        <>
+                          <option value="cryptopunks">CryptoPunks</option>
+                          <option value="boredapeyachtclub">
+                            Bored-Ape-Yacht-Club
+                          </option>
+                          <option value="otherdeedforotherside">
+                            Otherdeed-for-Otherside
+                          </option>
+                          <option value="azuki">Azuki</option>
+                          <option value="clonex">CLONE-X</option>
+                        </>
+                      ) : null}
+                      {selectedChain === "SOL" ? (
+                        <>
+                          <option value="okaybears">Okay-Bears</option>
+                          <option value="degods">DeGods</option>
+                          <option value="trippinapetribe">
+                            Trippin-Ape-Tribe
+                          </option>
+                          <option value="cetsoncreck">Cets-on-Creck</option>
+                          <option value="primates">Primates</option>
+                        </>
+                      ) : null}
+                      {selectedChain === "KLAY" ? (
+                        <>
+                          <option value="themetakongzklaytn">
+                            THE-META-KONGZ-KLAYTN
+                          </option>
+                          <option value="metatoydragonz">
+                            Meta-Toy-DragonZ
+                          </option>
+                          <option value="sunmmiyaclubofficial">
+                            Sunmmiya-Club-Official
+                          </option>
+                          <option value="sheepfarm">SheepFarm</option>
+                        </>
+                      ) : null}
+                    </Select>
+                  </div>
+                </SelectWrapper>
+                <CheckBoxWrapper>
+                  <div>Twitter</div>
+                  <Input
+                    {...register("SNS", { required: true })}
+                    type="checkbox"
+                    name="SNS"
+                    value="twitter"
+                    onClick={(event) => checkOnlyOne(event.currentTarget)}
                     onChange={(event) => {
-                      setChain(event.currentTarget.value);
-                      setSelectedChain(event.currentTarget.value);
-                      if (event.currentTarget.value === "ETH") {
-                        setProject("cryptopunks");
-                      } else if (event.currentTarget.value === "SOL") {
-                        setProject("okaybears");
-                      } else if (event.currentTarget.value === "KLAY") {
-                        setProject("themetakongzklaytn");
-                      }
+                      setSns(event.currentTarget.value);
                     }}
-                  >
-                    <option value="ETH">Ethereum</option>
-                    <option value="SOL">Solana</option>
-                    <option value="KLAY">Klaytn</option>
-                  </Select>
-                </div>
-              </SelectWrapper>
-              <SelectWrapper>
-                <LabelWrapper>
-                  <Label htmlFor="nft">NFT</Label>
-                </LabelWrapper>
-                <div>
-                  <Select
-                    id="nft"
-                    {...register("nft", { required: true })}
+                  ></Input>
+                  <h1>Discord</h1>
+                  <Input
+                    {...register("SNS", { required: true })}
+                    name="SNS"
+                    type="checkbox"
+                    value="discord"
+                    onClick={(event) => checkOnlyOne(event.currentTarget)}
                     onChange={(event) => {
-                      setProject(event.currentTarget.value);
+                      setSns(event.currentTarget.value);
                     }}
-                  >
-                    {selectedChain === "ETH" ? (
-                      <>
-                        <option value="cryptopunks">CryptoPunks</option>
-                        <option value="boredapeyachtclub">
-                          Bored-Ape-Yacht-Club
-                        </option>
-                        <option value="otherdeedforotherside">
-                          Otherdeed-for-Otherside
-                        </option>
-                        <option value="azuki">Azuki</option>
-                        <option value="clonex">CLONE-X</option>
-                      </>
-                    ) : null}
-                    {selectedChain === "SOL" ? (
-                      <>
-                        <option value="okaybears">Okay-Bears</option>
-                        <option value="degods">DeGods</option>
-                        <option value="trippinapetribe">
-                          Trippin-Ape-Tribe
-                        </option>
-                        <option value="cetsoncreck">Cets-on-Creck</option>
-                        <option value="primates">Primates</option>
-                      </>
-                    ) : null}
-                    {selectedChain === "KLAY" ? (
-                      <>
-                        <option value="themetakongzklaytn">
-                          THE-META-KONGZ-KLAYTN
-                        </option>
-                        <option value="metatoydragonz">Meta-Toy-DragonZ</option>
-                        <option value="sunmmiyaclubofficial">
-                          Sunmmiya-Club-Official
-                        </option>
-                        <option value="sheepfarm">SheepFarm</option>
-                      </>
-                    ) : null}
-                  </Select>
-                </div>
-              </SelectWrapper>
-              <CheckBoxWrapper>
-                <div>Twitter</div>
+                  ></Input>
+                </CheckBoxWrapper>
+                <LabelWrapper>
+                  <Label htmlFor="title">Title</Label>
+                </LabelWrapper>
                 <Input
-                  {...register("SNS", { required: true })}
-                  type="checkbox"
-                  name="SNS"
-                  value="twitter"
-                  onClick={(event) => checkOnlyOne(event.currentTarget)}
+                  {...register("title", { required: true })}
+                  placeholder="Title"
+                  id="title"
                   onChange={(event) => {
-                    setSns(event.currentTarget.value);
+                    setTitle(event.currentTarget.value);
                   }}
                 ></Input>
-                <h1>Discord</h1>
+                <LabelWrapper>
+                  <Label htmlFor="thumbnail">Img URL</Label>
+                </LabelWrapper>
                 <Input
-                  {...register("SNS", { required: true })}
-                  name="SNS"
-                  type="checkbox"
-                  value="discord"
-                  onClick={(event) => checkOnlyOne(event.currentTarget)}
+                  {...register("thumbnail", { required: true })}
+                  placeholder="Img URL"
+                  id="thumbnail"
                   onChange={(event) => {
-                    setSns(event.currentTarget.value);
+                    setThumbnail(event.currentTarget.value);
                   }}
                 ></Input>
-              </CheckBoxWrapper>
-              <LabelWrapper>
-                <Label htmlFor="title">Title</Label>
-              </LabelWrapper>
-              <Input
-                {...register("title", { required: true })}
-                placeholder="Title"
-                id="title"
-                onChange={(event) => {
-                  setTitle(event.currentTarget.value);
-                }}
-              ></Input>
-              <LabelWrapper>
-                <Label htmlFor="thumbnail">Img URL</Label>
-              </LabelWrapper>
-              <Input
-                {...register("thumbnail", { required: true })}
-                placeholder="Img URL"
-                id="thumbnail"
-                onChange={(event) => {
-                  setThumbnail(event.currentTarget.value);
-                }}
-              ></Input>
-              <LabelWrapper>
-                <Label htmlFor="description">Description</Label>
-              </LabelWrapper>
-              <TextArea
-                {...register("description", { required: true })}
-                placeholder="Description"
-                id="description"
-                onChange={(event) => {
-                  setDescription(event.currentTarget.value);
-                }}
-              ></TextArea>
-              <TimeWrapper>
-                <Input
-                  {...register("createdAt", { required: true })}
-                  defaultValue={defaultToday}
-                  type="date"
-                  style={{ marginTop: "10px" }}
-                  onChange={(event) =>
-                    setCreatedDate(event.currentTarget.value)
+                <LabelWrapper>
+                  <Label>CreatedAt</Label>
+                </LabelWrapper>
+                {/* <TextArea
+                  {...register("description", { required: true })}
+                  placeholder="Description"
+                  id="description"
+                  onChange={(event) => {
+                    setDescription(event.currentTarget.value);
+                  }}
+                ></TextArea> */}
+                <TimeWrapper>
+                  <Input
+                    {...register("createdAt", { required: true })}
+                    defaultValue={defaultToday}
+                    type="date"
+                    style={{ marginTop: "10px" }}
+                    onChange={(event) =>
+                      setCreatedDate(event.currentTarget.value)
+                    }
+                  ></Input>
+                  <Input
+                    {...register("createdTime", { required: true })}
+                    defaultValue="00:00"
+                    type="time"
+                    style={{ marginTop: "10px" }}
+                    onChange={(event) =>
+                      setCreatedTime(event.currentTarget.value)
+                    }
+                  ></Input>
+                </TimeWrapper>
+                <ErrorMessage>{errorMessage}</ErrorMessage>
+                <LabelWrapper>
+                  <Button>Upload</Button>
+                </LabelWrapper>
+              </Form>
+              <InfoContainer>
+                <InfoWrapper>
+                  <Info>
+                    <InfoNonHover>
+                      <InfoImage url={thumbnail}></InfoImage>
+                      <InfoMain>
+                        <InfoMainLogo
+                          logourl={
+                            AllNfts[chain.toLowerCase()][project]?.logourl
+                          }
+                        ></InfoMainLogo>
+                        <InfoMainText>
+                          <InfoMainTitle>
+                            <div>{title}</div>
+                          </InfoMainTitle>
+                          <InfoMainSubText>
+                            <h1>
+                              {AllNfts[chain.toLowerCase()][project].title}
+                            </h1>
+                            <h1>{createdAt}</h1>
+                          </InfoMainSubText>
+                        </InfoMainText>
+                      </InfoMain>
+                    </InfoNonHover>
+                  </Info>
+                  <Info>
+                    <InfoNonHover>
+                      <InfoNonImage url={thumbnail}>
+                        <InfoImageContext>{title}</InfoImageContext>
+                        <InfoImageHashTag>#eth #event</InfoImageHashTag>
+                      </InfoNonImage>
+                      <InfoMain>
+                        <InfoMainLogo
+                          logourl={
+                            AllNfts[chain.toLowerCase()][project]?.logourl
+                          }
+                        ></InfoMainLogo>
+                        <InfoMainText>
+                          <InfoMainTitle>
+                            <div>{title}</div>
+                          </InfoMainTitle>
+                          <InfoMainSubText>
+                            <h1>
+                              {AllNfts[chain.toLowerCase()][project].title}
+                            </h1>
+                            <h1>{createdAt}</h1>
+                          </InfoMainSubText>
+                        </InfoMainText>
+                      </InfoMain>
+                    </InfoNonHover>
+                  </Info>
+                </InfoWrapper>
+              </InfoContainer>
+            </LeftHome>
+            <RightHome>
+              <Label>Description</Label>
+              <ReactQuill
+                ref={(element) => {
+                  if (element !== null) {
+                    quillRef.current = element;
                   }
-                ></Input>
-                <Input
-                  {...register("createdTime", { required: true })}
-                  defaultValue="00:00"
-                  type="time"
-                  style={{ marginTop: "10px" }}
-                  onChange={(event) =>
-                    setCreatedTime(event.currentTarget.value)
-                  }
-                ></Input>
-              </TimeWrapper>
-              <ErrorMessage>{errorMessage}</ErrorMessage>
-              <LabelWrapper>
-                <Button>Upload</Button>
-              </LabelWrapper>
-            </Form>
-            <InfoContainer>
-              <InfoWrapper>
-                <Info>
-                  <InfoNonHover>
-                    <InfoImage url={thumbnail}></InfoImage>
-                    <InfoMain>
-                      <InfoMainLogo
-                        logourl={AllNfts[chain.toLowerCase()][project]?.logourl}
-                      ></InfoMainLogo>
-                      <InfoMainText>
-                        <InfoMainTitle>
-                          <div>{title}</div>
-                        </InfoMainTitle>
-                        <InfoMainSubText>
-                          <h1>{AllNfts[chain.toLowerCase()][project].title}</h1>
-                          <h1>{createdAt}</h1>
-                        </InfoMainSubText>
-                      </InfoMainText>
-                    </InfoMain>
-                  </InfoNonHover>
-                </Info>
-                <Info>
-                  <InfoNonHover>
-                    <InfoNonImage url={thumbnail}>
-                      <InfoImageContext>{title}</InfoImageContext>
-                      <InfoImageHashTag>#eth #event</InfoImageHashTag>
-                    </InfoNonImage>
-                    <InfoMain>
-                      <InfoMainLogo
-                        logourl={AllNfts[chain.toLowerCase()][project]?.logourl}
-                      ></InfoMainLogo>
-                      <InfoMainText>
-                        <InfoMainTitle>
-                          <div>{title}</div>
-                        </InfoMainTitle>
-                        <InfoMainSubText>
-                          <h1>{AllNfts[chain.toLowerCase()][project].title}</h1>
-                          <h1>{createdAt}</h1>
-                        </InfoMainSubText>
-                      </InfoMainText>
-                    </InfoMain>
-                  </InfoNonHover>
-                </Info>
-              </InfoWrapper>
-            </InfoContainer>
-          </LeftHome>
-          <RightHome>
-            <Editor />
-          </RightHome>
+                }}
+                className="editor"
+                theme="snow"
+                value={descriptionValue}
+                onChange={setDescriptionValue}
+                formats={formats}
+                modules={modules}
+              />
+            </RightHome>
+          </div>
+          <NewsContainer>
+            <NewsTitleWrapper>
+              <NewsTitle>{title}</NewsTitle>
+              <NewsTitleLogoWrapper>
+                <NewsTitleLogo
+                  url={AllNfts[chain.toLowerCase()][project]?.logourl}
+                ></NewsTitleLogo>
+                <NewsTitleProjcetName>
+                  {AllNfts[chain.toLowerCase()][project].title}
+                </NewsTitleProjcetName>
+                <NewsTitleCreatedAt>{createdAt}</NewsTitleCreatedAt>
+              </NewsTitleLogoWrapper>
+            </NewsTitleWrapper>
+            <hr style={{ width: "100%" }}></hr>
+            <NewsDescription
+              dangerouslySetInnerHTML={{ __html: description }}
+            />
+          </NewsContainer>
         </HomeContainer>
       ) : (
         <PageNotFound />

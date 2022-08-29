@@ -1,4 +1,4 @@
-import { Context } from "koa";
+import koa, { Context } from "koa";
 import { INftInfo } from "./../../../Routes/Admin";
 import NftInfo from "./../../../models/NftInfo";
 import { response } from "../../../constnats/response";
@@ -15,32 +15,7 @@ interface IDecoded {
 }
 
 export const postAdmin = async (ctx: Context) => {
-  const {
-    chain,
-    nft,
-    title,
-    thumbnail,
-    description,
-    SNS,
-    createdAt,
-  }: INftInfo = ctx.request.body;
-
-  try {
-    await NftInfo.create({
-      chain,
-      nft,
-      title,
-      thumbnail,
-      description,
-      SNS,
-      createdAt,
-    });
-    ctx.status = response.HTTP_OK;
-  } catch (error) {
-    ctx.status = response.HTTP_BAD_REQUEST;
-    ctx.body = error;
-    return;
-  }
+  console.log(ctx);
 };
 
 export const adminChecker = async (ctx: Context) => {
@@ -53,4 +28,12 @@ export const adminChecker = async (ctx: Context) => {
     ctx.body = error;
     return;
   }
+};
+
+export const uploadImage = async (ctx: Context) => {
+  const file = (ctx.req as any).file;
+  const IMG_URL = `http://localhost:3000/uploads/${file.filename}`;
+  ctx.body = IMG_URL;
+  ctx.status = response.HTTP_OK;
+  return;
 };

@@ -5,6 +5,9 @@ import Router from "koa-router";
 import bodyParser from "koa-bodyparser";
 import api from "./api";
 import cors from "@koa/cors";
+import serve from "koa-static";
+import path from "path";
+import koaBody from "koa-body";
 
 const app = new Koa();
 const router = new Router();
@@ -22,6 +25,7 @@ const corsOptions = {
 router.use("/api", api.routes());
 
 app.use(bodyParser());
+app.use(serve(__dirname + "/public"));
 app.use(cors(corsOptions));
 app.use(router.routes()).use(router.allowedMethods());
 
