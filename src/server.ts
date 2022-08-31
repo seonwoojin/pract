@@ -6,6 +6,7 @@ import bodyParser from "koa-bodyparser";
 import api from "./api";
 import cors from "@koa/cors";
 import serve from "koa-static";
+import send from "koa-send";
 
 const app = new Koa();
 const router = new Router();
@@ -26,5 +27,10 @@ app.use(bodyParser());
 app.use(serve(__dirname + "/build"));
 app.use(cors(corsOptions));
 app.use(router.routes()).use(router.allowedMethods());
+
+app.use(async (ctx) => {
+  if (ctx.status === 404)
+    await send(ctx, "index.html", { root: __dirname + "/build" });
+});
 
 app.listen(PORT, handleListening);
