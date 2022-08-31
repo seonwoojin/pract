@@ -5,7 +5,6 @@ import v1 from "./v1";
 const api = new Router();
 
 api.get("/", (ctx: Context) => {
-  console.log(123);
   ctx.body = "Hello";
 });
 
