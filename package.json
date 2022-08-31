@@ -50,7 +50,7 @@
     "start:dev": "nodemon --watch src/ --exec ts-node src/server.ts",
     "build:assets": "react-scripts build",
     "build:server": "ts-node src/server.ts",
-    "build": "npm run build:server",
+    "build": "npm run build:server && npm run build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
