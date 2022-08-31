@@ -28,9 +28,11 @@ app.use(serve(__dirname + "/build"));
 app.use(cors(corsOptions));
 app.use(router.routes()).use(router.allowedMethods());
 
-app.use(async (ctx) => {
-  if (ctx.status === 404)
+if (process.env.NODE_ENV === "production") {
+  console.log(1234);
+  app.use(async (ctx) => {
     await send(ctx, "index.html", { root: __dirname + "/build" });
-});
+  });
+}
 
 app.listen(PORT, handleListening);
