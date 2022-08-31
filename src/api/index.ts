@@ -1,7 +1,13 @@
+import { Context } from "koa";
 import Router from "koa-router";
 import v1 from "./v1";
 
 const api = new Router();
+
+api.get("/", (ctx: Context) => {
+  console.log(123);
+  ctx.body = "Hello";
+});
 
 api.use("/v1", v1.routes());
 

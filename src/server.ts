@@ -6,8 +6,6 @@ import bodyParser from "koa-bodyparser";
 import api from "./api";
 import cors from "@koa/cors";
 import serve from "koa-static";
-import path from "path";
-import koaBody from "koa-body";
 
 const app = new Koa();
 const router = new Router();
@@ -18,7 +16,7 @@ const handleListening = () =>
   console.log(`✅ Server listenting on port http://localhost:${PORT} 🚀`);
 
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "*",
   Credential: true,
 };
 
