@@ -48,6 +48,7 @@
   "scripts": {
     "start": "react-scripts start",
     "start:dev": "nodemon --watch src/ --exec ts-node src/server.ts",
+    "heroku-postbuild": "npm install && npm run build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

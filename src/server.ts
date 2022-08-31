@@ -23,7 +23,7 @@ const corsOptions = {
 router.use("/api", api.routes());
 
 app.use(bodyParser());
-app.use(serve(__dirname + "/public"));
+app.use(serve(__dirname + "/build"));
 app.use(cors(corsOptions));
 app.use(router.routes()).use(router.allowedMethods());
 
