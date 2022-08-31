@@ -1,9 +1,9 @@
 import "dotenv/config";
-import "./db";
+import "./src/db";
 import Koa from "koa";
 import Router from "koa-router";
 import bodyParser from "koa-bodyparser";
-import api from "./api";
+import api from "./src/api";
 import cors from "@koa/cors";
 import serve from "koa-static";
 import send from "koa-send";

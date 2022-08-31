@@ -48,7 +48,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "start:dev": "nodemon --watch src/ --exec ts-node src/server.ts",
+    "start:dev": "nodemon --watch src/ --exec ts-node server.ts",
     "build:assets": "react-scripts build",
     "build:server": "ts-node src/server.ts",
     "build": "npm run build:assets && npm run build:server",
