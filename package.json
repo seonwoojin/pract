@@ -47,7 +47,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "ts-node server.ts",
+    "start": "react-scripts start",
     "start:dev": "nodemon --watch src/ --exec ts-node server.ts",
     "build:assets": "react-scripts build",
     "build:server": "ts-node server.ts",
@@ -91,6 +91,10 @@
     "nodemon": "^2.0.19",
     "ts-node": "^10.9.1",
     "typescript": "^4.7.4"
+  },
+  "engines": {
+    "node": "v16.15.1",
+    "npm": "8.11.0"
   },
   "proxy": "http://localhost:4000"
 }
