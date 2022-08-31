@@ -47,11 +47,11 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "ts-node server.ts",
     "start:dev": "nodemon --watch src/ --exec ts-node server.ts",
     "build:assets": "react-scripts build",
-    "build:server": "ts-node src/server.ts",
-    "build": "npm run build:assets && npm run build:server",
+    "build:server": "ts-node server.ts",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
