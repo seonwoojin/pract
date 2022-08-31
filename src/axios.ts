@@ -54,3 +54,9 @@ export function getSearch(keyword: string) {
 
   return data;
 }
+
+export function getInfoDetail(id: string) {
+  const data = axios.get(`http://localhost:4000/api/v1/nft/info/${id}`);
+
+  return data;
+}

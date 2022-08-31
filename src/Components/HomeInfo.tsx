@@ -15,6 +15,7 @@ import {
 } from "./../atom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import useWindowDimensions from "../useWindowDimensions";
+import { Link } from "react-router-dom";
 
 const InfoContainer = styled.div`
   display: flex;
@@ -327,101 +328,108 @@ function HomeInfo({ nftData }: IProps) {
         <InfoContainer key={i}>
           <InfoWrapper>
             {data.slice(i * offset, (i + 1) * offset).map((info, index) => (
-              <Info key={info._id + index}>
-                <AnimatePresence>
-                  {hover === info._id ? (
-                    <InfoHover
-                      variants={hoverVariants}
-                      initial="initial"
-                      animate="animate"
-                      exit="exit"
-                      onMouseLeave={() => {
-                        setHover("");
-                        timeoutId.map((id) => clearTimeout(id));
-                      }}
-                    >
-                      <InfoImage url={info.thumbnail} detail={true}>
-                        <InfoImageContext>{info.title}</InfoImageContext>
-                        <InfoImageHashTag>#eth #event</InfoImageHashTag>
-                      </InfoImage>
-                      <InfoMain>
-                        <InfoMainLogo
-                          logourl={
-                            AllNfts[info.chain.toLowerCase()][info.nft].logourl
-                          }
-                        ></InfoMainLogo>
-                        <InfoMainText>
-                          <InfoMainTitle>
-                            <div>{info.title}</div>
-                          </InfoMainTitle>
-                          <InfoMainSubText>
-                            <h1>
-                              {
-                                AllNfts[info.chain.toLowerCase()][info.nft]
-                                  .title
-                              }
-                            </h1>
-                            <h1>{info.createdAt}</h1>
-                          </InfoMainSubText>
-                        </InfoMainText>
-                      </InfoMain>
-                    </InfoHover>
-                  ) : (
-                    <InfoNonHover
-                      variants={nonHoverVariants}
-                      initial="initial"
-                      animate="animate"
-                      ishovered={info._id === hoveredId ? "true" : "false"}
-                      onMouseLeave={() => {
-                        setHover("");
-                        timeoutId.map((id) => clearTimeout(id));
-                      }}
-                    >
-                      <InfoImage
-                        onMouseEnter={() => {
-                          setTimeoutId((prev) => [
-                            ...prev,
-                            setTimeout(() => {
-                              setHover(info._id);
-                              sethoverdId(info._id);
-                            }, 500),
-                          ]);
-                        }}
+              <Link
+                key={info._id}
+                to={`/${info.chain}/${info.nft}/${info._id}`}
+              >
+                <Info key={info._id + index}>
+                  <AnimatePresence>
+                    {hover === info._id ? (
+                      <InfoHover
+                        variants={hoverVariants}
+                        initial="initial"
+                        animate="animate"
+                        exit="exit"
                         onMouseLeave={() => {
                           setHover("");
                           timeoutId.map((id) => clearTimeout(id));
                         }}
-                        url={info.thumbnail}
-                        detail={detail}
                       >
-                        <InfoImageContext>{info.title}</InfoImageContext>
-                        <InfoImageHashTag>#eth #event</InfoImageHashTag>
-                      </InfoImage>
-                      <InfoMain>
-                        <InfoMainLogo
-                          logourl={
-                            AllNfts[info.chain.toLowerCase()][info.nft].logourl
-                          }
-                        ></InfoMainLogo>
-                        <InfoMainText>
-                          <InfoMainTitle>
-                            <div>{info.title}</div>
-                          </InfoMainTitle>
-                          <InfoMainSubText>
-                            <h1>
-                              {
-                                AllNfts[info.chain.toLowerCase()][info.nft]
-                                  .title
-                              }
-                            </h1>
-                            <h1>{info.createdAt}</h1>
-                          </InfoMainSubText>
-                        </InfoMainText>
-                      </InfoMain>
-                    </InfoNonHover>
-                  )}
-                </AnimatePresence>
-              </Info>
+                        <InfoImage url={info.thumbnail} detail={true}>
+                          <InfoImageContext>{info.title}</InfoImageContext>
+                          <InfoImageHashTag>#eth #event</InfoImageHashTag>
+                        </InfoImage>
+                        <InfoMain>
+                          <InfoMainLogo
+                            logourl={
+                              AllNfts[info.chain.toLowerCase()][info.nft]
+                                .logourl
+                            }
+                          ></InfoMainLogo>
+                          <InfoMainText>
+                            <InfoMainTitle>
+                              <div>{info.title}</div>
+                            </InfoMainTitle>
+                            <InfoMainSubText>
+                              <h1>
+                                {
+                                  AllNfts[info.chain.toLowerCase()][info.nft]
+                                    .title
+                                }
+                              </h1>
+                              <h1>{info.createdAt}</h1>
+                            </InfoMainSubText>
+                          </InfoMainText>
+                        </InfoMain>
+                      </InfoHover>
+                    ) : (
+                      <InfoNonHover
+                        variants={nonHoverVariants}
+                        initial="initial"
+                        animate="animate"
+                        ishovered={info._id === hoveredId ? "true" : "false"}
+                        onMouseLeave={() => {
+                          setHover("");
+                          timeoutId.map((id) => clearTimeout(id));
+                        }}
+                      >
+                        <InfoImage
+                          onMouseEnter={() => {
+                            setTimeoutId((prev) => [
+                              ...prev,
+                              setTimeout(() => {
+                                setHover(info._id);
+                                sethoverdId(info._id);
+                              }, 500),
+                            ]);
+                          }}
+                          onMouseLeave={() => {
+                            setHover("");
+                            timeoutId.map((id) => clearTimeout(id));
+                          }}
+                          url={info.thumbnail}
+                          detail={detail}
+                        >
+                          <InfoImageContext>{info.title}</InfoImageContext>
+                          <InfoImageHashTag>#eth #event</InfoImageHashTag>
+                        </InfoImage>
+                        <InfoMain>
+                          <InfoMainLogo
+                            logourl={
+                              AllNfts[info.chain.toLowerCase()][info.nft]
+                                .logourl
+                            }
+                          ></InfoMainLogo>
+                          <InfoMainText>
+                            <InfoMainTitle>
+                              <div>{info.title}</div>
+                            </InfoMainTitle>
+                            <InfoMainSubText>
+                              <h1>
+                                {
+                                  AllNfts[info.chain.toLowerCase()][info.nft]
+                                    .title
+                                }
+                              </h1>
+                              <h1>{info.createdAt}</h1>
+                            </InfoMainSubText>
+                          </InfoMainText>
+                        </InfoMain>
+                      </InfoNonHover>
+                    )}
+                  </AnimatePresence>
+                </Info>
+              </Link>
             ))}
           </InfoWrapper>
         </InfoContainer>

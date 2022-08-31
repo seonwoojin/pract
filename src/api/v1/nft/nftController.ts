@@ -20,6 +20,17 @@ export const getAllNftInfo = async (ctx: Context) => {
   ctx.status = response.HTTP_OK;
 };
 
+export const getNftInfoDetail = async (ctx: Context) => {
+  try {
+    const nftInfo = await NftInfo.findById(ctx.params.id).exec();
+    ctx.body = nftInfo;
+    ctx.status = response.HTTP_OK;
+  } catch (error) {
+    ctx.body = error;
+    ctx.status = response.HTTP_BAD_REQUEST;
+  }
+};
+
 export const userLikeDetailInfo = async (ctx: Context) => {
   try {
     const user: IUser = ctx.user;

@@ -3,14 +3,13 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import { response } from "./../constnats/response";
 import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
 import { getAdminCheck } from "../axios";
 import PageNotFound from "./PageNotFound";
 import { AllNft } from "../AllNft";
-import Editor from "../Components/Editor";
 import ReactQuill, { Quill } from "react-quill";
+import ImageResize from "@looop/quill-image-resize-module-react";
 import "react-quill/dist/quill.snow.css";
 
 const HomeContainer = styled.div`
@@ -37,7 +36,7 @@ const RightHome = styled.div`
   flex-direction: column;
 
   height: 100vh;
-  width: 50%;
+  width: 40%;
   font-family: "Open Sans";
   padding: 100px;
   .editor {
@@ -210,6 +209,18 @@ const InfoNonHover = styled.div`
   height: 100%;
 `;
 
+const InfoHover = styled.div`
+  z-index: 98;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 500px;
+  width: 600px;
+  height: 600px;
+  margin-right: 20px;
+  cursor: pointer;
+`;
+
 const InfoImage = styled.div<{ url: string }>`
   display: flex;
   flex-direction: column;
@@ -325,7 +336,7 @@ const NewsTitleWrapper = styled.div`
   width: 1200px;
   justify-content: center;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 `;
 
 const NewsTitle = styled.div`
@@ -345,7 +356,7 @@ const NewsTitle = styled.div`
 const NewsTitleLogoWrapper = styled.div`
   display: flex;
   width: 1200px;
-  height: 50px;
+  height: 20px;
   align-items: center;
   font-size: 16px;
   font-weight: 500;
@@ -378,6 +389,16 @@ const NewsTitleCreatedAt = styled.div`
   opacity: 0.6;
 `;
 
+const NewSnsContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 1200px;
+  height: 20px;
+  opacity: 0.6;
+  margin-top: 10px;
+`;
+
 const NewsDescription = styled.div`
   display: flex;
   flex-direction: column;
@@ -385,6 +406,11 @@ const NewsDescription = styled.div`
   height: auto;
   min-height: 500px;
   padding-top: 20px;
+  word-break: break-all;
+  word-wrap: break-word;
+  ul {
+    list-style-type: disc;
+  }
   p {
     display: flex;
   }
@@ -511,7 +537,6 @@ function Admin() {
   };
   useEffect(() => {
     setDescription(descriptionValue);
-    console.log(descriptionValue);
   }, [descriptionValue]);
   useEffect(
     () => setCreatedAt(`${createdDate} ${createdTime}`),
@@ -547,11 +572,15 @@ function Admin() {
       }
     });
   };
+  Quill.register("modules/ImageResize", ImageResize);
   const modules = useMemo(() => {
     return {
       toolbar: {
         container: [...toolbarOptions],
         handlers: { image: imageHandler },
+      },
+      ImageResize: {
+        parchment: Quill.import("parchment"),
       },
     };
   }, []);
@@ -796,6 +825,47 @@ function Admin() {
                 </InfoWrapper>
               </InfoContainer>
             </LeftHome>
+            <InfoHover>
+              <InfoImage url={thumbnail}>
+                <InfoImageContext>{title}</InfoImageContext>
+                <InfoImageHashTag>#eth #event</InfoImageHashTag>
+              </InfoImage>
+              <InfoMain>
+                <InfoMainLogo
+                  logourl={AllNfts[chain.toLowerCase()][project].logourl}
+                ></InfoMainLogo>
+                <InfoMainText>
+                  <InfoMainTitle>
+                    <div>{title}</div>
+                  </InfoMainTitle>
+                  <InfoMainSubText>
+                    <h1>{AllNfts[chain.toLowerCase()][project].title}</h1>
+                    <h1>{createdAt}</h1>
+                  </InfoMainSubText>
+                </InfoMainText>
+              </InfoMain>
+            </InfoHover>
+          </div>
+          <div style={{ display: "flex" }}>
+            <NewsContainer>
+              <NewsTitleWrapper>
+                <NewsTitle>{title}</NewsTitle>
+                <NewsTitleLogoWrapper>
+                  <NewsTitleLogo
+                    url={AllNfts[chain.toLowerCase()][project]?.logourl}
+                  ></NewsTitleLogo>
+                  <NewsTitleProjcetName>
+                    {AllNfts[chain.toLowerCase()][project].title}
+                  </NewsTitleProjcetName>
+                  <NewsTitleCreatedAt>{createdAt}</NewsTitleCreatedAt>
+                </NewsTitleLogoWrapper>
+                <NewSnsContainer>{sns}</NewSnsContainer>
+              </NewsTitleWrapper>
+              <hr style={{ width: "100%" }}></hr>
+              <NewsDescription
+                dangerouslySetInnerHTML={{ __html: description }}
+              />
+            </NewsContainer>
             <RightHome>
               <Label>Description</Label>
               <ReactQuill
@@ -813,24 +883,6 @@ function Admin() {
               />
             </RightHome>
           </div>
-          <NewsContainer>
-            <NewsTitleWrapper>
-              <NewsTitle>{title}</NewsTitle>
-              <NewsTitleLogoWrapper>
-                <NewsTitleLogo
-                  url={AllNfts[chain.toLowerCase()][project]?.logourl}
-                ></NewsTitleLogo>
-                <NewsTitleProjcetName>
-                  {AllNfts[chain.toLowerCase()][project].title}
-                </NewsTitleProjcetName>
-                <NewsTitleCreatedAt>{createdAt}</NewsTitleCreatedAt>
-              </NewsTitleLogoWrapper>
-            </NewsTitleWrapper>
-            <hr style={{ width: "100%" }}></hr>
-            <NewsDescription
-              dangerouslySetInnerHTML={{ __html: description }}
-            />
-          </NewsContainer>
         </HomeContainer>
       ) : (
         <PageNotFound />
