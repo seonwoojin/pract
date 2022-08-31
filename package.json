@@ -47,7 +47,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "ts-node server.ts",
     "start:dev": "nodemon --watch src/ --exec ts-node server.ts",
     "build:assets": "react-scripts build",
     "build:server": "ts-node server.ts",
