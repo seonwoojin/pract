@@ -1,6 +1,6 @@
 import { Context } from "koa";
 import NftInfo from "./../../../models/NftInfo";
-import { response } from "./../../../constnats/response";
+import { response } from "../../../constants/response";
 import { IUser } from "../../../models/User";
 import mongoose from "mongoose";
 

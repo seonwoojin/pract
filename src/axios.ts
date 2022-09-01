@@ -1,5 +1,5 @@
 import { axiosInstance } from "./axiosInstance";
-import { response } from "./constnats/response";
+import { response } from "./constants/response";
 
 export interface IData {
   [key: string]: {

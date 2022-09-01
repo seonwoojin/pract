@@ -1,7 +1,7 @@
 import koa, { Context } from "koa";
 import { INftInfo } from "./../../../Routes/Admin";
 import NftInfo from "./../../../models/NftInfo";
-import { response } from "../../../constnats/response";
+import { response } from "../../../constants/response";
 import jwt from "jsonwebtoken";
 import User from "./../../../models/User";
 import { userChecker } from "../../../middlewares";
@@ -49,7 +49,9 @@ export const adminChecker = async (ctx: Context) => {
 
 export const uploadImage = async (ctx: Context) => {
   const file = (ctx.req as any).file;
-  const IMG_URL = `http://localhost:3000/uploads/${file.filename}`;
+  console.log(file);
+  //const IMG_URL = `http://localhost:3000/uploads/${file.filename}`;
+  const IMG_URL = file.location;
   ctx.body = IMG_URL;
   ctx.status = response.HTTP_OK;
   return;

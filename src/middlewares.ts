@@ -1,12 +1,24 @@
 import { Context } from "koa";
 import { Cookies } from "react-cookie";
-import { response } from "./constnats/response";
+import { response } from "./constants/response";
 import jwt from "jsonwebtoken";
 import User from "./models/User";
 import { useEffect, useRef } from "react";
+import multer from "koa-multer";
+import path from "path";
+import { S3Client } from "@aws-sdk/client-s3";
+import multerS3 from "multer-s3";
 
 const cookies = new Cookies();
 const accessKey = process.env.ACCESS_SECRET_KEY;
+
+const s3 = new S3Client({
+  region: "ap-northeast-2",
+  credentials: {
+    accessKeyId: process.env.AWS_ID!,
+    secretAccessKey: process.env.AWS_SECRET!,
+  },
+});
 
 interface IDecoded {
   username: string;
@@ -48,3 +60,18 @@ export const userChecker = async (
     return false;
   }
 };
+
+const multerUploader = multerS3({
+  s3: s3,
+  bucket: "blueroombucket",
+  acl: "public-read",
+  key: function (req, file, cb) {
+    let extension = path.extname(file.originalname);
+    let basename = path.basename(file.originalname, extension);
+    cb(null, `images/${basename}-${Date.now()}${extension}`);
+  },
+});
+
+export const upload = multer({
+  storage: multerUploader as any,
+});

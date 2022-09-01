@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useCookies } from "react-cookie";
 import { useRecoilValue } from "recoil";
 import { isLogined } from "./../atom";
-import { response } from "./../constnats/response";
+import { response } from "../constants/response";
 import { axiosInstance } from "../axiosInstance";
 
 const HomeContainer = styled.div`

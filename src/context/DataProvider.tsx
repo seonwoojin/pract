@@ -3,7 +3,7 @@ import { createContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useRecoilState } from "recoil";
 import { isLogined } from "../atom";
-import { response } from "./../constnats/response";
+import { response } from "../constants/response";
 
 interface IContext {
   isLogin: boolean;

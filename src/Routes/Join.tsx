@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useState } from "react";
-import { response } from "./../constnats/response";
+import { response } from "../constants/response";
 import { axiosInstance } from "../axiosInstance";
 
 const HomeContainer = styled.div`

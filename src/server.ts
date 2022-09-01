@@ -21,6 +21,8 @@ const corsOptions = {
   Credential: true,
 };
 
+console.log(process.env.NODE_ENV);
+
 router.use("/api", api.routes());
 
 app.use(bodyParser());

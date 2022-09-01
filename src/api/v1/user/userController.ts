@@ -1,6 +1,6 @@
 import Koa, { Context } from "koa";
 import User, { IUser } from "../../../models/User";
-import { response } from "./../../../constnats/response";
+import { response } from "../../../constants/response";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nft from "./../nft/index";
