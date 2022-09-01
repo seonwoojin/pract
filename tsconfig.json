@@ -13,8 +13,9 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    "noEmit": false,
     "jsx": "react-jsx",
+    "rootDir": "src",
     "outDir": "build"
   },
   "ts-node": {
@@ -22,5 +23,6 @@
       "module": "commonjs"
     }
   },
-  "include": ["src", "server.ts"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
 }
