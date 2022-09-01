@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
@@ -11,6 +10,7 @@ import { AllNft } from "../AllNft";
 import ReactQuill, { Quill } from "react-quill";
 import ImageResize from "@looop/quill-image-resize-module-react";
 import "react-quill/dist/quill.snow.css";
+import { axiosInstance } from "../axiosInstance";
 
 const HomeContainer = styled.div`
   display: flex;
@@ -516,8 +516,8 @@ function Admin() {
       SNS: SNS[0],
       createdAt: createdAt + " " + createdTime,
     };
-    axios
-      .post("http://localhost:4000/api/v1/admin/upload", body)
+    axiosInstance
+      .post("/api/v1/admin/upload", body)
       .then((response) => {
         if (response.status === 200) {
         }
@@ -556,8 +556,8 @@ function Admin() {
         const formData = new FormData();
         formData.append("img", file);
         try {
-          const result = await axios.post(
-            "http://localhost:4000/api/v1/admin/img",
+          const result = await axiosInstance.post(
+            "/api/v1/admin/img",
             formData
           );
           const IMG_URL = result.data;

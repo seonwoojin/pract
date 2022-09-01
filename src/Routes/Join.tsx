@@ -1,9 +1,9 @@
-import axios from "axios";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useState } from "react";
 import { response } from "./../constnats/response";
+import { axiosInstance } from "../axiosInstance";
 
 const HomeContainer = styled.div`
   display: flex;
@@ -107,8 +107,8 @@ function Join() {
       password,
       confirm_password,
     };
-    axios
-      .post("http://localhost:4000/api/v1/user/join", body)
+    axiosInstance
+      .post("/api/v1/user/join", body)
       .then((response) => {
         if (response.status === 200) {
           navigate("/login");

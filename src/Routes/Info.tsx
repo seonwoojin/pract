@@ -5,10 +5,10 @@ import PageNotFound from "./PageNotFound";
 import { NftChecker } from "./../NftChecker";
 import { IData } from "../axios";
 import DetailInfo from "../Components/DetailInfo";
-import axios from "axios";
 import { useCookies } from "react-cookie";
 import { useEffect, useState } from "react";
 import { IUser } from "./../context/DataProvider";
+import { axiosInstance } from "../axiosInstance";
 
 const starAnim = keyframes`
   0% {
@@ -67,16 +67,16 @@ function Info() {
 
   useEffect(() => {
     async function getNft() {
-      const data = await axios
-        .get(`http://localhost:4000/api/v1/nft/?nft=${params.nft}`)
+      const data = await axiosInstance
+        .get(`/api/v1/nft/?nft=${params.nft}`)
         .then((response) => {
           setData(response.data);
           setIsLoading(false);
         });
     }
     async function getUser() {
-      axios
-        .get<IUser>(`http://localhost:4000/api/v1/user/data/`, {
+      axiosInstance
+        .get<IUser>(`/api/v1/user/data/`, {
           headers: {
             Authorization: `Bearer ${token["token"]}`,
           },
@@ -92,15 +92,12 @@ function Info() {
 
   const onClick = () => {
     setFavorite((prev) => !prev);
-    axios
-      .get(
-        `http://localhost:4000/api/v1/user/favorite/choose?nft=${params.nft}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token["token"]}`,
-          },
-        }
-      )
+    axiosInstance
+      .get(`/api/v1/user/favorite/choose?nft=${params.nft}`, {
+        headers: {
+          Authorization: `Bearer ${token["token"]}`,
+        },
+      })
       .then((response) => {
         if (response.data === "") navigate("/login");
       })

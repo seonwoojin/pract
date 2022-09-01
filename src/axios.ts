@@ -1,4 +1,4 @@
-import axios from "axios";
+import { axiosInstance } from "./axiosInstance";
 import { response } from "./constnats/response";
 
 export interface IData {
@@ -17,7 +17,7 @@ export interface IData {
 }
 
 export function getAdminCheck(token: string) {
-  const data = axios.get(`http://localhost:4000/api/v1/admin/check`, {
+  const data = axiosInstance.get(`/api/v1/admin/check`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -26,19 +26,19 @@ export function getAdminCheck(token: string) {
 }
 
 export function getNftInfo(nft: string) {
-  const data = axios.get<IData>(`http://localhost:4000/api/v1/nft/?nft=${nft}`);
+  const data = axiosInstance.get<IData>(`/api/v1/nft/?nft=${nft}`);
 
   return data;
 }
 
 export function getAllNft() {
-  const data = axios.get("http://localhost:4000/api/v1/nft/all");
+  const data = axiosInstance.get("/api/v1/nft/all");
 
   return data;
 }
 
 export function getUser(token: string) {
-  const data = axios.get(`http://localhost:4000/api/v1/user/data/`, {
+  const data = axiosInstance.get(`/api/v1/user/data/`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -48,15 +48,13 @@ export function getUser(token: string) {
 }
 
 export function getSearch(keyword: string) {
-  const data = axios.get(
-    `http://localhost:4000/api/v1/nft/search/?keyword=${keyword}`
-  );
+  const data = axiosInstance.get(`/api/v1/nft/search/?keyword=${keyword}`);
 
   return data;
 }
 
 export function getInfoDetail(id: string) {
-  const data = axios.get(`http://localhost:4000/api/v1/nft/info/${id}`);
+  const data = axiosInstance.get(`/api/v1/nft/info/${id}`);
 
   return data;
 }

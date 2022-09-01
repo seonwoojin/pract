@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,6 +6,7 @@ import { useCookies } from "react-cookie";
 import { useRecoilValue } from "recoil";
 import { isLogined } from "./../atom";
 import { response } from "./../constnats/response";
+import { axiosInstance } from "../axiosInstance";
 
 const HomeContainer = styled.div`
   display: flex;
@@ -109,10 +109,10 @@ function Login() {
       username,
       password,
     };
-    axios
-      .post("http://localhost:4000/api/v1/user/login", body)
+    axiosInstance
+      .post("/api/v1/user/login", body)
       .then((response) => {
-        axios.defaults.headers.common["Authorization"] =
+        axiosInstance.defaults.headers.common["Authorization"] =
           "Bearer " + response.data.accessToken;
         setToken("refreshToken", response.data.refreshToken);
         setToken("token", response.data.accessToken);
