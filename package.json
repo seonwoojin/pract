@@ -53,7 +53,6 @@
     "start:dev": "nodemon --watch src/ --exec ts-node src/server.ts",
     "build:assets": "react-scripts build",
     "build:server": "tsc src/server.ts",
-    "heroku-postbuild": "react-scripts build",
     "build": "tsc",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
