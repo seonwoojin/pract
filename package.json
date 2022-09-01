@@ -50,11 +50,11 @@
   },
   "scripts": {
     "start": "node build/server.js",
+    "start:assets": "react-scripts start",
     "start:dev": "nodemon --watch src/ --exec ts-node src/server.ts",
     "build:assets": "react-scripts build",
     "build:server": "tsc src/server.ts",
-    "heroku-postbuild": "react-scripts build",
-    "build": "tsc",
+    "build": "react-scripts build && ./node_modules/typescript/bin/tsc",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

@@ -23,6 +23,5 @@
       "module": "commonjs"
     }
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": ["src"]
 }
