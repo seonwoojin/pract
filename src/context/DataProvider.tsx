@@ -1,9 +1,9 @@
-import axios from "axios";
 import { createContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useRecoilState } from "recoil";
 import { isLogined } from "../atom";
 import { response } from "../constants/response";
+import { axiosInstance } from "./../axiosInstance";
 
 interface IContext {
   isLogin: boolean;
@@ -29,8 +29,8 @@ const DataProvider = ({ children }: any) => {
   useEffect(() => {
     async function getUser() {
       if (token["token"] && token["token"] !== "undefined") {
-        const data = await axios
-          .get(`http://localhost:4000/api/v1/user/data/`, {
+        const data = await axiosInstance
+          .get(`/api/v1/user/data/`, {
             headers: {
               Authorization: `Bearer ${token["token"]}`,
             },
