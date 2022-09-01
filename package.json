@@ -45,10 +45,11 @@
     "styled-components": "^5.3.5",
     "styled-reset": "^4.4.2",
     "ts-node": "10.9.1",
+    "tsc": "^2.0.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "node buld/server.js",
+    "start": "node build/server.js",
     "start:dev": "nodemon --watch src/ --exec ts-node src/server.ts",
     "build:assets": "react-scripts build",
     "build:server": "tsc src/server.ts",
