@@ -8,6 +8,7 @@ import { theme } from "./theme";
 import "./index.css";
 import { CookiesProvider } from "react-cookie";
 import { isShow } from "./atom";
+import { HelmetProvider } from "react-helmet-async";
 
 const queryClient = new QueryClient();
 
@@ -40,8 +41,10 @@ root.render(
     <CookiesProvider>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
-          <GlobalStyle />
-          <App />
+          <HelmetProvider>
+            <GlobalStyle />
+            <App />
+          </HelmetProvider>
         </ThemeProvider>
       </QueryClientProvider>
     </CookiesProvider>
