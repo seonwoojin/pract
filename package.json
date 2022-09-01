@@ -48,11 +48,12 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "ts-node src/server.ts",
+    "start": "node buld/server.js",
     "start:dev": "nodemon --watch src/ --exec ts-node src/server.ts",
     "build:assets": "react-scripts build",
     "build:server": "tsc src/server.ts",
-    "build": "react-scripts build && tsc",
+    "heroku-postbuild": "tsc",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
