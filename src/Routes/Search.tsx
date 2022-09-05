@@ -9,6 +9,9 @@ import { AllNft, AllNftNonChain } from "../AllNft";
 import DetailInfo from "../Components/DetailInfo";
 import DetailNftBox from "../Components/DetailNftBox";
 import { title } from "process";
+import { axiosInstance } from "../axiosInstance";
+import { IUser } from "../context/DataProvider";
+import { useCookies } from "react-cookie";
 
 const HomeContainer = styled.div`
   display: flex;
@@ -29,11 +32,14 @@ function Search() {
   const allNft = AllNftNonChain;
   const params = useParams();
   const [empty, setEmpty] = useState(false);
+  const [user, setUser] = useState<IUser>();
+  const [isUserLoading, setIsUserLoading] = useState(true);
   const [isProjcet, setIsProject] = useState<string[]>([]);
   const { isLoading, data: searchedNft } = useQuery<IInfo>(
     [`search${params.search}`],
     () => getSearch(params.search!)
   );
+  const [token] = useCookies(["token"]);
   useEffect(() => {
     setIsProject([]);
     if (params.search!.length > 0) {
@@ -60,9 +66,29 @@ function Search() {
       }
     }
   }, [searchedNft]);
+
+  useEffect(() => {
+    async function getUser() {
+      axiosInstance
+        .get<IUser>(`/api/v1/user/data/`, {
+          headers: {
+            Authorization: `Bearer ${token["token"]}`,
+          },
+        })
+        .then((response) => {
+          if (!response.data) {
+            setUser({} as IUser);
+          }
+          setUser(response.data);
+          setIsUserLoading(false);
+        });
+    }
+    getUser();
+  }, [params]);
+
   return (
     <HomeContainer>
-      {isProjcet.length === 0 ? null : (
+      {isProjcet.length === 0 ? null : isUserLoading ? null : (
         <>
           {isProjcet.map((title) => (
             <DetailNftBox
@@ -71,6 +97,7 @@ function Search() {
               url={Object(allNft)[title].logourl}
               rgba={Object(allNft)[title].rgba}
               title={Object(allNft)[title].title}
+              userData={user!}
             />
           ))}
           <hr

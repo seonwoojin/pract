@@ -2,7 +2,10 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useState } from "react";
-import { response } from "../constants/response";
+import {
+  GoogleReCaptcha,
+  GoogleReCaptchaProvider,
+} from "react-google-recaptcha-v3";
 import { axiosInstance } from "../axiosInstance";
 
 const HomeContainer = styled.div`
@@ -154,6 +157,11 @@ function Join() {
           placeholder="confirm_password"
           id="confirm_password"
         ></Input>
+        <GoogleReCaptchaProvider reCaptchaKey="6LdNBdMhAAAAAO85D4eoAY_vkm6utUSpKbb_4bJ5">
+          <GoogleReCaptcha
+            onVerify={(event) => console.log()}
+          ></GoogleReCaptcha>
+        </GoogleReCaptchaProvider>
         <ErrorMessage>{errorMessage}</ErrorMessage>
         <LabelWrapper>
           <Button>Create account</Button>

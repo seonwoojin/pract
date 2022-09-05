@@ -1,15 +1,27 @@
 import { motion, Variants } from "framer-motion";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { useEffect, useState } from "react";
+import { IUser } from "./../context/DataProvider";
+import { axiosInstance } from "../axiosInstance";
+import { useCookies } from "react-cookie";
 
-const NftWrapper = styled(motion.div)`
+const Wrapper = styled.div`
   position: relative;
   display: flex;
+`;
+
+const NftWrapper = styled(motion.div)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 60vw;
   min-height: 200px;
   height: 200px;
   background-color: rgba(0, 0, 0, 0.05);
   margin-bottom: 2vh;
+  padding-right: 20px;
+  padding-left: 20px;
   cursor: pointer;
   @media ${(props) => props.theme.device.tablet} {
     width: 90%;
@@ -71,13 +83,19 @@ const NftDetail = styled(motion.div)`
   }
 `;
 
-const Svg = styled(motion.svg)`
+const SubscribeBox = styled.div<{ subcribe: boolean }>`
   position: absolute;
-  right: -4vw;
-  width: 50px;
-  margin-right: 20px;
-  opacity: 1;
-  z-index: 99;
+  right: 20px;
+  bottom: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 40px;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: ${(props) => (props.subcribe ? "#d3cfcf" : "#d01b1b")};
+  color: ${(props) => (props.subcribe ? "#212020b3" : "white")};
 `;
 
 const detailVariants: Variants = {
@@ -107,9 +125,12 @@ interface IProps {
   url: string;
   title: string;
   rgba: string;
+  userData: IUser;
 }
 
-function DetailNftBox({ chain, url, title, rgba }: IProps) {
+function DetailNftBox({ chain, url, title, rgba, userData }: IProps) {
+  const [subcribe, setSubcribe] = useState(false);
+  const [token] = useCookies(["token"]);
   const wrapperVariants: Variants = {
     hover: {
       backgroundColor: rgba,
@@ -119,25 +140,67 @@ function DetailNftBox({ chain, url, title, rgba }: IProps) {
       },
     },
   };
+  useEffect(() => {
+    if (userData) {
+      if (
+        userData.favoriteNft.includes(
+          title
+            .toLowerCase()
+            .replaceAll(" ", "")
+            .replaceAll("-", "")
+            .replaceAll("`", "")
+        )
+      ) {
+        setSubcribe(true);
+      }
+    }
+  }, []);
+  const onClickSubcribe = () => {
+    if (userData) {
+      axiosInstance.get(
+        `/api/v1/user/favorite/choose/?nft=${title
+          .toLowerCase()
+          .replaceAll(" ", "")
+          .replaceAll("-", "")
+          .replaceAll("`", "")}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token["token"]}`,
+          },
+        }
+      );
+    }
+  };
   return (
-    <Link
-      to={`/${chain.toLowerCase()}/${title
-        .replace(/(\s*)/g, "")
-        .replace("`", "")
-        .toLowerCase()}`}
-    >
-      <NftWrapper variants={wrapperVariants} whileHover="hover">
-        <NftLogo imgurl={url}>
-          <div></div>
-        </NftLogo>
-        <NftDetail variants={detailVariants}>
-          <h1>{title}</h1>
-          <div>
-            <h2>WELCOME TO THE {title}</h2>
-          </div>
-        </NftDetail>
-      </NftWrapper>
-    </Link>
+    <Wrapper>
+      <Link
+        to={`/${chain.toLowerCase()}/${title
+          .replace(/(\s*)/g, "")
+          .replace("`", "")
+          .toLowerCase()}`}
+      >
+        <NftWrapper variants={wrapperVariants} whileHover="hover">
+          <NftLogo imgurl={url}>
+            <div></div>
+          </NftLogo>
+          <NftDetail variants={detailVariants}>
+            <h1>{title}</h1>
+            <div>
+              <h2>WELCOME TO THE {title}</h2>
+            </div>
+          </NftDetail>{" "}
+        </NftWrapper>
+      </Link>
+      <SubscribeBox
+        subcribe={subcribe}
+        onClick={() => {
+          setSubcribe((prev) => !prev);
+          onClickSubcribe();
+        }}
+      >
+        {subcribe ? "Subscribing" : "Subcribe"}
+      </SubscribeBox>
+    </Wrapper>
   );
 }
 

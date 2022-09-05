@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { AllNft } from "../AllNft";
 import { useRecoilState } from "recoil";
 import {
@@ -8,12 +8,16 @@ import {
   pastString,
   projectString,
   snstString,
+  subscirbeProject,
   todayString,
 } from "../atom";
 import { chainString } from "./../atom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { AnimatePresence, motion } from "framer-motion";
+import { useCookies } from "react-cookie";
+import { axiosInstance } from "../axiosInstance";
+import { IUser } from "../context/DataProvider";
 
 const Wrapper = styled.div`
   position: fixed;
@@ -39,6 +43,7 @@ const Container = styled.div`
     margin-bottom: 70px;
     opacity: 0.7;
     cursor: pointer;
+    fill: black;
   }
 `;
 
@@ -113,7 +118,7 @@ const FilterInput = styled.input`
   justify-content: center;
   align-items: center;
   padding: 10px;
-  width: 90%;
+  width: 20%;
   height: 50%;
   border: none;
   font-size: 15px;
@@ -149,13 +154,19 @@ const DateBoxWrapper = styled.div`
 `;
 
 function SideBar() {
+  const subscribeRef = useRef<HTMLInputElement>();
   const allNfts = AllNft;
+  const navigate = useNavigate();
+  const [subscribeStar, setSubscribeStar] = useState(false);
+  const [userSubscribeData, setUserSubscribeData] = useState<string[]>([]);
   const [show, setShow] = useRecoilState(isFilterShow);
   const [chain, setChain] = useRecoilState(chainString);
   const [project, setProject] = useRecoilState(projectString);
   const [sns, setSns] = useRecoilState(snstString);
   const [today, setToday] = useRecoilState(todayString);
   const [past, setPast] = useRecoilState(pastString);
+  const [subscribe, setSubscribe] = useRecoilState<string[]>(subscirbeProject);
+  const [token] = useCookies(["token"]);
   const onChangeChain = (value: string) => {
     setChain(value);
   };
@@ -176,14 +187,55 @@ function SideBar() {
       setSns("");
     }
   };
+  const onClickSubscribe = (event: HTMLInputElement) => {
+    if (!token["token"]) {
+      navigate("/login");
+    } else {
+      if (event.checked) {
+        setSubscribe(userSubscribeData);
+      } else {
+        setSubscribe([]);
+      }
+    }
+  };
+  const onClickStar = () => {
+    if (!token["token"]) {
+      navigate("/login");
+    } else {
+      if (!subscribeStar) {
+        setSubscribe(userSubscribeData);
+      } else {
+        setSubscribe([]);
+      }
+      setSubscribeStar((prev) => !prev);
+    }
+  };
   useEffect(() => {
     const today = new Date();
     const past = new Date();
+    if (token["token"]) {
+      axiosInstance
+        .get<IUser>(`/api/v1/user/favorite`, {
+          headers: {
+            Authorization: `Bearer ${token["token"]}`,
+          },
+        })
+        .then((response) => {
+          setUserSubscribeData(Object.values(response.data));
+        });
+    }
     past.setMonth(today.getMonth() - 6);
     setToday(today);
     setPast(past);
   }, []);
-
+  useEffect(() => {
+    if (show) {
+      const checkBoxes = document.getElementsByName(
+        "Subscribe"
+      ) as NodeListOf<HTMLInputElement>;
+      checkBoxes[0].checked = subscribeStar;
+    }
+  }, [show]);
   return (
     <Wrapper>
       <Container>
@@ -196,8 +248,13 @@ function SideBar() {
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
           <path d="M224 256c70.7 0 128-57.31 128-128s-57.3-128-128-128C153.3 0 96 57.31 96 128S153.3 256 224 256zM274.7 304H173.3C77.61 304 0 381.6 0 477.3c0 19.14 15.52 34.67 34.66 34.67h378.7C432.5 512 448 496.5 448 477.3C448 381.6 370.4 304 274.7 304z" />
         </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-          <path d="M96 32C96 14.33 110.3 0 128 0C145.7 0 160 14.33 160 32V64H288V32C288 14.33 302.3 0 320 0C337.7 0 352 14.33 352 32V64H400C426.5 64 448 85.49 448 112V160H0V112C0 85.49 21.49 64 48 64H96V32zM448 464C448 490.5 426.5 512 400 512H48C21.49 512 0 490.5 0 464V192H448V464z" />
+        <svg
+          style={{ fill: subscribeStar ? "red" : "black" }}
+          onClick={onClickStar}
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 576 512"
+        >
+          <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z" />
         </svg>
         <svg
           onClick={() => setShow((prev) => !prev)}
@@ -285,6 +342,23 @@ function SideBar() {
                   onChange={(date: Date) => setPast(date)}
                 />
               </DateBoxWrapper>
+            </FilterContainer>
+            <FilterContainer>
+              <FilterTitle>Subscribe</FilterTitle>
+              <CheckBoxWrapper style={{ justifyContent: "space-evenly" }}>
+                <div>Subscribe</div>
+                <FilterInput
+                  ref={(element) => {
+                    if (element !== null) {
+                      subscribeRef.current = element;
+                    }
+                  }}
+                  type="checkbox"
+                  value="subscribe"
+                  name="Subscribe"
+                  onClick={(event) => onClickSubscribe(event.currentTarget)}
+                ></FilterInput>
+              </CheckBoxWrapper>
             </FilterContainer>
           </DetailContainer>
         ) : null}

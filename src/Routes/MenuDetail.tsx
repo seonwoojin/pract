@@ -99,7 +99,7 @@ function MenuDetail({ chain }: IProps) {
         <h1>{logo[chain].fullChain}</h1>
         <TitleLogo url={logo[chain].url}></TitleLogo>
       </Title>
-      {datas.map((data) => (
+      {/* {datas.map((data) => (
         <DetailNftBox
           key={data[1].title}
           chain={chain}
@@ -107,7 +107,7 @@ function MenuDetail({ chain }: IProps) {
           rgba={data[1].rgba}
           title={data[1].title}
         />
-      ))}
+      ))} */}
     </HomeWrapper>
   );
 }

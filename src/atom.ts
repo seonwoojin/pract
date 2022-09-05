@@ -44,3 +44,8 @@ export const pastString = atom({
   key: "past",
   default: new Date(),
 });
+
+export const subscirbeProject = atom<string[]>({
+  key: "subscirbeProject",
+  default: [],
+});

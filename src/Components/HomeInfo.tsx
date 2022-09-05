@@ -11,6 +11,7 @@ import {
   pastString,
   projectString,
   snstString,
+  subscirbeProject,
   todayString,
 } from "./../atom";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -261,12 +262,14 @@ function HomeInfo({ nftData }: IProps) {
   const sns = useRecoilValue(snstString);
   const today = useRecoilValue(todayString);
   const past = useRecoilValue(pastString);
+  const subscribe = useRecoilValue(subscirbeProject);
 
   const filter = (info: IData) => {
     let chainBool: boolean = true;
     let projectBool: boolean = true;
     let snsBool: boolean = true;
     let dateBool: boolean = true;
+    let subscribeBool: boolean = true;
     const date = new Date(Date.parse(info.createdAt)).getTime();
     if (chain !== "") {
       chainBool = info.chain === chain.toUpperCase();
@@ -274,7 +277,11 @@ function HomeInfo({ nftData }: IProps) {
     if (project !== "") {
       projectBool =
         info.nft ===
-        project.replaceAll(" ", "").replaceAll("-", "").toLowerCase();
+        project
+          .replaceAll(" ", "")
+          .replaceAll("-", "")
+          .replaceAll("`", "")
+          .toLowerCase();
     }
     if (sns !== "") {
       snsBool = info.SNS === sns;
@@ -282,7 +289,16 @@ function HomeInfo({ nftData }: IProps) {
     if (today.getTime() - date < 0 || date - past.getTime() < 0) {
       dateBool = false;
     }
-    return chainBool && projectBool && snsBool && dateBool;
+    if (subscribe.length !== 0) {
+      subscribeBool = subscribe.includes(
+        info.nft
+          .replaceAll(" ", "")
+          .replaceAll("-", "")
+          .replaceAll("`", "")
+          .toLowerCase()
+      );
+    }
+    return chainBool && projectBool && snsBool && dateBool && subscribeBool;
   };
 
   useInterval(() => {
@@ -321,7 +337,7 @@ function HomeInfo({ nftData }: IProps) {
 
   useEffect(() => {
     setData(Object.values(nftData?.data).filter(filter));
-  }, [chain, project, sns, today, past]);
+  }, [chain, project, sns, today, past, subscribe, nftData]);
   return (
     <>
       {indexArray.map((i) => (
