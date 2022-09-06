@@ -196,6 +196,7 @@ function SideBar() {
       } else {
         setSubscribe([]);
       }
+      setSubscribeStar((prev) => !prev);
     }
   };
   const onClickStar = () => {
@@ -235,7 +236,8 @@ function SideBar() {
       ) as NodeListOf<HTMLInputElement>;
       checkBoxes[0].checked = subscribeStar;
     }
-  }, [show]);
+  }, [subscribeStar, show]);
+
   return (
     <Wrapper>
       <Container>

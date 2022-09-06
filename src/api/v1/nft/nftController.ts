@@ -114,6 +114,8 @@ export const searchNftInfo = async (ctx: Context) => {
     let nfts = [];
     nfts = await NftInfo.find({
       title: { $regex: new RegExp(params.keyword as string, "i") },
+    }).sort({
+      createdAt: -1,
     });
     ctx.body = nfts;
     ctx.status = response.HTTP_OK;

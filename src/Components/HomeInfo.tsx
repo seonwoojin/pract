@@ -254,7 +254,7 @@ function HomeInfo({ nftData }: IProps) {
   const [hoveredId, sethoverdId] = useRecoilState(isSelected);
   const [indexArray, setIndexArray] = useState<number[]>([]);
   const { height, width } = useWindowDimensions();
-  const [offset, setOffset] = useState(5);
+  const [offset, setOffset] = useState(1);
   const [maxIndex, setMaxIndex] = useState(1);
   const isShow = useRecoilValue(isFilterShow);
   const chain = useRecoilValue(chainString);

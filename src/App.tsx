@@ -17,6 +17,7 @@ import DataProvider from "./context/DataProvider";
 import Search from "./Routes/Search";
 import SideBar from "./Components/SideBar";
 import { Helmet } from "react-helmet-async";
+import Footer from "./Components/Footer";
 
 function App() {
   const nfts = Object.keys(AllNft);
@@ -66,6 +67,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
+          <Footer />
         </Router>
       </DataProvider>
     </>

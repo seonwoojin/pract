@@ -38,7 +38,7 @@ const NewsTitleWrapper = styled.div`
 const NewsTitle = styled.div`
   width: 1200px;
   height: auto;
-  word-break: break-all;
+  word-break: keep-all;
   word-wrap: break-word;
   display: flex;
   justify-content: center;
@@ -102,7 +102,7 @@ const NewsDescription = styled.div`
   height: auto;
   min-height: 500px;
   padding-top: 20px;
-  word-break: break-all;
+  word-break: keep-all;
   word-wrap: break-word;
   ul {
     list-style-type: disc;
