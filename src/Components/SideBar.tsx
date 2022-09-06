@@ -20,6 +20,9 @@ import { axiosInstance } from "../axiosInstance";
 import { IUser } from "../context/DataProvider";
 
 const Wrapper = styled.div`
+  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+    display: none;
+  }
   position: fixed;
   top: 60px;
   z-index: 99;

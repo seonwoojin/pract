@@ -24,6 +24,9 @@ const InfoContainer = styled.div`
   justify-content: center;
   width: 90%;
   margin-bottom: 50px;
+  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+    margin-bottom: 0px;
+  }
 `;
 
 const InfoTitle = styled.div`
@@ -42,6 +45,7 @@ const InfoTitle = styled.div`
 const InfoWrapper = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
   padding-top: 50px;
   margin-bottom: 20px;
 `;
@@ -51,11 +55,15 @@ const Info = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 400px;
   width: 400px;
   height: 400px;
   margin-right: 20px;
   cursor: pointer;
+  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+    width: 80vw;
+    height: 80vw;
+    margin-right: 0px;
+  }
 `;
 
 const InfoHover = styled(motion.div)`

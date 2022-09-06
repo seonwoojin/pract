@@ -82,6 +82,9 @@ const UserContainer = styled.div`
 `;
 
 const Form = styled.form`
+  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+    display: none;
+  }
   display: flex;
   justify-content: center;
   align-items: center;
