@@ -167,7 +167,7 @@ function Header() {
         </Form>
         {isLogin ? (
           <UserContainer>
-            <div>
+            <div onClick={() => signOut()}>
               <Link to="/login">
                 <svg
                   style={{ width: "30px" }}

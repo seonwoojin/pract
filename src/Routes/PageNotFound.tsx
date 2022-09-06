@@ -7,6 +7,9 @@ const Home = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 50px;
+  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+    font-size: 30px;
+  }
 `;
 
 function PageNotFound() {

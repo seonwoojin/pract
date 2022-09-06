@@ -26,6 +26,7 @@ body {
   line-height: 1.2;
   background-color: white;
   overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 a {
   text-decoration: none;

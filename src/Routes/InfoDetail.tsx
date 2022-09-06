@@ -15,6 +15,9 @@ const HomeWrapper = styled.div`
   width: 100vw;
   font-family: "Open Sans";
   overflow-x: hidden;
+  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+    padding-top: 15vh;
+  }
 `;
 
 const NewsContainer = styled.div`
@@ -24,6 +27,9 @@ const NewsContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+    width: 90%;
+  }
 `;
 
 const NewsTitleWrapper = styled.div`
@@ -33,6 +39,9 @@ const NewsTitleWrapper = styled.div`
   justify-content: center;
   align-items: center;
   margin-bottom: 10px;
+  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+    width: 90%;
+  }
 `;
 
 const NewsTitle = styled.div`
@@ -47,6 +56,11 @@ const NewsTitle = styled.div`
   font-size: 40px;
   font-weight: 600;
   font-family: sans-serif;
+  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+    width: 90%;
+    font-size: 16px;
+    word-break: break-all;
+  }
 `;
 
 const NewsTitleLogoWrapper = styled.div`
@@ -56,6 +70,12 @@ const NewsTitleLogoWrapper = styled.div`
   align-items: center;
   font-size: 16px;
   font-weight: 500;
+  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+    width: 90%;
+    font-size: 16px;
+    word-break: break-all;
+    margin-bottom: 0px;
+  }
 `;
 
 const NewsTitleLogo = styled.div<{ url: string }>`
@@ -74,6 +94,9 @@ const NewsTitleProjcetName = styled.div`
   width: 600px;
   height: 50px;
   opacity: 0.6;
+  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+    width: 50%;
+  }
 `;
 
 const NewsTitleCreatedAt = styled.div`
@@ -83,6 +106,10 @@ const NewsTitleCreatedAt = styled.div`
   width: 550px;
   height: 50px;
   opacity: 0.6;
+  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+    font-size: 14px;
+    width: 50%;
+  }
 `;
 
 const NewSnsContainer = styled.div`
@@ -93,6 +120,10 @@ const NewSnsContainer = styled.div`
   height: 20px;
   opacity: 0.6;
   margin-top: 10px;
+  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+    width: 90%;
+    font-size: 16px;
+  }
 `;
 
 const NewsDescription = styled.div`
@@ -115,6 +146,10 @@ const NewsDescription = styled.div`
   }
   .ql-align-right {
     justify-content: flex-end;
+  }
+  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+    width: 90%;
+    font-size: 16px;
   }
 `;
 
