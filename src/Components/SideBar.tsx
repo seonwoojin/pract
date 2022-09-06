@@ -193,9 +193,15 @@ function SideBar() {
   const onClickSubscribe = (event: HTMLInputElement) => {
     if (!token["token"]) {
       navigate("/login");
+      const checkBoxes = document.getElementsByName(
+        "Subscribe"
+      ) as NodeListOf<HTMLInputElement>;
+      checkBoxes[0].checked = false;
     } else {
       if (event.checked) {
         setSubscribe(userSubscribeData);
+        setChain("");
+        setProject("");
       } else {
         setSubscribe([]);
       }

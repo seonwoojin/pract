@@ -132,7 +132,7 @@ const Button = styled.button`
   }
 `;
 
-const MobileDetail = styled.div`
+const MobileDetail = styled(motion.div)`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -298,6 +298,11 @@ function Header() {
   const onClickSubscribe = (event: HTMLInputElement) => {
     if (!token["token"]) {
       navigate("/login");
+      const checkBoxes = document.getElementsByName(
+        "Subscribe"
+      ) as NodeListOf<HTMLInputElement>;
+      checkBoxes[0].checked = false;
+      setShowDetail(false);
     } else {
       if (event.checked) {
         setSubscribe(userSubscribeData);
@@ -334,6 +339,7 @@ function Header() {
           setShowMenu(true);
         } else if (scrollYProgress.get() > 0.05) {
           setShowMenu(false);
+          setShowDetail(false);
         }
       });
     }
@@ -435,13 +441,22 @@ function Header() {
         ) : null}
       </AnimatePresence>
       {isMobile && showDetail ? (
-        <MobileDetail>
+        <MobileDetail
+          initial={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          animate={{ opacity: 1, y: 0, transition: { duration: 0.3 } }}
+        >
           {isLogin ? (
             <DetailText onClick={() => signOut()}>Sign out</DetailText>
           ) : (
-            <DetailText onClick={() => setShowDetail(false)}>
-              <Link to="/login">Sign in</Link>
-            </DetailText>
+            <>
+              <DetailText onClick={() => setShowDetail(false)}>
+                <Link to="/login">Sign in</Link>
+              </DetailText>
+              <DetailText onClick={() => setShowDetail(false)}>
+                <Link to="/join">Sign up</Link>
+              </DetailText>
+            </>
           )}
           <DetailText>Filter</DetailText>
           <FilterContainer>

@@ -62,6 +62,7 @@ const Label = styled.label`
 const Input = styled.input`
   height: 9%;
   width: 85%;
+  min-height: 40px;
   background-color: transparent;
   border: none;
   border-bottom: 1px solid black;
@@ -73,6 +74,7 @@ const Input = styled.input`
 const Button = styled.button`
   border: none;
   width: 50%;
+  min-width: 200px;
   height: 5vh;
   border-radius: 5px;
   font-size: 20px;

@@ -16,6 +16,7 @@ const HomeContainer = styled(motion.div)`
   justify-content: center;
   align-items: center;
   height: auto;
+  min-height: 120vh;
   width: 100vw;
   font-family: "Open Sans";
   padding-top: 200px;
