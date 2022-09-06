@@ -516,13 +516,15 @@ function Header() {
                 className="datePicker"
                 selected={today}
                 onChange={(date: Date) => setToday(date)}
+                popperModifiers={{
+                  //@ts-ignore
+                  preventOverflow: {
+                    enabled: true,
+                  },
+                }}
+                popperPlacement="auto"
               />
               ~
-              {/* <FilterDateInput
-                type="date"
-                defaultValue={defaultToday(past)}
-                style={{ marginTop: "10px" }}
-              ></FilterDateInput> */}
               <DatePicker
                 className="datePicker"
                 selected={past}

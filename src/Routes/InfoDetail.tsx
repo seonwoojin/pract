@@ -15,6 +15,7 @@ const HomeWrapper = styled.div`
   width: 100vw;
   font-family: "Open Sans";
   overflow-x: hidden;
+  margin-bottom: 200px;
   @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
     padding-top: 15vh;
   }
@@ -85,6 +86,10 @@ const NewsTitleLogo = styled.div<{ url: string }>`
   background: url(${(props) => props.url});
   background-position: center center;
   background-size: cover;
+  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+    height: 25px;
+    width: 25px;
+  }
 `;
 
 const NewsTitleProjcetName = styled.div`
