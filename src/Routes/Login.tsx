@@ -103,7 +103,7 @@ function Login() {
   const [token, setToken, removeToken] = useCookies(["token", "refreshToken"]);
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
-  const { register, handleSubmit } = useForm<IForm>();
+  const { register, handleSubmit, setValue } = useForm<IForm>();
   const onValid = ({ username, password }: IForm) => {
     const body = {
       username,
@@ -121,6 +121,7 @@ function Login() {
         }
       })
       .catch((error) => setErrorMessage(error.response.data));
+    setValue("password", "");
   };
   if (isLogin) {
     navigate("/");

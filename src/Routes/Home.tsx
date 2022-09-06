@@ -19,6 +19,7 @@ const HomeContainer = styled(motion.div)`
   width: 100vw;
   font-family: "Open Sans";
   padding-top: 200px;
+  overflow-x: hidden;
   @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
     padding-top: 100px;
   }
