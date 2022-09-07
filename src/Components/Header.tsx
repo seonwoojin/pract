@@ -57,14 +57,16 @@ const LogoContainer = styled.div`
     letter-spacing: 4px;
   }
   @media ${(props) => props.theme.device.tablet} {
-    width: 20%;
+    width: 40%;
+    margin-left: 0px;
   }
 `;
 
 const UserContainer = styled.div`
   width: 15%;
   @media screen and (min-width: ${(props) => props.theme.deviceSizes.tablet}) {
-    div:last-child {
+    div:last-child,
+    div:nth-child(4) {
       display: none;
     }
   }
@@ -86,7 +88,7 @@ const UserContainer = styled.div`
     cursor: pointer;
   }
   @media ${(props) => props.theme.device.tablet} {
-    width: 20%;
+    width: 40%;
     div {
       display: none;
     }
@@ -150,7 +152,7 @@ const DetailText = styled.div`
   display: flex;
   align-items: center;
   font-weight: 600;
-  font-size: 30px;
+  font-size: 25px;
   font-family: "Open Sans";
   padding: 10px;
   color: black;
@@ -168,7 +170,7 @@ const FilterContainer = styled.div`
   border-radius: 10px;
   background-color: white;
   box-shadow: 2px 3px rgba(0, 0, 0, 0.2);
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 `;
 
 const FilterTitle = styled.div`
@@ -237,8 +239,8 @@ const DateBoxWrapper = styled.div`
   .datePicker {
     display: flex;
     text-align: center;
-    width: 100px;
-    font-size: 15px;
+    width: 25vw;
+    font-size: 4vw;
     border: none;
     font-weight: 500;
   }
@@ -256,6 +258,7 @@ function Header() {
   const [isLogin, setIsLogin] = useRecoilState(isLogined);
   const navigate = useNavigate();
   const { scrollYProgress } = useScroll();
+  const [subscribeStar, setSubscribeStar] = useState(false);
   const [showMenu, setShowMenu] = useState(true);
   const [showDetail, setShowDetail] = useState(false);
   const [userSubscribeData, setUserSubscribeData] = useState<string[]>([]);
@@ -302,13 +305,28 @@ function Header() {
         "Subscribe"
       ) as NodeListOf<HTMLInputElement>;
       checkBoxes[0].checked = false;
-      setShowDetail(false);
     } else {
       if (event.checked) {
+        setSubscribe(userSubscribeData);
+        setChain("");
+        setProject("");
+      } else {
+        setSubscribe([]);
+      }
+      setSubscribeStar((prev) => !prev);
+    }
+  };
+  const onClickStar = () => {
+    if (!token["token"]) {
+      navigate("/login");
+      setShowDetail(false);
+    } else {
+      if (!subscribeStar) {
         setSubscribe(userSubscribeData);
       } else {
         setSubscribe([]);
       }
+      setSubscribeStar((prev) => !prev);
     }
   };
   useEffect(() => {
@@ -344,6 +362,15 @@ function Header() {
       });
     }
   }, [scrollYProgress]);
+  useEffect(() => {
+    if (showDetail) {
+      const checkBoxes = document.getElementsByName(
+        "Subscribe"
+      ) as NodeListOf<HTMLInputElement>;
+      checkBoxes[0].checked = subscribeStar;
+    }
+  }, [subscribeStar, showDetail]);
+
   return (
     <HeaderWrapper>
       <AnimatePresence>
@@ -405,6 +432,20 @@ function Header() {
                   </Link>
                 </div>
                 <div onClick={() => signOut()}>Sign out</div>
+                <div className="detail">
+                  <svg
+                    style={{
+                      fill: subscribeStar ? "#b82828" : "black",
+                      width: "25px",
+                      height: "25px",
+                    }}
+                    onClick={onClickStar}
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 576 512"
+                  >
+                    <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z" />
+                  </svg>
+                </div>
                 <div
                   onClick={() => setShowDetail((prev) => !prev)}
                   className="detail"
@@ -422,6 +463,20 @@ function Header() {
               <UserContainer>
                 <div>
                   <Link to="/login">Sign in</Link>
+                </div>
+                <div className="detail">
+                  <svg
+                    style={{
+                      fill: subscribeStar ? "#b82828" : "black",
+                      width: "25px",
+                      height: "25px",
+                    }}
+                    onClick={onClickStar}
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 576 512"
+                  >
+                    <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z" />
+                  </svg>
                 </div>
                 <div
                   onClick={() => setShowDetail((prev) => !prev)}
@@ -529,6 +584,13 @@ function Header() {
                 className="datePicker"
                 selected={past}
                 onChange={(date: Date) => setPast(date)}
+                popperModifiers={{
+                  //@ts-ignore
+                  preventOverflow: {
+                    enabled: true,
+                  },
+                }}
+                popperPlacement="auto"
               />
             </DateBoxWrapper>
           </FilterContainer>

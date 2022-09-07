@@ -137,6 +137,11 @@ const InfoMainLogo = styled.div<{ logourl: string }>`
   background: url(${(props) => props.logourl});
   background-position: center center;
   background-size: cover;
+  @media screen and (max-width: ${(props) => props.theme.deviceSizes.mobile}) {
+    width: 30px;
+    height: 30px;
+    margin-top: 10px;
+  }
 `;
 
 const InfoMainText = styled.div`
@@ -159,6 +164,12 @@ const InfoMainTitle = styled.div`
     font-weight: 600;
     font-size: 16px;
   }
+  @media screen and (max-width: ${(props) => props.theme.deviceSizes.mobile}) {
+    margin-bottom: 10px;
+    div {
+      font-size: 14px;
+    }
+  }
 `;
 
 const InfoMainSubText = styled.div`
@@ -168,6 +179,9 @@ const InfoMainSubText = styled.div`
   h1 {
     margin-bottom: 5px;
     opacity: 0.8;
+  }
+  @media screen and (max-width: ${(props) => props.theme.deviceSizes.mobile}) {
+    font-size: 14px;
   }
 `;
 
