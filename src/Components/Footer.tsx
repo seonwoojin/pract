@@ -16,6 +16,10 @@ const Title = styled.div`
     font-size: 30px;
     font-weight: 600;
     letter-spacing: 1px;
+    @media screen and (max-width: ${(props) =>
+        props.theme.deviceSizes.tablet}) {
+      font-size: 20px;
+    }
   }
 `;
 

@@ -66,7 +66,7 @@ const UserContainer = styled.div`
   width: 15%;
   @media screen and (min-width: ${(props) => props.theme.deviceSizes.tablet}) {
     div:last-child,
-    div:nth-child(4) {
+    .detail {
       display: none;
     }
   }
@@ -571,26 +571,16 @@ function Header() {
                 className="datePicker"
                 selected={today}
                 onChange={(date: Date) => setToday(date)}
-                popperModifiers={{
-                  //@ts-ignore
-                  preventOverflow: {
-                    enabled: true,
-                  },
-                }}
-                popperPlacement="auto"
+                disabledKeyboardNavigation
+                onFocus={(e) => e.target.blur()}
               />
               ~
               <DatePicker
                 className="datePicker"
                 selected={past}
                 onChange={(date: Date) => setPast(date)}
-                popperModifiers={{
-                  //@ts-ignore
-                  preventOverflow: {
-                    enabled: true,
-                  },
-                }}
-                popperPlacement="auto"
+                disabledKeyboardNavigation
+                onFocus={(e) => e.target.blur()}
               />
             </DateBoxWrapper>
           </FilterContainer>

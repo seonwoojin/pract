@@ -73,7 +73,8 @@ const Input = styled.input`
 const Button = styled.button`
   border: none;
   width: 30%;
-  height: 5vh;
+  min-width: 80px;
+  height: 35px;
   border-radius: 5px;
   font-size: 20px;
   font-weight: 600;
