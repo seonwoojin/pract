@@ -3,6 +3,7 @@ import { useRecoilState } from "recoil";
 import { themeMode } from "./../atom";
 
 const Wrapper = styled.div`
+  z-index: 99;
   display: flex;
   position: fixed;
   right: 20px;
