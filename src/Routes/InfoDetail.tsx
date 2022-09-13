@@ -1,18 +1,22 @@
 import styled from "styled-components";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getInfoDetail } from "./../axios";
-import { useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AllNft } from "../AllNft";
 import { breakingPoint } from "../constants/breakingPoint";
+import { DataContext } from "../context/DataProvider";
+import { axiosInstance } from "../axiosInstance";
+import { useCookies } from "react-cookie";
+import { response } from "./../constants/response";
 
 const HomeWrapper = styled.div`
   padding-top: 20vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   height: auto;
+  min-height: 100vh;
   width: 100vw;
   font-family: "Open Sans";
   overflow-x: hidden;
@@ -159,6 +163,32 @@ const NewsDescription = styled.div`
   }
 `;
 
+const ButtonBox = styled.div`
+  width: 80%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+`;
+
+const Button = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 130px;
+  height: 45px;
+  border-radius: 20px;
+  border: 3px solid black;
+  font-family: "Open Sans";
+  font-size: 16px;
+  font-weight: 500;
+  background-color: ${(props) => props.theme.lighter};
+  margin-right: 20px;
+  cursor: pointer;
+  :hover {
+    background-color: ${(props) => props.theme.darker};
+  }
+`;
+
 interface IData {
   _id: string;
   chain: string;
@@ -178,13 +208,45 @@ interface IInfo {
 
 function InfoDetail() {
   const params = useParams();
+  const navigate = useNavigate();
+  const { user } = useContext(DataContext);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [token] = useCookies(["token"]);
   const AllNfts = AllNft;
   const { isLoading, data: info } = useQuery<IInfo>([`${params.id}`], () =>
     getInfoDetail(params.id!)
   );
+  useEffect(() => {
+    if (user.admin) {
+      setIsAdmin(true);
+    }
+  }, [user]);
+  const onClickEdit = () => {
+    navigate(`/admin/?id=${params.id}`);
+  };
+  const onClickDelete = () => {
+    const alert = prompt("Please enter delete.");
+    if (alert === "delete") {
+      axiosInstance
+        .delete(`/api/v1/admin/delete/?nft=${params.id}`, {
+          headers: {
+            Authorization: `Bearer ${token["token"]}`,
+          },
+        })
+        .then((response) => {
+          navigate(`/`);
+        });
+    }
+  };
 
   return (
     <HomeWrapper>
+      {isAdmin ? (
+        <ButtonBox>
+          <Button onClick={onClickEdit}>Edit</Button>
+          <Button onClick={onClickDelete}>Delete</Button>
+        </ButtonBox>
+      ) : null}
       <NewsContainer>
         {isLoading ? null : (
           <>

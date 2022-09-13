@@ -91,6 +91,7 @@ const UserContainer = styled.div`
   }
   svg {
     cursor: pointer;
+    fill: ${(props) => props.theme.fontColor};
   }
   @media ${breakingPoint.device.tablet} {
     width: 40%;
@@ -132,7 +133,7 @@ const Button = styled.button`
   height: 70%;
   border: none;
   border-radius: 2px;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: ${(props) => props.theme.search};
   cursor: pointer;
   svg {
     width: 80%;
@@ -284,7 +285,7 @@ function Header() {
   const signOut = () => {
     removeToken("refreshToken");
     removeToken("token");
-    navigate("/");
+    window.location.replace("/");
     setIsLogin(false);
   };
   const onSearch = ({ keyword }: ISearch) => {
@@ -399,7 +400,9 @@ function Header() {
         </div> */}
             <LogoContainer>
               <h1>
-                <Link to="/">NINFO</Link>
+                <Link to="/" onClick={() => window.scrollTo(0, 0)}>
+                  NINFO
+                </Link>
               </h1>
             </LogoContainer>
             <Form onSubmit={handleSubmit(onSearch)}>

@@ -5,5 +5,6 @@ declare module "styled-components" {
     darker: string;
     lighter: string;
     fontColor: string;
+    search: string;
   }
 }

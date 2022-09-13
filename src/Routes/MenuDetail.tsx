@@ -1,4 +1,3 @@
-import { motion, Variants } from "framer-motion";
 import styled from "styled-components";
 import { useRecoilValue } from "recoil";
 import { isShow } from "../atom";

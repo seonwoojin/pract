@@ -6,7 +6,7 @@ import Join from "./Routes/Join";
 import { useCookies } from "react-cookie";
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { isLogined } from "./atom";
+import { isLogined, themeMode } from "./atom";
 import Admin from "./Routes/Admin";
 import MenuDetail from "./Routes/MenuDetail";
 import Info from "./Routes/Info";
@@ -18,6 +18,32 @@ import Search from "./Routes/Search";
 import SideBar from "./Components/SideBar";
 import { Helmet } from "react-helmet-async";
 import Footer from "./Components/Footer";
+import Mode from "./Components/Mode";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
+import reset from "styled-reset";
+import { theme } from "./theme";
+
+const GlobalStyle = createGlobalStyle`
+
+${reset}
+
+* {
+  box-sizing: border-box;
+}
+body {
+  font-family: 'Oswald','Holtwood One SC', 'Open Sans', sans-serif;
+  font-weight: 400;
+  color:${(props) => props.theme.fontColor};
+  line-height: 1.2;
+  background-color: ${(props) => props.theme.lighter};
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+a {
+  text-decoration: none;
+  color:inherit;
+}
+`;
 
 function App() {
   const nfts = Object.keys(AllNft);
@@ -26,7 +52,7 @@ function App() {
     "token",
     "refreshToken",
   ]);
-
+  const [mode, setMode] = useRecoilState(themeMode);
   useEffect(() => {
     if (cookies.token && cookies.token !== "undefined") {
       setIsLogin(true);
@@ -34,42 +60,46 @@ function App() {
   }, [cookies]);
   return (
     <>
-      <Helmet>
-        <title>Blueroom</title>
-        <link rel="canonical" href="https://www.tacobell.com/" />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Blueroom" />
-        <meta property="og:site_name" content="Blueroom" />
-      </Helmet>
-      <DataProvider>
-        <Router>
-          <Header />
-          <SideBar />
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/join" element={<Join />} />
-            <Route path="/admin" element={<Admin />} />
-            {nfts.map((nft, index) => (
-              <Route
-                key={"nft" + index}
-                path={`/${nft}`}
-                element={
-                  <MenuDetail
-                    logoColor="linear-gradient(to right, rgb(140,140,140), rgb(20,20,20));"
-                    chain={nft}
-                  />
-                }
-              />
-            ))}
-            <Route path="/:chain/:nft" element={<Info />}></Route>
-            <Route path="/:chain/:nft/:id" element={<InfoDetail />}></Route>
-            <Route path="/results/:search" element={<Search />} />
-            <Route path="/" element={<Home />} />
-            <Route path="*" element={<PageNotFound />} />
-          </Routes>
-          <Footer />
-        </Router>
-      </DataProvider>
+      <ThemeProvider theme={mode ? theme.white : theme.black}>
+        <GlobalStyle />
+        <Helmet>
+          <title>Blueroom</title>
+          <link rel="canonical" href="https://www.tacobell.com/" />
+          <meta property="og:type" content="website" />
+          <meta property="og:title" content="Blueroom" />
+          <meta property="og:site_name" content="Blueroom" />
+        </Helmet>
+        <DataProvider>
+          <Router>
+            <Header />
+            <SideBar />
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/join" element={<Join />} />
+              <Route path="/admin/" element={<Admin />} />
+              {nfts.map((nft, index) => (
+                <Route
+                  key={"nft" + index}
+                  path={`/${nft}`}
+                  element={
+                    <MenuDetail
+                      logoColor="linear-gradient(to right, rgb(140,140,140), rgb(20,20,20));"
+                      chain={nft}
+                    />
+                  }
+                />
+              ))}
+              <Route path="/:chain/:nft" element={<Info />}></Route>
+              <Route path="/:chain/:nft/:id" element={<InfoDetail />}></Route>
+              <Route path="/results/:search" element={<Search />} />
+              <Route path="/" element={<Home />} />
+              <Route path="*" element={<PageNotFound />} />
+            </Routes>
+            <Footer />
+            <Mode />
+          </Router>
+        </DataProvider>
+      </ThemeProvider>
     </>
   );
 }

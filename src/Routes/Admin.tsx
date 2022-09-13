@@ -1,5 +1,11 @@
 import { useForm } from "react-hook-form";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useMatch,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import styled from "styled-components";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useCookies } from "react-cookie";
@@ -35,7 +41,6 @@ const LeftHome = styled.div`
 const RightHome = styled.div`
   display: flex;
   flex-direction: column;
-
   height: 100vh;
   width: 40%;
   font-family: "Open Sans";
@@ -329,6 +334,17 @@ const NewsContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  .editor {
+    width: 1200px;
+    height: auto;
+    min-height: 500px;
+    padding-top: 20px;
+    word-break: break-all;
+    word-wrap: break-word;
+    p {
+      font-size: 16px;
+    }
+  }
 `;
 
 const NewsTitleWrapper = styled.div`
@@ -432,6 +448,7 @@ export interface INftInfo {
   createdAt: Date;
   createdTime: string;
   description: string;
+  _id?: string;
 }
 
 interface IDate {
@@ -473,14 +490,15 @@ const formats = [
 function Admin() {
   const quillRef = useRef<ReactQuill>();
   const AllNfts = AllNft;
+  const navigate = useNavigate();
   const today = new Date();
   const defaultToday = `${today.getFullYear()}-${(
     "0" +
     (today.getMonth() + 1)
   ).slice(-2)}-${("0" + today.getDate()).slice(-2)}`;
-  const params = useParams();
-  const navigate = useNavigate();
+  const query = useLocation();
   const [token] = useCookies(["token"]);
+  const [isEdit, setIsEdit] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [selectedChain, setSelectedChain] = useState("ETH");
   const { isLoading, data } = useQuery<IDate>(["check"], () =>
@@ -496,37 +514,9 @@ function Admin() {
   const [description, setDescription] = useState("");
   const [createdAt, setCreatedAt] = useState("");
   const [createdDate, setCreatedDate] = useState(defaultToday);
-  const [createdTime, setCreatedTime] = useState(" 00:00");
+  const [createdTime, setCreatedTime] = useState("00:00");
   const [descriptionValue, setDescriptionValue] = useState("");
   const { register, handleSubmit, setValue } = useForm<INftInfo>();
-  const onValid = ({
-    chain,
-    nft,
-    title,
-    thumbnail,
-    SNS,
-    createdAt,
-    createdTime,
-  }: INftInfo) => {
-    const body = {
-      chain,
-      nft,
-      title,
-      thumbnail,
-      description,
-      SNS: SNS[0],
-      createdAt: createdAt + " " + createdTime,
-    };
-    axiosInstance
-      .post("/api/v1/admin/upload", body)
-      .then((response) => {
-        if (response.status === 200) {
-        }
-        setValue("title", "");
-        setValue("thumbnail", "");
-      })
-      .catch((error) => setErrorMessage(error.response.data));
-  };
   const checkOnlyOne = (element: HTMLInputElement) => {
     const checkBoxes = document.getElementsByName(
       "SNS"
@@ -543,6 +533,34 @@ function Admin() {
     () => setCreatedAt(`${createdDate} ${createdTime}`),
     [createdDate, createdTime]
   );
+  useEffect(() => {
+    if (query.search.slice(4) !== "") {
+      axiosInstance
+        .get(`/api/v1/nft/info/${query.search.slice(4)}`)
+        .then((response) => {
+          setCreatedDate(response.data.createdAt.slice(0, 10));
+          setCreatedTime(response.data.createdAt.slice(11));
+          setChain(response.data.chain);
+          setProject(response.data.nft);
+          setSns(response.data.SNS);
+          setTitle(response.data.title);
+          setThumbnail(response.data.thumbnail);
+          setDescription(response.data.description);
+          setDescriptionValue(response.data.description);
+          setCreatedAt(response.data.createdAt);
+          const checkBoxes = document.getElementsByName(
+            "SNS"
+          ) as NodeListOf<HTMLInputElement>;
+          checkBoxes.forEach((cb) => {
+            if (cb.value === response.data.SNS) {
+              cb.checked = true;
+            }
+          });
+          setIsEdit(true);
+        })
+        .catch((error) => setErrorMessage(error.response.data));
+    }
+  }, []);
 
   const imageHandler = () => {
     const input = document.createElement("input");
@@ -594,6 +612,45 @@ function Admin() {
       console.error("404 Page Not Found");
     }
   }
+  const onValid = ({}) => {
+    const body = {
+      chain,
+      nft: project,
+      title,
+      thumbnail,
+      description,
+      SNS: sns,
+      createdAt: createdDate + " " + createdTime,
+      _id: query.search?.slice(4),
+    };
+    if (isEdit) {
+      axiosInstance
+        .patch("/api/v1/admin/update", body, {
+          headers: {
+            Authorization: `Bearer ${token["token"]}`,
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            navigate(`/${chain}/${project}/${query.search.slice(4)}`);
+          }
+        });
+    } else {
+      axiosInstance
+        .post("/api/v1/admin/upload", body, {
+          headers: {
+            Authorization: `Bearer ${token["token"]}`,
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+          }
+          setValue("title", "");
+          setValue("thumbnail", "");
+        })
+        .catch((error) => setErrorMessage(error.response.data));
+    }
+  };
 
   return (
     <>
@@ -618,6 +675,7 @@ function Admin() {
                   <div>
                     <Select
                       {...register("chain", { required: true })}
+                      value={chain}
                       id="chain"
                       onChange={(event) => {
                         setChain(event.currentTarget.value);
@@ -644,6 +702,7 @@ function Admin() {
                   <div>
                     <Select
                       id="nft"
+                      value={project}
                       {...register("nft", { required: true })}
                       onChange={(event) => {
                         setProject(event.currentTarget.value);
@@ -721,6 +780,7 @@ function Admin() {
                   {...register("title", { required: true })}
                   placeholder="Title"
                   id="title"
+                  value={title}
                   onChange={(event) => {
                     setTitle(event.currentTarget.value);
                   }}
@@ -732,6 +792,7 @@ function Admin() {
                   {...register("thumbnail", { required: true })}
                   placeholder="Img URL"
                   id="thumbnail"
+                  value={thumbnail}
                   onChange={(event) => {
                     setThumbnail(event.currentTarget.value);
                   }}
@@ -750,7 +811,7 @@ function Admin() {
                 <TimeWrapper>
                   <Input
                     {...register("createdAt", { required: true })}
-                    defaultValue={defaultToday}
+                    value={createdDate}
                     type="date"
                     style={{ marginTop: "10px" }}
                     onChange={(event) =>
@@ -759,7 +820,7 @@ function Admin() {
                   ></Input>
                   <Input
                     {...register("createdTime", { required: true })}
-                    defaultValue="00:00"
+                    value={createdTime}
                     type="time"
                     style={{ marginTop: "10px" }}
                     onChange={(event) =>
@@ -769,7 +830,7 @@ function Admin() {
                 </TimeWrapper>
                 <ErrorMessage>{errorMessage}</ErrorMessage>
                 <LabelWrapper>
-                  <Button>Upload</Button>
+                  <Button>{isEdit ? "Edit" : "Upload"}</Button>
                 </LabelWrapper>
               </Form>
               <InfoContainer>
@@ -863,12 +924,7 @@ function Admin() {
                 <NewSnsContainer>{sns}</NewSnsContainer>
               </NewsTitleWrapper>
               <hr style={{ width: "100%" }}></hr>
-              <NewsDescription
-                dangerouslySetInnerHTML={{ __html: description }}
-              />
-            </NewsContainer>
-            <RightHome>
-              <Label>Description</Label>
+              {/* <Label>Description</Label> */}
               <ReactQuill
                 ref={(element) => {
                   if (element !== null) {
@@ -882,7 +938,10 @@ function Admin() {
                 formats={formats}
                 modules={modules}
               />
-            </RightHome>
+              {/* <NewsDescription
+                dangerouslySetInnerHTML={{ __html: description }}
+              /> */}
+            </NewsContainer>
           </div>
         </HomeContainer>
       ) : (

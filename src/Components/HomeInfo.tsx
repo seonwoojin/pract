@@ -128,7 +128,7 @@ const InfoMain = styled.div`
   width: 100%;
   height: 40%;
   padding: 10px;
-  background-color: white;
+  background-color: ${(props) => props.theme.lighter};
 `;
 
 const InfoMainLogo = styled.div<{ logourl: string }>`
@@ -274,6 +274,7 @@ function HomeInfo({ nftData }: IProps) {
     []
   );
   const [data, setData] = useState<IData[]>(Object.values(nftData?.data));
+  console.log(data);
   const [hoveredId, sethoverdId] = useRecoilState(isSelected);
   const [indexArray, setIndexArray] = useState<number[]>([]);
   const { height, width } = useWindowDimensions();

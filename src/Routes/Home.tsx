@@ -36,7 +36,6 @@ function Home() {
     ["homeInfo"],
     getAllNft
   );
-
   return (
     <HomeContainer>
       {isLoadingNft ? null : <HomeInfo nftData={NftData!}></HomeInfo>}
