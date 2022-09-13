@@ -63,7 +63,7 @@ const Label = styled.label`
 const Input = styled.input`
   height: 9%;
   width: 85%;
-  background-color: transparent;
+  background-color: white;
   border: none;
   border-bottom: 1px solid black;
   margin-bottom: 20px;

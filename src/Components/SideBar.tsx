@@ -237,6 +237,11 @@ function SideBar() {
     }
   };
   useEffect(() => {
+    if (!token["token"]) {
+      setSubscribeStar(false);
+    }
+  }, [token]);
+  useEffect(() => {
     const today = new Date();
     const past = new Date();
     if (token["token"]) {
@@ -249,11 +254,13 @@ function SideBar() {
         .then((response) => {
           setUserSubscribeData(Object.values(response.data));
         });
+    } else if (!token["token"]) {
+      setSubscribe([]);
     }
     past.setMonth(today.getMonth() - 6);
     setToday(today);
     setPast(past);
-  }, []);
+  }, [token]);
   useEffect(() => {
     if (show) {
       const checkBoxes = document.getElementsByName(
