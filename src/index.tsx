@@ -22,9 +22,9 @@ ${reset}
 body {
   font-family: 'Oswald','Holtwood One SC', 'Open Sans', sans-serif;
   font-weight: 400;
-  color:${(props) => props.theme.origin.darker};
+  color:${(props) => props.theme.fontColor};
   line-height: 1.2;
-  background-color: white;
+  background-color: ${(props) => props.theme.lighter};
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
 }
@@ -41,7 +41,7 @@ root.render(
   <RecoilRoot>
     <CookiesProvider>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme.black}>
           <HelmetProvider>
             <GlobalStyle />
             <App />

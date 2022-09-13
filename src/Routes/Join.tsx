@@ -7,6 +7,7 @@ import {
   GoogleReCaptchaProvider,
 } from "react-google-recaptcha-v3";
 import { axiosInstance } from "../axiosInstance";
+import { breakingPoint } from "../constants/breakingPoint";
 
 const HomeContainer = styled.div`
   display: flex;
@@ -37,7 +38,7 @@ const Form = styled.form`
   border-radius: 20px;
   //box-shadow: 5px 5px 10px -5px;
   background-color: transparent;
-  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     width: 80vw;
     height: 50vh;
   }

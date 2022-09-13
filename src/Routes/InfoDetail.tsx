@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getInfoDetail } from "./../axios";
 import { useEffect } from "react";
 import { AllNft } from "../AllNft";
+import { breakingPoint } from "../constants/breakingPoint";
 
 const HomeWrapper = styled.div`
   padding-top: 20vh;
@@ -16,7 +17,7 @@ const HomeWrapper = styled.div`
   font-family: "Open Sans";
   overflow-x: hidden;
   margin-bottom: 200px;
-  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     padding-top: 15vh;
   }
 `;
@@ -28,7 +29,7 @@ const NewsContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     width: 90%;
   }
 `;
@@ -40,7 +41,7 @@ const NewsTitleWrapper = styled.div`
   justify-content: center;
   align-items: center;
   margin-bottom: 10px;
-  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     width: 90%;
   }
 `;
@@ -57,7 +58,7 @@ const NewsTitle = styled.div`
   font-size: 40px;
   font-weight: 600;
   font-family: sans-serif;
-  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     width: 90%;
     font-size: 16px;
     word-break: break-all;
@@ -71,7 +72,7 @@ const NewsTitleLogoWrapper = styled.div`
   align-items: center;
   font-size: 16px;
   font-weight: 500;
-  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     width: 90%;
     font-size: 16px;
     word-break: break-all;
@@ -86,7 +87,7 @@ const NewsTitleLogo = styled.div<{ url: string }>`
   background: url(${(props) => props.url});
   background-position: center center;
   background-size: cover;
-  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     height: 25px;
     width: 25px;
   }
@@ -99,7 +100,7 @@ const NewsTitleProjcetName = styled.div`
   width: 600px;
   height: 50px;
   opacity: 0.6;
-  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     width: 50%;
   }
 `;
@@ -111,7 +112,7 @@ const NewsTitleCreatedAt = styled.div`
   width: 550px;
   height: 50px;
   opacity: 0.6;
-  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     font-size: 14px;
     width: 50%;
   }
@@ -125,7 +126,7 @@ const NewSnsContainer = styled.div`
   height: 20px;
   opacity: 0.6;
   margin-top: 10px;
-  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     width: 90%;
     font-size: 16px;
   }
@@ -152,7 +153,7 @@ const NewsDescription = styled.div`
   .ql-align-right {
     justify-content: flex-end;
   }
-  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     width: 90%;
     font-size: 16px;
   }

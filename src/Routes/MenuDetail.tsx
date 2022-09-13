@@ -5,6 +5,7 @@ import { isShow } from "../atom";
 import DetailNftBox from "../Components/DetailNftBox";
 import { AllNft } from "../AllNft";
 import { title } from "process";
+import { breakingPoint } from "../constants/breakingPoint";
 
 const HomeWrapper = styled.div<{ show: boolean }>`
   padding-top: 20vh;
@@ -41,7 +42,7 @@ const Title = styled.div<{ logoColor: string }>`
     padding: 10px;
     border-radius: 10px;
   }
-  @media ${(props) => props.theme.device.tablet} {
+  @media ${breakingPoint.device.tablet} {
     width: 100%;
     justify-content: center;
   }

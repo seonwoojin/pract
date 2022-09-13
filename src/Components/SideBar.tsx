@@ -18,9 +18,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useCookies } from "react-cookie";
 import { axiosInstance } from "../axiosInstance";
 import { IUser } from "../context/DataProvider";
+import { breakingPoint } from "../constants/breakingPoint";
 
 const Wrapper = styled.div`
-  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     display: none;
   }
   position: fixed;
@@ -37,17 +38,32 @@ const Container = styled.div`
   width: 60px;
   height: calc(100vh - 60px);
   min-height: 500px;
-  background: linear-gradient(to top, white, #eeecec);
+  background: linear-gradient(
+    to top,
+    ${(props) => props.theme.lighter},
+    ${(props) => props.theme.darker}
+  );
   padding: 20px;
   padding-top: 50px;
   svg {
-    width: 25px;
-    height: 25px;
-    margin-bottom: 70px;
-    opacity: 0.7;
-    cursor: pointer;
-    fill: black;
+    :not(:nth-child(3)) {
+      width: 25px;
+      height: 25px;
+      margin-bottom: 70px;
+      opacity: 0.7;
+      cursor: pointer;
+      fill: ${(props) => props.theme.fontColor};
+    }
   }
+`;
+
+const StarSvg = styled.svg<{ star: boolean }>`
+  width: 25px;
+  height: 25px;
+  margin-bottom: 70px;
+  opacity: 0.7;
+  cursor: pointer;
+  fill: ${(props) => (props.star ? "red" : props.theme.fontColor)};
 `;
 
 const DetailContainer = styled(motion.form)`
@@ -78,7 +94,7 @@ const FilterContainer = styled.div`
   width: 220px;
   height: 80px;
   border-radius: 10px;
-  background-color: white;
+  background-color: ${(props) => props.theme.lighter};
   box-shadow: 2px 3px rgba(0, 0, 0, 0.2);
   margin-bottom: 30px;
 `;
@@ -259,14 +275,14 @@ function SideBar() {
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
           <path d="M224 256c70.7 0 128-57.31 128-128s-57.3-128-128-128C153.3 0 96 57.31 96 128S153.3 256 224 256zM274.7 304H173.3C77.61 304 0 381.6 0 477.3c0 19.14 15.52 34.67 34.66 34.67h378.7C432.5 512 448 496.5 448 477.3C448 381.6 370.4 304 274.7 304z" />
         </svg>
-        <svg
-          style={{ fill: subscribeStar ? "#b82828" : "black" }}
+        <StarSvg
+          star={subscribeStar}
           onClick={onClickStar}
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 576 512"
         >
           <path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z" />
-        </svg>
+        </StarSvg>
         <svg
           onClick={() => setShow((prev) => !prev)}
           xmlns="http://www.w3.org/2000/svg"

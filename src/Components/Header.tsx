@@ -25,9 +25,14 @@ import { isMobileChecker } from "./../isMobileChecker";
 import DatePicker from "react-datepicker";
 import { axiosInstance } from "../axiosInstance";
 import { IUser } from "../context/DataProvider";
+import { breakingPoint } from "./../constants/breakingPoint";
 
 const HeaderWrapper = styled.div`
-  background: linear-gradient(to right, white, #eeecec);
+  background: linear-gradient(
+    to right,
+    ${(props) => props.theme.lighter},
+    ${(props) => props.theme.darker}
+  );
   width: 100vw;
   position: fixed;
   display: flex;
@@ -56,7 +61,7 @@ const LogoContainer = styled.div`
     font-weight: 600;
     letter-spacing: 4px;
   }
-  @media ${(props) => props.theme.device.tablet} {
+  @media ${breakingPoint.device.tablet} {
     width: 40%;
     margin-left: 0px;
   }
@@ -64,7 +69,7 @@ const LogoContainer = styled.div`
 
 const UserContainer = styled.div`
   width: 15%;
-  @media screen and (min-width: ${(props) => props.theme.deviceSizes.tablet}) {
+  @media screen and (min-width: ${breakingPoint.deviceSizes.tablet}) {
     div:last-child,
     .detail {
       display: none;
@@ -87,7 +92,7 @@ const UserContainer = styled.div`
   svg {
     cursor: pointer;
   }
-  @media ${(props) => props.theme.device.tablet} {
+  @media ${breakingPoint.device.tablet} {
     width: 40%;
     div {
       display: none;
@@ -99,7 +104,7 @@ const UserContainer = styled.div`
 `;
 
 const Form = styled.form`
-  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     display: none;
   }
   display: flex;
@@ -114,7 +119,8 @@ const Input = styled.input`
   align-items: center;
   width: 60%;
   height: 70%;
-  background-color: white;
+  background-color: ${(props) => props.theme.lighter};
+  color: ${(props) => props.theme.fontColor};
   border: 2px solid rgba(0, 0, 0, 0.5);
   border-radius: 4px;
   padding: 10px;

@@ -1,13 +1,14 @@
 import { motion, Variants } from "framer-motion";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { breakingPoint } from "../constants/breakingPoint";
 
 const DetailContext = styled.h1`
   position: relative;
   margin-bottom: 20px;
   font-size: 16px;
   opacity: 0.8;
-  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     width: 100vw;
     font-size: 4vw;
   }

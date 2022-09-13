@@ -49,3 +49,8 @@ export const subscirbeProject = atom<string[]>({
   key: "subscirbeProject",
   default: [],
 });
+
+export const themeMode = atom({
+  key: "theme",
+  default: "light",
+});

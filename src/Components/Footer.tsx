@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { breakingPoint } from "../constants/breakingPoint";
 
 const FooterWrapper = styled.div`
   display: flex;
@@ -16,8 +17,9 @@ const Title = styled.div`
     font-size: 30px;
     font-weight: 600;
     letter-spacing: 1px;
-    @media screen and (max-width: ${(props) =>
-        props.theme.deviceSizes.tablet}) {
+  }
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
+    h1 {
       font-size: 20px;
     }
   }

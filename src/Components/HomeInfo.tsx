@@ -17,6 +17,7 @@ import {
 import { useRecoilState, useRecoilValue } from "recoil";
 import useWindowDimensions from "../useWindowDimensions";
 import { Link } from "react-router-dom";
+import { breakingPoint } from "../constants/breakingPoint";
 
 const InfoContainer = styled.div`
   display: flex;
@@ -24,7 +25,7 @@ const InfoContainer = styled.div`
   justify-content: center;
   width: 90%;
   margin-bottom: 50px;
-  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     margin-bottom: 0px;
   }
 `;
@@ -59,7 +60,7 @@ const Info = styled.div`
   height: 400px;
   margin-right: 20px;
   cursor: pointer;
-  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     width: 80vw;
     height: 80vw;
     margin-right: 0px;
@@ -137,7 +138,7 @@ const InfoMainLogo = styled.div<{ logourl: string }>`
   background: url(${(props) => props.logourl});
   background-position: center center;
   background-size: cover;
-  @media screen and (max-width: ${(props) => props.theme.deviceSizes.mobile}) {
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     width: 30px;
     height: 30px;
     margin-top: 10px;
@@ -164,7 +165,7 @@ const InfoMainTitle = styled.div`
     font-weight: 600;
     font-size: 16px;
   }
-  @media screen and (max-width: ${(props) => props.theme.deviceSizes.mobile}) {
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     margin-bottom: 10px;
     div {
       font-size: 14px;
@@ -180,7 +181,7 @@ const InfoMainSubText = styled.div`
     margin-bottom: 5px;
     opacity: 0.8;
   }
-  @media screen and (max-width: ${(props) => props.theme.deviceSizes.mobile}) {
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     font-size: 14px;
   }
 `;

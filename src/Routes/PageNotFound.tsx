@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { breakingPoint } from "../constants/breakingPoint";
 
 const Home = styled.div`
   height: 100vh;
@@ -7,7 +8,7 @@ const Home = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 50px;
-  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     font-size: 30px;
   }
 `;

@@ -9,6 +9,7 @@ import { IUser } from "../context/DataProvider";
 import { NftChecker } from "../NftChecker";
 import { AllNft } from "../AllNft";
 import HomeInfo from "../Components/HomeInfo";
+import { breakingPoint } from "../constants/breakingPoint";
 
 const HomeContainer = styled(motion.div)`
   display: flex;
@@ -21,7 +22,7 @@ const HomeContainer = styled(motion.div)`
   font-family: "Open Sans";
   padding-top: 200px;
   overflow-x: hidden;
-  @media screen and (max-width: ${(props) => props.theme.deviceSizes.tablet}) {
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     padding-top: 100px;
   }
 `;

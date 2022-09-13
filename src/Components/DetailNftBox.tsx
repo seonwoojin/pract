@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { IUser } from "./../context/DataProvider";
 import { axiosInstance } from "../axiosInstance";
 import { useCookies } from "react-cookie";
+import { breakingPoint } from "../constants/breakingPoint";
 
 const Wrapper = styled.div`
   position: relative;
@@ -23,7 +24,7 @@ const NftWrapper = styled(motion.div)`
   padding-right: 20px;
   padding-left: 20px;
   cursor: pointer;
-  @media ${(props) => props.theme.device.tablet} {
+  @media ${breakingPoint.device.tablet} {
     width: 90%;
   }
 `;
@@ -41,7 +42,7 @@ const NftLogo = styled.div<{ imgurl: string }>`
     background-size: cover;
     background-position: center center;
   }
-  @media ${(props) => props.theme.device.tablet} {
+  @media ${breakingPoint.device.tablet} {
     width: 40%;
     div {
       height: 80px;
@@ -73,7 +74,7 @@ const NftDetail = styled(motion.div)`
     display: flex;
     justify-content: space-between;
   }
-  @media ${(props) => props.theme.device.tablet} {
+  @media ${breakingPoint.device.tablet} {
     h1 {
       font-size: 5vw;
     }
