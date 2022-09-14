@@ -161,7 +161,6 @@ const InfoMainTitle = styled.div`
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-
     font-weight: 600;
     font-size: 16px;
   }
@@ -274,7 +273,6 @@ function HomeInfo({ nftData }: IProps) {
     []
   );
   const [data, setData] = useState<IData[]>(Object.values(nftData?.data));
-  console.log(data);
   const [hoveredId, sethoverdId] = useRecoilState(isSelected);
   const [indexArray, setIndexArray] = useState<number[]>([]);
   const { height, width } = useWindowDimensions();

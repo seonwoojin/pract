@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useRecoilState } from "recoil";
 import { themeMode } from "./../atom";
+import { useEffect, useState } from "react";
 
 const Wrapper = styled.div`
   z-index: 99;
@@ -65,7 +66,10 @@ const UpBox = styled.div`
 function Mode() {
   const [mode, setMode] = useRecoilState(themeMode);
   const clickMode = () => {
-    setMode((prev) => !prev);
+    setMode((prev) => {
+      localStorage.setItem("mode", String(!prev));
+      return !prev;
+    });
   };
   return (
     <Wrapper>

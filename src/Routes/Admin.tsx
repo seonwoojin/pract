@@ -19,11 +19,12 @@ import "react-quill/dist/quill.snow.css";
 import { axiosInstance } from "../axiosInstance";
 import { breakingPoint } from "../constants/breakingPoint";
 
-const HomeContainer = styled.div`
+const Form = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 200vh;
+  height: auto;
+  min-height: 200vh;
   width: 100vw;
   font-family: "Open Sans";
   padding-top: 100px;
@@ -52,7 +53,7 @@ const RightHome = styled.div`
 `;
 
 const Title = styled.div`
-  width: 85%;
+  width: 1200px;
   height: 5vh;
   display: flex;
   align-items: center;
@@ -61,7 +62,7 @@ const Title = styled.div`
   font-weight: 600;
 `;
 
-const Form = styled.form`
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -104,6 +105,7 @@ const Input = styled.input`
   padding-left: 10px;
   font-size: 15px;
   text-overflow: clip;
+  color: ${(props) => props.theme.fontColor};
 `;
 
 const TextArea = styled.textarea`
@@ -129,6 +131,10 @@ const Button = styled.button`
   margin-top: 30px;
   background-color: #19191a;
   cursor: pointer;
+  transition: all 0.3s linear;
+  :hover {
+    opacity: 0.5;
+  }
 `;
 
 const ErrorMessage = styled.div`
@@ -157,10 +163,22 @@ const SelectWrapper = styled.div`
 `;
 
 const Select = styled.select`
-  width: 100%;
+  width: auto;
   font-size: 15px;
   font-weight: 500;
-  margin-bottom: 10px;
+  background-color: ${(props) => props.theme.lighter};
+  color: ${(props) => props.theme.fontColor};
+  border: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  :hover {
+    font-weight: 600;
+  }
+  option {
+    width: auto;
+  }
 `;
 
 const CheckBoxWrapper = styled.div`
@@ -181,6 +199,11 @@ const TimeWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 85%;
+  input[type="datetime-local"]::-webkit-inner-spin-button,
+  input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+  }
 `;
 
 const InfoContainer = styled.div`
@@ -282,7 +305,7 @@ const InfoMain = styled.div`
   width: 100%;
   height: 40%;
   padding: 10px;
-  background-color: white;
+  background-color: ${(props) => props.theme.lighter};
 `;
 
 const InfoMainLogo = styled.div<{ logourl: string }>`
@@ -339,7 +362,8 @@ const NewsContainer = styled.div`
     height: auto;
     min-height: 500px;
     padding-top: 20px;
-    word-break: break-all;
+    margin-bottom: 200px;
+    word-break: keep-all;
     word-wrap: break-word;
     p {
       font-size: 16px;
@@ -356,10 +380,10 @@ const NewsTitleWrapper = styled.div`
   margin-bottom: 10px;
 `;
 
-const NewsTitle = styled.div`
+const NewsTitle = styled.textarea`
   width: 1200px;
   height: auto;
-  word-break: break-all;
+  word-break: keep-all;
   word-wrap: break-word;
   display: flex;
   justify-content: center;
@@ -368,6 +392,9 @@ const NewsTitle = styled.div`
   font-size: 40px;
   font-weight: 600;
   font-family: sans-serif;
+  background-color: ${(props) => props.theme.lighter};
+  color: ${(props) => props.theme.fontColor};
+  border: none;
 `;
 
 const NewsTitleLogoWrapper = styled.div`
@@ -404,6 +431,7 @@ const NewsTitleCreatedAt = styled.div`
   width: 550px;
   height: 50px;
   opacity: 0.6;
+  font-size: 16px;
 `;
 
 const NewSnsContainer = styled.div`
@@ -507,55 +535,62 @@ function Admin() {
   const [chain, setChain] = useState("ETH");
   const [project, setProject] = useState("cryptopunks");
   const [sns, setSns] = useState("twitter");
-  const [title, setTitle] = useState("Title");
+  const [title, setTitle] = useState("");
   const [thumbnail, setThumbnail] = useState(
     "https://images.pexels.com/photos/772803/pexels-photo-772803.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
   );
   const [description, setDescription] = useState("");
-  const [createdAt, setCreatedAt] = useState("");
-  const [createdDate, setCreatedDate] = useState(defaultToday);
-  const [createdTime, setCreatedTime] = useState("00:00");
+  const [createdAt, setCreatedAt] = useState(defaultToday + " " + "00:00");
+  const [createdDate, setCreatedDate] = useState(defaultToday + "T" + "00:00");
   const [descriptionValue, setDescriptionValue] = useState("");
   const { register, handleSubmit, setValue } = useForm<INftInfo>();
-  const checkOnlyOne = (element: HTMLInputElement) => {
-    const checkBoxes = document.getElementsByName(
-      "SNS"
-    ) as NodeListOf<HTMLInputElement>;
-    checkBoxes.forEach((cb) => {
-      cb.checked = false;
-    });
-    element.checked = true;
-  };
+  // const checkOnlyOne = (element: HTMLInputElement) => {
+  //   const checkBoxes = document.getElementsByName(
+  //     "SNS"
+  //   ) as NodeListOf<HTMLInputElement>;
+  //   checkBoxes.forEach((cb) => {
+  //     cb.checked = false;
+  //   });
+  //   element.checked = true;
+  // };
   useEffect(() => {
     setDescription(descriptionValue);
   }, [descriptionValue]);
-  useEffect(
-    () => setCreatedAt(`${createdDate} ${createdTime}`),
-    [createdDate, createdTime]
-  );
+  // useEffect(
+  //   () => setCreatedAt(`${createdDate} ${createdTime}`),
+  //   [createdDate, createdTime]
+  // );
   useEffect(() => {
     if (query.search.slice(4) !== "") {
       axiosInstance
         .get(`/api/v1/nft/info/${query.search.slice(4)}`)
         .then((response) => {
-          setCreatedDate(response.data.createdAt.slice(0, 10));
-          setCreatedTime(response.data.createdAt.slice(11));
+          setCreatedDate(
+            response.data.createdAt.slice(0, 10) +
+              "T" +
+              response.data.createdAt.slice(11)
+          );
           setChain(response.data.chain);
+          setSelectedChain(response.data.chain);
           setProject(response.data.nft);
           setSns(response.data.SNS);
           setTitle(response.data.title);
           setThumbnail(response.data.thumbnail);
           setDescription(response.data.description);
           setDescriptionValue(response.data.description);
-          setCreatedAt(response.data.createdAt);
-          const checkBoxes = document.getElementsByName(
-            "SNS"
-          ) as NodeListOf<HTMLInputElement>;
-          checkBoxes.forEach((cb) => {
-            if (cb.value === response.data.SNS) {
-              cb.checked = true;
-            }
-          });
+          setCreatedAt(
+            response.data.createdAt.slice(0, 10) +
+              " " +
+              response.data.createdAt.slice(11, 16)
+          );
+          // const checkBoxes = document.getElementsByName(
+          //   "SNS"
+          // ) as NodeListOf<HTMLInputElement>;
+          // checkBoxes.forEach((cb) => {
+          //   if (cb.value === response.data.SNS) {
+          //     cb.checked = true;
+          //   }
+          // });
           setIsEdit(true);
         })
         .catch((error) => setErrorMessage(error.response.data));
@@ -591,7 +626,7 @@ function Admin() {
       }
     });
   };
-  Quill.register("modules/ImageResize", ImageResize);
+  Quill.register("modules/ImageResize", ImageResize, true);
   const modules = useMemo(() => {
     return {
       toolbar: {
@@ -620,7 +655,7 @@ function Admin() {
       thumbnail,
       description,
       SNS: sns,
-      createdAt: createdDate + " " + createdTime,
+      createdAt,
       _id: query.search?.slice(4),
     };
     if (isEdit) {
@@ -647,6 +682,7 @@ function Admin() {
           }
           setValue("title", "");
           setValue("thumbnail", "");
+          navigate("/");
         })
         .catch((error) => setErrorMessage(error.response.data));
     }
@@ -655,24 +691,65 @@ function Admin() {
   return (
     <>
       {isLoading ? null : data?.data ? (
-        <HomeContainer>
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              height: "auto",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <LeftHome>
-              <Form onSubmit={handleSubmit(onValid)}>
-                <Title>Admin</Title>
-                <SelectWrapper>
-                  <LabelWrapper>
-                    <Label htmlFor="chain">Chain</Label>
-                  </LabelWrapper>
-                  <div>
+        <Form onSubmit={handleSubmit(onValid)}>
+          <Wrapper>
+            <Title>Admin</Title>
+            {/* <LabelWrapper>
+                  <Label htmlFor="title">Title</Label>
+                </LabelWrapper>
+                <Input
+                  {...register("title", { required: true })}
+                  placeholder="Title"
+                  id="title"
+                  value={title}
+                  onChange={(event) => {
+                    setTitle(event.currentTarget.value);
+                  }}
+                ></Input> */}
+            {/* <LabelWrapper>
+              <Label>CreatedAt</Label>
+            </LabelWrapper>
+            <TextArea
+                  {...register("description", { required: true })}
+                  placeholder="Description"
+                  id="description"
+                  onChange={(event) => {
+                    setDescription(event.currentTarget.value);
+                  }}
+                ></TextArea> 
+            <TimeWrapper>
+               <Input
+                {...register("createdAt", { required: true })}
+                value={createdDate}
+                type="date"
+                style={{ marginTop: "10px" }}
+                onChange={(event) => setCreatedDate(event.currentTarget.value)}
+              ></Input>
+             <Input
+                {...register("createdTime", { required: true })}
+                value={createdTime}
+                type="time"
+                style={{ marginTop: "10px" }}
+                onChange={(event) => setCreatedTime(event.currentTarget.value)}
+              ></Input> 
+            </TimeWrapper> */}
+          </Wrapper>
+          <div style={{ display: "flex" }}>
+            <NewsContainer>
+              <NewsTitleWrapper>
+                <NewsTitle
+                  placeholder="Title"
+                  id="title"
+                  value={title}
+                  onChange={(event) => {
+                    setTitle(event.currentTarget.value);
+                  }}
+                ></NewsTitle>
+                <NewsTitleLogoWrapper>
+                  <NewsTitleLogo
+                    url={AllNfts[chain.toLowerCase()][project]?.logourl}
+                  ></NewsTitleLogo>
+                  <NewsTitleProjcetName>
                     <Select
                       {...register("chain", { required: true })}
                       value={chain}
@@ -689,17 +766,11 @@ function Admin() {
                         }
                       }}
                     >
-                      <option value="ETH">Ethereum</option>
-                      <option value="SOL">Solana</option>
-                      <option value="KLAY">Klaytn</option>
+                      <option value="ETH">ETH</option>
+                      <option value="SOL">SOL</option>
+                      <option value="KLAY">KLAY</option>
                     </Select>
-                  </div>
-                </SelectWrapper>
-                <SelectWrapper>
-                  <LabelWrapper>
-                    <Label htmlFor="nft">NFT</Label>
-                  </LabelWrapper>
-                  <div>
+                    {"|"}
                     <Select
                       id="nft"
                       value={project}
@@ -740,99 +811,94 @@ function Admin() {
                           <option value="metatoydragonz">
                             Meta-Toy-DragonZ
                           </option>
-                          <option value="sunmmiyaclubofficial">
+                          <option value="sunmiyaclubofficial">
                             Sunmmiya-Club-Official
                           </option>
                           <option value="sheepfarm">SheepFarm</option>
                         </>
                       ) : null}
                     </Select>
-                  </div>
-                </SelectWrapper>
-                <CheckBoxWrapper>
-                  <div>Twitter</div>
-                  <Input
+                  </NewsTitleProjcetName>
+                  <NewsTitleCreatedAt>
+                    <Input
+                      {...register("createdAt", { required: true })}
+                      value={createdDate}
+                      type="datetime-local"
+                      style={{
+                        marginTop: "10px",
+                        opacity: "0.6",
+                        border: "none",
+                        width: "auto",
+                      }}
+                      onChange={(event) => {
+                        setCreatedDate(
+                          event.currentTarget.value.slice(0, 10) +
+                            "T" +
+                            event.currentTarget.value.slice(11, 16)
+                        );
+                        setCreatedAt(
+                          event.currentTarget.value.slice(0, 10) +
+                            " " +
+                            event.currentTarget.value.slice(11, 16)
+                        );
+                      }}
+                    ></Input>
+                  </NewsTitleCreatedAt>
+                </NewsTitleLogoWrapper>
+                <NewSnsContainer>
+                  <Select
                     {...register("SNS", { required: true })}
-                    type="checkbox"
-                    name="SNS"
-                    value="twitter"
-                    onClick={(event) => checkOnlyOne(event.currentTarget)}
+                    value={sns}
+                    id="sns"
                     onChange={(event) => {
                       setSns(event.currentTarget.value);
                     }}
-                  ></Input>
-                  <h1>Discord</h1>
-                  <Input
-                    {...register("SNS", { required: true })}
-                    name="SNS"
-                    type="checkbox"
-                    value="discord"
-                    onClick={(event) => checkOnlyOne(event.currentTarget)}
-                    onChange={(event) => {
-                      setSns(event.currentTarget.value);
-                    }}
-                  ></Input>
-                </CheckBoxWrapper>
-                <LabelWrapper>
-                  <Label htmlFor="title">Title</Label>
-                </LabelWrapper>
-                <Input
-                  {...register("title", { required: true })}
-                  placeholder="Title"
-                  id="title"
-                  value={title}
-                  onChange={(event) => {
-                    setTitle(event.currentTarget.value);
-                  }}
-                ></Input>
-                <LabelWrapper>
-                  <Label htmlFor="thumbnail">Img URL</Label>
-                </LabelWrapper>
-                <Input
-                  {...register("thumbnail", { required: true })}
-                  placeholder="Img URL"
-                  id="thumbnail"
-                  value={thumbnail}
-                  onChange={(event) => {
-                    setThumbnail(event.currentTarget.value);
-                  }}
-                ></Input>
-                <LabelWrapper>
-                  <Label>CreatedAt</Label>
-                </LabelWrapper>
-                {/* <TextArea
-                  {...register("description", { required: true })}
-                  placeholder="Description"
-                  id="description"
-                  onChange={(event) => {
-                    setDescription(event.currentTarget.value);
-                  }}
-                ></TextArea> */}
-                <TimeWrapper>
-                  <Input
-                    {...register("createdAt", { required: true })}
-                    value={createdDate}
-                    type="date"
-                    style={{ marginTop: "10px" }}
-                    onChange={(event) =>
-                      setCreatedDate(event.currentTarget.value)
-                    }
-                  ></Input>
-                  <Input
-                    {...register("createdTime", { required: true })}
-                    value={createdTime}
-                    type="time"
-                    style={{ marginTop: "10px" }}
-                    onChange={(event) =>
-                      setCreatedTime(event.currentTarget.value)
-                    }
-                  ></Input>
-                </TimeWrapper>
-                <ErrorMessage>{errorMessage}</ErrorMessage>
-                <LabelWrapper>
-                  <Button>{isEdit ? "Edit" : "Upload"}</Button>
-                </LabelWrapper>
-              </Form>
+                  >
+                    <option value="Twitter">Twitter</option>
+                    <option value="Discord">Discord</option>
+                  </Select>
+                </NewSnsContainer>
+              </NewsTitleWrapper>
+              <hr style={{ width: "100%" }}></hr>
+              <ReactQuill
+                ref={(element) => {
+                  if (element !== null) {
+                    quillRef.current = element;
+                  }
+                }}
+                className="editor"
+                theme="snow"
+                value={descriptionValue}
+                onChange={setDescriptionValue}
+                formats={formats}
+                modules={modules}
+              />
+            </NewsContainer>
+          </div>
+          <Wrapper>
+            <LabelWrapper>
+              <Label htmlFor="thumbnail">Thumbnail</Label>
+            </LabelWrapper>
+            <Input
+              {...register("thumbnail", { required: true })}
+              placeholder="Img URL"
+              id="thumbnail"
+              value={thumbnail}
+              onChange={(event) => {
+                setThumbnail(event.currentTarget.value);
+              }}
+            ></Input>
+          </Wrapper>
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              height: "auto",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <LeftHome>
               <InfoContainer>
                 <InfoWrapper>
                   <Info>
@@ -908,42 +974,28 @@ function Admin() {
               </InfoMain>
             </InfoHover>
           </div>
-          <div style={{ display: "flex" }}>
-            <NewsContainer>
-              <NewsTitleWrapper>
-                <NewsTitle>{title}</NewsTitle>
-                <NewsTitleLogoWrapper>
-                  <NewsTitleLogo
-                    url={AllNfts[chain.toLowerCase()][project]?.logourl}
-                  ></NewsTitleLogo>
-                  <NewsTitleProjcetName>
-                    {AllNfts[chain.toLowerCase()][project].title}
-                  </NewsTitleProjcetName>
-                  <NewsTitleCreatedAt>{createdAt}</NewsTitleCreatedAt>
-                </NewsTitleLogoWrapper>
-                <NewSnsContainer>{sns}</NewSnsContainer>
-              </NewsTitleWrapper>
-              <hr style={{ width: "100%" }}></hr>
-              {/* <Label>Description</Label> */}
-              <ReactQuill
-                ref={(element) => {
-                  if (element !== null) {
-                    quillRef.current = element;
-                  }
-                }}
-                className="editor"
-                theme="snow"
-                value={descriptionValue}
-                onChange={setDescriptionValue}
-                formats={formats}
-                modules={modules}
-              />
-              {/* <NewsDescription
-                dangerouslySetInnerHTML={{ __html: description }}
-              /> */}
-            </NewsContainer>
+          <div
+            style={{
+              width: "50%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <ErrorMessage>{errorMessage}</ErrorMessage>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Button>{isEdit ? "Edit" : "Upload"}</Button>
+            </div>
           </div>
-        </HomeContainer>
+        </Form>
       ) : (
         <PageNotFound />
       )}

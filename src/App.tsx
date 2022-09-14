@@ -39,6 +39,11 @@ body {
   overflow-x: hidden;
   -webkit-tap-highlight-color: transparent;
 }
+input[type="datetime-local"]::-webkit-inner-spin-button,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
 a {
   text-decoration: none;
   color:inherit;
@@ -58,6 +63,7 @@ function App() {
       setIsLogin(true);
     }
   }, [cookies]);
+
   return (
     <>
       <ThemeProvider theme={mode ? theme.white : theme.black}>

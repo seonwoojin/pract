@@ -100,6 +100,7 @@ const NewsTitleLogo = styled.div<{ url: string }>`
 const NewsTitleProjcetName = styled.div`
   display: flex;
   align-items: center;
+  text-align: center;
   margin-left: 10px;
   width: 600px;
   height: 50px;
@@ -150,6 +151,15 @@ const NewsDescription = styled.div`
   }
   p {
     display: flex;
+  }
+  h1 {
+    font-size: 26px;
+  }
+  h2 {
+    font-size: 19px;
+  }
+  h3 {
+    font-size: 15.5px;
   }
   .ql-align-center {
     justify-content: center;
@@ -260,10 +270,10 @@ function InfoDetail() {
                   }
                 ></NewsTitleLogo>
                 <NewsTitleProjcetName>
-                  {
+                  {info?.data.chain +
+                    " | " +
                     AllNfts[info?.data.chain.toLowerCase()!][info?.data.nft!]
-                      .title
-                  }
+                      .title}
                 </NewsTitleProjcetName>
                 <NewsTitleCreatedAt>{info?.data.createdAt}</NewsTitleCreatedAt>
               </NewsTitleLogoWrapper>

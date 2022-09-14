@@ -52,5 +52,5 @@ export const subscirbeProject = atom<string[]>({
 
 export const themeMode = atom({
   key: "theme",
-  default: true,
+  default: localStorage.getItem("mode") !== "false",
 });
