@@ -638,15 +638,15 @@ function Admin() {
       },
     };
   }, []);
-  if (token["token"] == undefined) {
-    console.error("404 Page Not Found");
-    return <PageNotFound />;
-  }
-  if (!isLoading) {
-    if (!data?.data) {
-      console.error("404 Page Not Found");
-    }
-  }
+  // if (token["token"] == undefined) {
+  //   console.error("404 Page Not Found");
+  //   return <PageNotFound />;
+  // }
+  // if (!isLoading) {
+  //   if (!data?.data) {
+  //     console.error("404 Page Not Found");
+  //   }
+  // }
   const onValid = ({}) => {
     const body = {
       chain,
