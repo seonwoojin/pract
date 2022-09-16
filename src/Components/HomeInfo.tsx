@@ -266,6 +266,8 @@ const nonHoverVariants: Variants = {
 };
 
 function HomeInfo({ nftData }: IProps) {
+  const divRefs = useRef<HTMLDivElement[]>([]);
+  divRefs.current.forEach((e) => e.offsetTop);
   const AllNfts = AllNft;
   const [detail, setDetail] = useState(false);
   const [hover, setHover] = useState("");
@@ -370,7 +372,10 @@ function HomeInfo({ nftData }: IProps) {
                 key={info._id}
                 to={`/${info.chain}/${info.nft}/${info._id}`}
               >
-                <Info key={info._id + index}>
+                <Info
+                  ref={(e) => (divRefs.current[i] = e!)}
+                  key={info._id + index}
+                >
                   <AnimatePresence>
                     {hover === info._id ? (
                       <InfoHover

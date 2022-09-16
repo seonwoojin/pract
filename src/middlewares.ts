@@ -1,13 +1,12 @@
-import { Context } from "koa";
 import { Cookies } from "react-cookie";
 import { response } from "./constants/response";
 import jwt from "jsonwebtoken";
 import User from "./models/User";
-import { useEffect, useRef } from "react";
 import multer from "koa-multer";
 import path from "path";
-import { S3Client } from "@aws-sdk/client-s3";
+import { CopyObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import multerS3 from "multer-s3";
+import koa, { Context } from "koa";
 
 const cookies = new Cookies();
 const accessKey = process.env.ACCESS_SECRET_KEY;
@@ -69,7 +68,11 @@ const multerUploader = multerS3({
   key: function (req, file, cb) {
     let extension = path.extname(file.originalname);
     let basename = path.basename(file.originalname, extension);
-    cb(null, `images/${basename}-${Date.now()}${extension}`);
+    cb(
+      null,
+      //@ts-ignore
+      `temporary/${req.headers.username}/${basename}-${Date.now()}${extension}`
+    );
   },
 });
 

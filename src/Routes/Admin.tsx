@@ -7,10 +7,10 @@ import {
   useParams,
 } from "react-router-dom";
 import styled from "styled-components";
-import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { memo, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
-import { getAdminCheck } from "../axios";
+import { getAdminCheck, getUser } from "../axios";
 import PageNotFound from "./PageNotFound";
 import { AllNft } from "../AllNft";
 import ReactQuill, { Quill } from "react-quill";
@@ -18,6 +18,7 @@ import ImageResize from "@looop/quill-image-resize-module-react";
 import "react-quill/dist/quill.snow.css";
 import { axiosInstance } from "../axiosInstance";
 import { breakingPoint } from "../constants/breakingPoint";
+import { DataContext } from "../context/DataProvider";
 
 const Form = styled.form`
   display: flex;
@@ -129,6 +130,7 @@ const Button = styled.button`
   font-weight: 600;
   color: white;
   margin-top: 30px;
+  margin-bottom: 100px;
   background-color: #19191a;
   cursor: pointer;
   transition: all 0.3s linear;
@@ -532,6 +534,11 @@ function Admin() {
   const { isLoading, data } = useQuery<IDate>(["check"], () =>
     getAdminCheck(token["token"])
   );
+  const { isLoading: isUserLoading, data: userData } = useQuery(["user"], () =>
+    getUser(token["token"])
+  );
+  const [address, setAddress] = useState([""]);
+  const [addressCount, setAddressCount] = useState<number[]>([0]);
   const [chain, setChain] = useState("ETH");
   const [project, setProject] = useState("cryptopunks");
   const [sns, setSns] = useState("twitter");
@@ -556,12 +563,65 @@ function Admin() {
   useEffect(() => {
     setDescription(descriptionValue);
   }, [descriptionValue]);
-  // useEffect(
-  //   () => setCreatedAt(`${createdDate} ${createdTime}`),
-  //   [createdDate, createdTime]
-  // );
   useEffect(() => {
-    if (query.search.slice(4) !== "") {
+    async function editReset() {
+      const body = { title };
+      await axiosInstance.post(`/api/v1/admin/reset/edit`, body, {
+        headers: {
+          Authorization: `Bearer ${token["token"]}`,
+        },
+      });
+    }
+    if (isEdit && !isUserLoading) {
+      editReset();
+      const posCount: number[] = [];
+      let pos = 0;
+      while (pos !== -1) {
+        pos = description.indexOf("img src", pos + 1);
+        if (pos !== -1) posCount.push(pos);
+      }
+      for (let i = 0; i < posCount.length; i++) {
+        if (i === posCount.length - 1) {
+          setAddress((prev) => [
+            ...prev,
+            description
+              .slice(posCount[i])
+              .slice(9)
+              .slice(
+                0,
+                description.slice(posCount[i]).slice(9).indexOf("></") - 1
+              ),
+          ]);
+        } else {
+          setAddress((prev) => [
+            ...prev,
+            description
+              .slice(posCount[i], posCount[i + 1])
+              .slice(9)
+              .slice(
+                0,
+                description
+                  .slice(posCount[i], posCount[i + 1])
+                  .slice(9)
+                  .indexOf("></") - 1
+              ),
+          ]);
+        }
+      }
+    }
+  }, [isEdit, isUserLoading]);
+  useEffect(() => {
+    async function reset() {
+      await axiosInstance.get(`/api/v1/admin/reset`, {
+        headers: {
+          Authorization: `Bearer ${token["token"]}`,
+        },
+      });
+    }
+    reset();
+  }, []);
+  useEffect(() => {
+    if (query.search.slice(4) !== "" && !isUserLoading) {
       axiosInstance
         .get(`/api/v1/nft/info/${query.search.slice(4)}`)
         .then((response) => {
@@ -595,7 +655,7 @@ function Admin() {
         })
         .catch((error) => setErrorMessage(error.response.data));
     }
-  }, []);
+  }, [isUserLoading]);
 
   const imageHandler = () => {
     const input = document.createElement("input");
@@ -611,10 +671,16 @@ function Admin() {
         formData.append("img", file);
         try {
           const result = await axiosInstance.post(
-            "/api/v1/admin/img",
-            formData
+            `/api/v1/admin/img`,
+            formData,
+            {
+              headers: {
+                Username: userData?.data.username,
+              },
+            }
           );
-          const IMG_URL = result.data;
+          const IMG_URL: string = result.data;
+          setAddress((prev) => [...prev, IMG_URL]);
           const editor = quillRef.current?.getEditor(); // 에디터 객체 가져오기
           const range = editor?.getSelection();
           editor?.insertEmbed(range?.index!, "image", IMG_URL);
@@ -637,23 +703,51 @@ function Admin() {
         parchment: Quill.import("parchment"),
       },
     };
-  }, []);
-  // if (token["token"] == undefined) {
-  //   console.error("404 Page Not Found");
-  //   return <PageNotFound />;
-  // }
+  }, [isUserLoading]);
+  useEffect(() => {
+    address.forEach((add) => {
+      const body = {
+        add: add.replaceAll(
+          `/post/${title.replaceAll(" ", "")}/`,
+          `/temporary/${userData?.data.username}/`
+        ),
+      };
+      if (!descriptionValue.includes(add)) {
+        axiosInstance
+          .post("/api/v1/admin/delete/img", body)
+          .then((response) => {
+            const prev: string[] = [];
+            address.forEach((ad) => {
+              if (ad !== add) {
+                prev.push(ad);
+              }
+            });
+            setAddress(() => [...prev]);
+          });
+      }
+    });
+  }, [descriptionValue]);
+
+  if (token["token"] == undefined) {
+    console.error("404 Page Not Found");
+    return <PageNotFound />;
+  }
   // if (!isLoading) {
   //   if (!data?.data) {
   //     console.error("404 Page Not Found");
   //   }
   // }
   const onValid = ({}) => {
+    const editedDescription = description.replaceAll(
+      `/temporary/${userData?.data.username}/`,
+      `/post/${title.replaceAll(" ", "")}/`
+    );
     const body = {
       chain,
       nft: project,
       title,
       thumbnail,
-      description,
+      description: editedDescription,
       SNS: sns,
       createdAt,
       _id: query.search?.slice(4),
@@ -667,7 +761,9 @@ function Admin() {
         })
         .then((response) => {
           if (response.status === 200) {
-            navigate(`/${chain}/${project}/${query.search.slice(4)}`);
+            window.location.replace(
+              `/${chain}/${project}/${query.search.slice(4)}`
+            );
           }
         });
     } else {

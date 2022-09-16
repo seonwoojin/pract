@@ -217,6 +217,7 @@ interface IInfo {
 }
 
 function InfoDetail() {
+  const [title, setTitle] = useState("");
   const params = useParams();
   const navigate = useNavigate();
   const { user } = useContext(DataContext);
@@ -227,6 +228,11 @@ function InfoDetail() {
     getInfoDetail(params.id!)
   );
   useEffect(() => {
+    if (!isLoading) {
+      setTitle(info!.data.title);
+    }
+  }, [isLoading]);
+  useEffect(() => {
     if (user.admin) {
       setIsAdmin(true);
     }
@@ -235,17 +241,20 @@ function InfoDetail() {
     navigate(`/admin/?id=${params.id}`);
   };
   const onClickDelete = () => {
-    const alert = prompt("Please enter delete.");
-    if (alert === "delete") {
-      axiosInstance
-        .delete(`/api/v1/admin/delete/?nft=${params.id}`, {
-          headers: {
-            Authorization: `Bearer ${token["token"]}`,
-          },
-        })
-        .then((response) => {
-          navigate(`/`);
-        });
+    if (!isLoading) {
+      const alert = prompt("Please enter delete.");
+      const body = { title };
+      if (alert === "delete") {
+        axiosInstance
+          .post(`/api/v1/admin/delete/?nft=${params.id}`, body, {
+            headers: {
+              Authorization: `Bearer ${token["token"]}`,
+            },
+          })
+          .then((response) => {
+            navigate(`/`);
+          });
+      }
     }
   };
 

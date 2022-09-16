@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const nftSchema = new mongoose.Schema({
   chain: { type: String, required: true },
   nft: { type: String, required: true },
-  title: { type: String, required: true },
+  title: { type: String, required: true, unique: true },
   thumbnail: { type: String, required: true },
   description: { type: String, required: true },
   SNS: { type: String, required: true },
