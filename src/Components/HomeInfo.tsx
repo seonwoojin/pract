@@ -18,6 +18,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import useWindowDimensions from "../useWindowDimensions";
 import { Link } from "react-router-dom";
 import { breakingPoint } from "../constants/breakingPoint";
+import { isMobileChecker } from "../isMobileChecker";
 
 const InfoContainer = styled.div`
   display: flex;
@@ -79,12 +80,21 @@ const InfoHover = styled(motion.div)`
   height: 600px;
   margin-right: 20px;
   cursor: pointer;
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
+    width: 80vw;
+    height: 80vh;
+    margin-right: 0px;
+  }
 `;
 
 const InfoNonHover = styled(motion.div)<{ ishovered: string }>`
   width: 100%;
   height: 100%;
   z-index: ${(props) => (props.ishovered === "true" ? 98 : 0)};
+  @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
+    width: 50vw;
+    height: 50vh;
+  }
 `;
 
 const InfoImage = styled.div<{ url: string; detail: boolean }>`
@@ -218,6 +228,15 @@ const InfoNext = styled.div`
   }
 `;
 
+const CenterBox = styled.div`
+  z-index: -1;
+  position: fixed;
+  height: 50vh;
+  width: 50vw;
+  left: calc(50vw / 2);
+  top: calc(25vh);
+`;
+
 interface IProps {
   nftData: IInfo;
 }
@@ -266,8 +285,9 @@ const nonHoverVariants: Variants = {
 };
 
 function HomeInfo({ nftData }: IProps) {
+  const isMobile = isMobileChecker();
+  const divRef = useRef<HTMLDivElement>();
   const divRefs = useRef<HTMLDivElement[]>([]);
-  divRefs.current.forEach((e) => e.offsetTop);
   const AllNfts = AllNft;
   const [detail, setDetail] = useState(false);
   const [hover, setHover] = useState("");
@@ -329,6 +349,24 @@ function HomeInfo({ nftData }: IProps) {
     setDetail((prev) => !prev);
   }, 8000);
 
+  useInterval(() => {
+    if (isMobile) {
+      let offsetTop: number = 10000;
+      let target: HTMLDivElement;
+      divRefs.current.forEach((e, index) => {
+        if (
+          Math.abs(e.getBoundingClientRect().top - divRef.current?.offsetTop!) <
+          offsetTop
+        ) {
+          offsetTop = Math.abs(
+            e.getBoundingClientRect().top - divRef.current?.offsetTop!
+          );
+          target = e;
+        }
+        setHover(target.classList[2]);
+      });
+    }
+  }, 1000);
   useEffect(() => setData(Object.values(nftData.data)), [nftData]);
 
   useEffect(() => {
@@ -364,6 +402,13 @@ function HomeInfo({ nftData }: IProps) {
   }, [chain, project, sns, today, past, subscribe, nftData]);
   return (
     <>
+      <CenterBox
+        ref={(element) => {
+          if (element !== null) {
+            divRef.current = element;
+          }
+        }}
+      />
       {indexArray.map((i) => (
         <InfoContainer key={i}>
           <InfoWrapper>
@@ -373,8 +418,12 @@ function HomeInfo({ nftData }: IProps) {
                 to={`/${info.chain}/${info.nft}/${info._id}`}
               >
                 <Info
-                  ref={(e) => (divRefs.current[i] = e!)}
+                  ref={(e) => {
+                    console.log(e, index);
+                    divRefs.current[i] = e!;
+                  }}
                   key={info._id + index}
+                  className={info._id}
                 >
                   <AnimatePresence>
                     {hover === info._id ? (
