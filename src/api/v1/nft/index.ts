@@ -3,6 +3,7 @@ import {
   getAllNftInfo,
   getNftInfo,
   getNftInfoDetail,
+  postRead,
   searchNftInfo,
   userLikeDetailInfo,
   userRecommendDetailInfo,
@@ -18,5 +19,6 @@ nft.get("/like", userChecker, userLikeDetailInfo);
 nft.get("/recommend", userChecker, userRecommendDetailInfo);
 nft.get("/search", searchNftInfo);
 nft.get("/info/:id", getNftInfoDetail);
+nft.get("/read", userChecker, postRead);
 
 export default nft;

@@ -119,7 +119,7 @@ function Login() {
         setToken("refreshToken", response.data.refreshToken);
         setToken("token", response.data.accessToken);
         if (response.status === 200) {
-          navigate("/");
+          window.location.replace("/");
         }
       })
       .catch((error) => setErrorMessage(error.response.data));

@@ -9,6 +9,7 @@ import { DataContext } from "../context/DataProvider";
 import { axiosInstance } from "../axiosInstance";
 import { useCookies } from "react-cookie";
 import { response } from "./../constants/response";
+import { useScroll } from "framer-motion";
 
 const HomeWrapper = styled.div`
   padding-top: 20vh;
@@ -217,6 +218,8 @@ interface IInfo {
 }
 
 function InfoDetail() {
+  window.scrollTo(0, 0);
+  const today = new Date();
   const [title, setTitle] = useState("");
   const params = useParams();
   const navigate = useNavigate();
@@ -224,9 +227,12 @@ function InfoDetail() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [token] = useCookies(["token"]);
   const AllNfts = AllNft;
+  const { scrollYProgress } = useScroll();
   const { isLoading, data: info } = useQuery<IInfo>([`${params.id}`], () =>
     getInfoDetail(params.id!)
   );
+  console.log(isLoading);
+  let end = false;
   useEffect(() => {
     if (!isLoading) {
       setTitle(info!.data.title);
@@ -237,6 +243,29 @@ function InfoDetail() {
       setIsAdmin(true);
     }
   }, [user]);
+  useEffect(() => {
+    if (!isLoading) {
+      scrollYProgress.onChange(() => {
+        if (scrollYProgress.get() >= 0.95 && !end) {
+          if (
+            (today.getTime() -
+              new Date(info!.data.createdAt.slice(0, 10)).getTime()) /
+              (1000 * 60 * 60 * 24) <=
+            15
+          ) {
+            if (token["token"]) {
+              axiosInstance.get(`/api/v1/nft/read?id=${params.id}`, {
+                headers: {
+                  Authorization: `Bearer ${token["token"]}`,
+                },
+              });
+            }
+          }
+          end = true;
+        }
+      });
+    }
+  }, [scrollYProgress, isLoading]);
   const onClickEdit = () => {
     navigate(`/admin/?id=${params.id}`);
   };

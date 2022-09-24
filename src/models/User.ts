@@ -1,5 +1,6 @@
 import mongoose, { Document } from "mongoose";
 import bcrypt from "bcrypt";
+import Post from "./Post";
 
 export interface IUser extends Document {
   username: string;

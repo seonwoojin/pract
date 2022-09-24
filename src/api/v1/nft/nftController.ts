@@ -1,7 +1,8 @@
 import { Context } from "koa";
 import NftInfo from "./../../../models/NftInfo";
 import { response } from "../../../constants/response";
-import { IUser } from "../../../models/User";
+import User, { IUser } from "../../../models/User";
+import Post from "../../../models/Post";
 import mongoose from "mongoose";
 
 export const getNftInfo = async (ctx: Context) => {
@@ -118,6 +119,22 @@ export const searchNftInfo = async (ctx: Context) => {
       createdAt: -1,
     });
     ctx.body = nfts;
+    ctx.status = response.HTTP_OK;
+  } catch (error) {
+    ctx.body = error;
+    ctx.status = response.HTTP_BAD_REQUEST;
+  }
+};
+
+interface IParams {
+  id: string;
+}
+
+export const postRead = async (ctx: Context) => {
+  try {
+    const { id } = ctx.query;
+    const user: IUser = ctx.user;
+    await Post.create({ user: user.id, post: id });
     ctx.status = response.HTTP_OK;
   } catch (error) {
     ctx.body = error;

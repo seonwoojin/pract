@@ -419,7 +419,6 @@ function HomeInfo({ nftData }: IProps) {
               >
                 <Info
                   ref={(e) => {
-                    console.log(e, index);
                     divRefs.current[i] = e!;
                   }}
                   key={info._id + index}

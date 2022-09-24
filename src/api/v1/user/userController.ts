@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nft from "./../nft/index";
 import { userChecker } from "./../../../middlewares";
+import Post from "./../../../models/Post";
 
 export const postLogin = async (ctx: Context) => {
   try {
@@ -94,6 +95,17 @@ export const getUserData = async (ctx: Context) => {
   try {
     const user: IUser = ctx.user;
     ctx.body = user;
+    ctx.status = response.HTTP_OK;
+  } catch {
+    ctx.status = response.HTTP_BAD_REQUEST;
+  }
+};
+
+export const getUserReadPost = async (ctx: Context) => {
+  try {
+    const user: IUser = ctx.user;
+    const post = await Post.find({ user: user.id });
+    ctx.body = post;
     ctx.status = response.HTTP_OK;
   } catch {
     ctx.status = response.HTTP_BAD_REQUEST;

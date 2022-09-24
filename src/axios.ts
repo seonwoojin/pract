@@ -58,3 +58,13 @@ export function getInfoDetail(id: string) {
 
   return data;
 }
+
+export function getUserPost(token: string) {
+  const data = axiosInstance.get(`/api/v1/user/post/`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return data;
+}
