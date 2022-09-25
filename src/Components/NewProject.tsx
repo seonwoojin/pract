@@ -50,6 +50,7 @@ const RedPoint = styled.div`
 interface IProps {
   nftData: IInfo;
   newPost: IPost[];
+  userFavorite: string[];
 }
 
 interface IData {
@@ -70,26 +71,24 @@ interface IPostData {
   user: string;
 }
 
-function NewProject({ nftData, newPost }: IProps) {
+function NewProject({ nftData, newPost, userFavorite }: IProps) {
   const AllNftNonChains = AllNftNonChain;
   const [isLogin, setIsLogin] = useRecoilState(isLogined);
   const { user } = useContext(DataContext);
   const [isLoading, setIsLoading] = useState(true);
   const [token] = useCookies(["token"]);
-  const [project, setProject] = useState(
-    isLogin ? user.favoriteNft : Object.keys(AllNftNonChains)
-  );
+  const [project, setProject] = useState<string[]>(userFavorite);
   const [userPost, setUserPost] = useState<string[]>([]);
   const [newPostProject, setNewPostProject] = useState<string[]>([]);
   const [final, setFinal] = useState<string[]>([]);
   const [unReadPost, setUnReadPost] = useState<IPost[]>([]);
   const [readPost, setReadPost] = useState<IPost[]>([]);
   useEffect(() => {
-    console.log(newPost);
     newPost.map((post) => setNewPostProject((prev) => [...prev, post.nft]));
     setUnReadPost(newPost);
     setIsLoading(false);
-  }, [newPost]);
+    setProject(userFavorite);
+  }, [newPost, userFavorite]);
 
   useEffect(() => {
     setFinal([]);

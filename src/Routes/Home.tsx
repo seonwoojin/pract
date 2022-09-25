@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllNft, IData } from "../axios";
 import { DataContext, IUser } from "../context/DataProvider";
 import { NftChecker } from "../NftChecker";
-import { AllNft } from "../AllNft";
+import { AllNft, AllNftNonChain } from "../AllNft";
 import HomeInfo from "../Components/HomeInfo";
 import { breakingPoint } from "../constants/breakingPoint";
 import NewProject from "./../Components/NewProject";
@@ -52,21 +52,39 @@ function Home() {
     ["homeInfo"],
     getAllNft
   );
+  const AllNftNonChains = AllNftNonChain;
   const project: string[] = [];
   const [newPost, setNewPost] = useState<IPost[]>([]);
   const { user } = useContext(DataContext);
+  const [userFavorite, setUserFavorite] = useState(
+    Object.keys(AllNftNonChains)
+  );
   const [isLogin, setIsLogin] = useRecoilState(isLogined);
   const date = new Date();
   useEffect(() => {
     if (!isLoadingNft) {
       setNewPost([]);
       if (isLogin && user) {
-        if (typeof user.favoriteNft === "undefined") {
-          window.location.replace("/");
-        }
-        Object.values(NftData!.data)
-          .filter((project) => user.favoriteNft.includes(project.nft))
-          .map((info) => {
+        // if (typeof user.favoriteNft === "undefined") {
+        //   window.location.replace("/");
+        // }
+        if (typeof user.favoriteNft !== "undefined") {
+          Object.values(NftData!.data)
+            .filter((project) => user.favoriteNft.includes(project.nft))
+            .map((info) => {
+              if (
+                new Date(info.createdAt).getTime() -
+                  new Date().setDate(date.getDate() - 14) >=
+                  0 &&
+                !project.includes(info.nft)
+              ) {
+                setNewPost((prev) => [...prev, info]);
+                project.push(info.nft);
+              }
+            });
+          setUserFavorite(user.favoriteNft);
+        } else {
+          Object.values(NftData!.data).map((info) => {
             if (
               new Date(info.createdAt).getTime() -
                 new Date().setDate(date.getDate() - 14) >=
@@ -77,6 +95,7 @@ function Home() {
               project.push(info.nft);
             }
           });
+        }
       } else {
         {
           Object.values(NftData!.data).map((info) => {
@@ -94,12 +113,15 @@ function Home() {
       }
     }
   }, [isLoadingNft, user]);
-
   return (
     <HomeContainer>
       {isLoadingNft ? null : (
         <>
-          <NewProject newPost={newPost} nftData={NftData!} />
+          <NewProject
+            newPost={newPost}
+            nftData={NftData!}
+            userFavorite={userFavorite}
+          />
           <HomeInfo nftData={NftData!}></HomeInfo>
         </>
       )}
