@@ -133,6 +133,7 @@ export const postRead = async (ctx: Context) => {
     const { id } = ctx.query;
     const user: IUser = ctx.user;
     user.posts.push({ post: id as string, expireAt: new Date() });
+    user.save();
     await Post.create({ user: user.id, post: id });
     ctx.status = response.HTTP_OK;
   } catch (error) {
