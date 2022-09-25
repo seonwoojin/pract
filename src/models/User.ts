@@ -9,7 +9,22 @@ export interface IUser extends Document {
   admin: boolean;
   favoriteNft: string[];
   likes: string[];
+  posts: IPost[];
 }
+
+interface IPost {
+  post: string;
+  expireAt: Date;
+}
+
+const postSchema = new mongoose.Schema<IPost>({
+  post: { type: String, required: true },
+  expireAt: {
+    type: Date,
+    index: { expireAfterSeconds: 60 },
+    default: Date.now,
+  },
+});
 
 const userSchema = new mongoose.Schema<IUser>({
   username: { type: String, required: true, unique: true },
@@ -18,6 +33,7 @@ const userSchema = new mongoose.Schema<IUser>({
   admin: { type: Boolean, default: false },
   favoriteNft: { type: [String], default: [] },
   likes: { type: [String], default: [] },
+  posts: { type: [postSchema], default: [] },
 });
 
 userSchema.pre("save", async function () {

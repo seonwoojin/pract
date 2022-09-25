@@ -126,14 +126,13 @@ export const searchNftInfo = async (ctx: Context) => {
   }
 };
 
-interface IParams {
-  id: string;
-}
+interface IParams {}
 
 export const postRead = async (ctx: Context) => {
   try {
     const { id } = ctx.query;
     const user: IUser = ctx.user;
+    user.posts.push({ post: id as string, expireAt: new Date() });
     await Post.create({ user: user.id, post: id });
     ctx.status = response.HTTP_OK;
   } catch (error) {
