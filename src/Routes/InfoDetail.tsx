@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getInfoDetail } from "./../axios";
 import { useContext, useEffect, useState } from "react";
@@ -12,6 +12,7 @@ import { response } from "./../constants/response";
 import { useScroll } from "framer-motion";
 
 const HomeWrapper = styled.div`
+  position: relative;
   padding-top: 20vh;
   display: flex;
   flex-direction: column;
@@ -24,6 +25,26 @@ const HomeWrapper = styled.div`
   margin-bottom: 200px;
   @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     padding-top: 15vh;
+  }
+`;
+
+const LeftArrow = styled.div`
+  position: fixed;
+  left: 5vw;
+  top: 50vh;
+  svg {
+    width: 50px;
+    fill: ${(props) => props.theme.fontColor};
+  }
+`;
+
+const RightArrow = styled.div`
+  position: fixed;
+  right: 5vw;
+  top: 50vh;
+  svg {
+    width: 50px;
+    fill: ${(props) => props.theme.fontColor};
   }
 `;
 
@@ -221,8 +242,14 @@ function InfoDetail() {
   window.scrollTo(0, 0);
   const today = new Date();
   const [title, setTitle] = useState("");
-  const params = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [isBanner, setIsBanner] = useState(
+    location.search.slice(8) === "true" ? true : false
+  );
+  const [recentData, setRecentData] = useState<IData[]>();
+  const [index, setIndex] = useState(0);
+  const params = useParams();
   const { user } = useContext(DataContext);
   const [isAdmin, setIsAdmin] = useState(false);
   const [token] = useCookies(["token"]);
@@ -231,8 +258,16 @@ function InfoDetail() {
   const { isLoading, data: info } = useQuery<IInfo>([`${params.id}`], () =>
     getInfoDetail(params.id!)
   );
-  console.log(isLoading);
   let end = false;
+  useEffect(() => {
+    if (isBanner) {
+      axiosInstance
+        .get(`/api/v1/nft/recent?project=${params.nft}`)
+        .then((response) => {
+          setRecentData(response.data);
+        });
+    }
+  }, []);
   useEffect(() => {
     if (!isLoading) {
       setTitle(info!.data.title);
@@ -243,6 +278,15 @@ function InfoDetail() {
       setIsAdmin(true);
     }
   }, [user]);
+  useEffect(() => {
+    if (recentData && recentData?.length > 1) {
+      recentData.map((data, index) => {
+        if (params.id === data._id) {
+          setIndex(index);
+        }
+      });
+    }
+  }, [recentData, params]);
   useEffect(() => {
     if (!isLoading) {
       scrollYProgress.onChange(() => {
@@ -289,6 +333,32 @@ function InfoDetail() {
 
   return (
     <HomeWrapper>
+      {isBanner && recentData && recentData?.length > 1 ? (
+        <>
+          {index > 0 ? (
+            <Link
+              to={`/${params.chain}/${params.nft}/${recentData[index - 1]._id}`}
+            >
+              <LeftArrow>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                  <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
+                </svg>
+              </LeftArrow>
+            </Link>
+          ) : null}
+          {recentData.length - 1 > index ? (
+            <Link
+              to={`/${params.chain}/${params.nft}/${recentData[index + 1]._id}`}
+            >
+              <RightArrow>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                  <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z" />
+                </svg>
+              </RightArrow>
+            </Link>
+          ) : null}
+        </>
+      ) : null}
       {isAdmin ? (
         <ButtonBox>
           <Button onClick={onClickEdit}>Edit</Button>

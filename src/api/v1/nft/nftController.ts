@@ -140,3 +140,21 @@ export const postRead = async (ctx: Context) => {
     ctx.status = response.HTTP_BAD_REQUEST;
   }
 };
+
+export const projectRecentData = async (ctx: Context) => {
+  try {
+    const { project } = ctx.query;
+    const datas = await NftInfo.find({ nft: project });
+    const post = datas.filter(
+      (data) =>
+        new Date(data?.createdAt!).getTime() -
+          new Date().setDate(new Date().getDate() - 14) >=
+        0
+    );
+    ctx.body = post;
+    ctx.status = response.HTTP_OK;
+  } catch (error) {
+    ctx.body = error;
+    ctx.status = response.HTTP_BAD_REQUEST;
+  }
+};

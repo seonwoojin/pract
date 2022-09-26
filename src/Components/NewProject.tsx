@@ -4,7 +4,7 @@ import { AllNft, AllNftNonChain } from "../AllNft";
 import { isLogined, subscirbeProject } from "../atom";
 import { IInfo, IPost } from "../Routes/Home";
 import styled from "styled-components";
-import { DataContext } from "../context/DataProvider";
+import { DataContext, IUser } from "../context/DataProvider";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getUserPost } from "../axios";
@@ -48,22 +48,7 @@ const RedPoint = styled.div`
 `;
 
 interface IProps {
-  nftData: IInfo;
-  newPost: IPost[];
-  userFavorite: string[];
-}
-
-interface IData {
-  _id: string;
-  chain: string;
-  nft: string;
-  title: string;
-  thumbnail: string;
-  description: string;
-  createdAt: string;
-  likes: [string];
-  unlikes: [string];
-  SNS: string;
+  NftData: IInfo;
 }
 
 interface IPostData {
@@ -71,40 +56,53 @@ interface IPostData {
   user: string;
 }
 
-function NewProject({ nftData, newPost, userFavorite }: IProps) {
+function NewProject({ NftData }: IProps) {
   const AllNftNonChains = AllNftNonChain;
-  const [isLogin, setIsLogin] = useRecoilState(isLogined);
-  const { user } = useContext(DataContext);
-  const [isLoading, setIsLoading] = useState(true);
-  const [token] = useCookies(["token"]);
-  const [project, setProject] = useState<string[]>(userFavorite);
+  const project: string[] = [];
+  const [token, setToken, removeToken] = useCookies(["token"]);
+  const [newPost, setNewPost] = useState<IPost[]>([]);
   const [userPost, setUserPost] = useState<string[]>([]);
-  const [newPostProject, setNewPostProject] = useState<string[]>([]);
-  const [final, setFinal] = useState<string[]>([]);
-  const [unReadPost, setUnReadPost] = useState<IPost[]>([]);
+  const [nextNewPost, setNextNewPost] = useState<IPost[]>([]);
   const [readPost, setReadPost] = useState<IPost[]>([]);
+  const [showReadPost, setShowReadPost] = useState<IPost[]>([]);
+  const [user, setUser] = useState<IUser>();
+  const [lastProject, setLastProject] = useState<string[]>(
+    Object.keys(AllNftNonChains)
+  );
+  const [newPostProjectArray, setNewPostProjectArray] = useState<string[]>([]);
+  const [nextProjectArray, setNextProjectArray] = useState<string[]>([]);
+  const [currentProjectArray, setCurrentProjectArray] = useState<string[]>([]);
+  const [userFavorite, setUserFavorite] = useState(
+    Object.keys(AllNftNonChains)
+  );
+  const [isLogin, setIsLogin] = useRecoilState(isLogined);
+  const date = new Date();
   useEffect(() => {
-    newPost.map((post) => setNewPostProject((prev) => [...prev, post.nft]));
-    setUnReadPost(newPost);
-    setIsLoading(false);
-    setProject(userFavorite);
-  }, [newPost, userFavorite]);
-
-  useEffect(() => {
-    setFinal([]);
-    setProject(project.filter((pro) => !newPostProject.includes(pro)));
-  }, [newPostProject]);
-
-  useEffect(() => {
-    if (final.length > project.length) {
-      setFinal(
-        final.filter((item, index, self) => self.indexOf(item) === index)
-      );
+    async function getUser() {
+      if (token["token"] && token["token"] !== "undefined") {
+        const data = await axiosInstance
+          .get(`/api/v1/user/data/`, {
+            headers: {
+              Authorization: `Bearer ${token["token"]}`,
+            },
+          })
+          .then((response) => {
+            setIsLogin(true);
+            setUser(response.data);
+          })
+          .catch((error) => {
+            if (error.response.data.name === "TokenExpiredError") {
+              setUser({} as IUser);
+              setIsLogin(false);
+              removeToken("token");
+            }
+          });
+      }
     }
-  }, [final]);
-
+    getUser();
+  }, []);
   useEffect(() => {
-    if (isLogin) {
+    if (token) {
       const data = axiosInstance
         .get(`/api/v1/user/post/`, {
           headers: {
@@ -119,54 +117,134 @@ function NewProject({ nftData, newPost, userFavorite }: IProps) {
     }
   }, []);
   useEffect(() => {
-    if (userPost.length > 0) {
-      setUnReadPost([]);
-      newPost.map((post) => {
-        if (userPost.includes(post._id)) {
-          setReadPost((prev) => [...prev, post]);
-        } else {
-          setUnReadPost((prev) => [...prev, post]);
-        }
-      });
+    setNewPost([]);
+    setReadPost([]);
+    setNewPost([]);
+    setNewPostProjectArray([]);
+    setNextProjectArray([]);
+    if (isLogin && user) {
+      // if (typeof user.favoriteNft === "undefined") {
+      //   window.location.replace("/");
+      // }
+      if (typeof user.favoriteNft !== "undefined") {
+        Object.values(NftData!.data)
+          .filter((project) => user.favoriteNft.includes(project.nft))
+          .map((info) => {
+            if (
+              new Date(info.createdAt).getTime() -
+                new Date().setDate(date.getDate() - 14) >=
+              0
+            ) {
+              if (userPost.includes(info._id)) {
+                setReadPost((prev) => [...prev, info]);
+                setNewPostProjectArray((prev) => [...prev, info.nft]);
+              } else if (!project.includes(info.nft)) {
+                setNewPost((prev) => [...prev, info]);
+                setNewPostProjectArray((prev) => [...prev, info.nft]);
+                project.push(info.nft);
+              } else {
+                setNextNewPost((prev) => [...prev, info]);
+                setNextProjectArray((prev) => [...prev, info.nft]);
+              }
+            }
+          });
+        setCurrentProjectArray(project);
+        setUserFavorite(user.favoriteNft);
+      } else {
+        Object.values(NftData!.data).map((info) => {
+          if (
+            new Date(info.createdAt).getTime() -
+              new Date().setDate(date.getDate() - 14) >=
+            0
+          ) {
+            if (!project.includes(info.nft)) {
+              setNewPost((prev) => [...prev, info]);
+              project.push(info.nft);
+            } else {
+              setNextNewPost((prev) => [...prev, info]);
+            }
+          }
+        });
+      }
+    } else {
+      {
+        Object.values(NftData!.data).map((info) => {
+          if (
+            new Date(info.createdAt).getTime() -
+              new Date().setDate(date.getDate() - 14) >=
+              0 &&
+            !project.includes(info.nft)
+          ) {
+            if (!project.includes(info.nft)) {
+              setNewPost((prev) => [...prev, info]);
+              project.push(info.nft);
+            } else {
+              setNextNewPost((prev) => [...prev, info]);
+            }
+          }
+        });
+      }
     }
-  }, [userPost]);
+  }, [user, userPost]);
+  useEffect(() => {
+    setLastProject([]);
+    setLastProject(
+      userFavorite.filter((project) => {
+        return !newPostProjectArray.includes(project);
+      })
+    );
+  }, [newPostProjectArray, userFavorite]);
+  useEffect(() => {
+    const arr: string[] = [];
+    setShowReadPost(() =>
+      readPost.filter((post) => {
+        if (currentProjectArray.length > 0 && !arr.includes(post.nft)) {
+          if (!currentProjectArray.includes(post.nft)) {
+            arr.push(post.nft);
+            return true;
+          }
+          return false;
+        } else {
+          if (!arr.includes(post.nft)) {
+            arr.push(post.nft);
+            return true;
+          }
+          return false;
+        }
+      })
+    );
+  }, [currentProjectArray, readPost]);
   return (
     <Wrapper>
-      {isLoading
-        ? null
-        : unReadPost.map((post, index) => (
-            <Link
-              key={post.title + index}
-              to={`/${post.chain}/${post.nft}/${post._id}`}
-            >
-              <LogoBox isNew={true} logourl={AllNftNonChains[post.nft].logourl}>
-                <RedPoint />
-              </LogoBox>
-            </Link>
-          ))}
-      {isLoading
-        ? null
-        : readPost.map((post, index) => (
-            <Link
-              key={post.title + index}
-              to={`/${post.chain}/${post.nft}/${post._id}`}
-            >
-              <LogoBox
-                isNew={true}
-                logourl={AllNftNonChains[post.nft].logourl}
-              ></LogoBox>
-            </Link>
-          ))}
-      {isLoading
-        ? null
-        : project.map((info, index) => (
-            <Link key={info + index} to={`${123}`}>
-              <LogoBox
-                isNew={false}
-                logourl={AllNftNonChains[info].logourl}
-              ></LogoBox>
-            </Link>
-          ))}
+      {newPost.map((post, index) => (
+        <Link
+          key={post.title + index}
+          to={`/${post.chain}/${post.nft}/${post._id}?banner=true`}
+        >
+          <LogoBox isNew={true} logourl={AllNftNonChains[post.nft].logourl}>
+            <RedPoint />
+          </LogoBox>
+        </Link>
+      ))}
+      {showReadPost.map((post, index) => (
+        <Link
+          key={post.title + index}
+          to={`/${post.chain}/${post.nft}/${post._id}?banner=true`}
+        >
+          <LogoBox
+            isNew={true}
+            logourl={AllNftNonChains[post.nft].logourl}
+          ></LogoBox>
+        </Link>
+      ))}
+      {lastProject.map((info, index) => (
+        <Link key={info + index} to={`${123}`}>
+          <LogoBox
+            isNew={false}
+            logourl={AllNftNonChains[info].logourl}
+          ></LogoBox>
+        </Link>
+      ))}
     </Wrapper>
   );
 }
