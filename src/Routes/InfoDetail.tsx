@@ -28,6 +28,22 @@ const HomeWrapper = styled.div`
   }
 `;
 
+const TopIndexContainer = styled.div`
+  position: absolute;
+  top: 10vh;
+  display: flex;
+`;
+
+const TopIndex = styled.div<{ isIndex: boolean }>`
+  width: 80px;
+  height: 5px;
+  background-color: ${(props) => props.theme.fontColor};
+  opacity: ${(props) => (props.isIndex ? "1" : "0.5")};
+  :not(last-child) {
+    margin-right: 10px;
+  }
+`;
+
 const LeftArrow = styled.div`
   position: fixed;
   left: 5vw;
@@ -335,9 +351,21 @@ function InfoDetail() {
     <HomeWrapper>
       {isBanner && recentData && recentData?.length > 1 ? (
         <>
+          <TopIndexContainer>
+            {recentData.map((data, ind) => (
+              <Link
+                key={ind}
+                to={`/${params.chain}/${params.nft}/${data._id}?banner=true`}
+              >
+                <TopIndex isIndex={ind === index} />
+              </Link>
+            ))}
+          </TopIndexContainer>
           {index > 0 ? (
             <Link
-              to={`/${params.chain}/${params.nft}/${recentData[index - 1]._id}`}
+              to={`/${params.chain}/${params.nft}/${
+                recentData[index - 1]._id
+              }?banner=true`}
             >
               <LeftArrow>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -348,7 +376,9 @@ function InfoDetail() {
           ) : null}
           {recentData.length - 1 > index ? (
             <Link
-              to={`/${params.chain}/${params.nft}/${recentData[index + 1]._id}`}
+              to={`/${params.chain}/${params.nft}/${
+                recentData[index + 1]._id
+              }?banner=true`}
             >
               <RightArrow>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
