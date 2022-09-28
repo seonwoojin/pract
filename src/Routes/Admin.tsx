@@ -479,6 +479,7 @@ export interface INftInfo {
   createdTime: string;
   description: string;
   _id?: string;
+  hashTags: string[];
 }
 
 interface IDate {
@@ -543,6 +544,7 @@ function Admin() {
   const [project, setProject] = useState("cryptopunks");
   const [sns, setSns] = useState("twitter");
   const [title, setTitle] = useState("");
+  const [hashTags, setHashTags] = useState<string[]>([]);
   const [thumbnail, setThumbnail] = useState(
     "https://images.pexels.com/photos/772803/pexels-photo-772803.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
   );
@@ -561,6 +563,7 @@ function Admin() {
   //   element.checked = true;
   // };
   useEffect(() => {
+    console.log(descriptionValue);
     setDescription(descriptionValue);
   }, [descriptionValue]);
   useEffect(() => {
@@ -751,6 +754,7 @@ function Admin() {
       SNS: sns,
       createdAt,
       _id: query.search?.slice(4),
+      hashTags,
     };
     if (isEdit) {
       axiosInstance
@@ -784,366 +788,12 @@ function Admin() {
     }
   };
 
-  //   return (
-  //     <>
-  //       {isLoading ? null : data?.data ? (
-  //         <Form onSubmit={handleSubmit(onValid)}>
-  //           <Wrapper>
-  //             <Title>Admin</Title>
-  //             {/* <LabelWrapper>
-  //                   <Label htmlFor="title">Title</Label>
-  //                 </LabelWrapper>
-  //                 <Input
-  //                   {...register("title", { required: true })}
-  //                   placeholder="Title"
-  //                   id="title"
-  //                   value={title}
-  //                   onChange={(event) => {
-  //                     setTitle(event.currentTarget.value);
-  //                   }}
-  //                 ></Input> */}
-  //             {/* <LabelWrapper>
-  //               <Label>CreatedAt</Label>
-  //             </LabelWrapper>
-  //             <TextArea
-  //                   {...register("description", { required: true })}
-  //                   placeholder="Description"
-  //                   id="description"
-  //                   onChange={(event) => {
-  //                     setDescription(event.currentTarget.value);
-  //                   }}
-  //                 ></TextArea>
-  //             <TimeWrapper>
-  //                <Input
-  //                 {...register("createdAt", { required: true })}
-  //                 value={createdDate}
-  //                 type="date"
-  //                 style={{ marginTop: "10px" }}
-  //                 onChange={(event) => setCreatedDate(event.currentTarget.value)}
-  //               ></Input>
-  //              <Input
-  //                 {...register("createdTime", { required: true })}
-  //                 value={createdTime}
-  //                 type="time"
-  //                 style={{ marginTop: "10px" }}
-  //                 onChange={(event) => setCreatedTime(event.currentTarget.value)}
-  //               ></Input>
-  //             </TimeWrapper> */}
-  //           </Wrapper>
-  //           <div style={{ display: "flex" }}>
-  //             <NewsContainer>
-  //               <NewsTitleWrapper>
-  //                 <NewsTitle
-  //                   placeholder="Title"
-  //                   id="title"
-  //                   value={title}
-  //                   onChange={(event) => {
-  //                     setTitle(event.currentTarget.value);
-  //                   }}
-  //                 ></NewsTitle>
-  //                 <NewsTitleLogoWrapper>
-  //                   <NewsTitleLogo
-  //                     url={AllNfts[chain.toLowerCase()][project]?.logourl}
-  //                   ></NewsTitleLogo>
-  //                   <NewsTitleProjcetName>
-  //                     <Select
-  //                       {...register("chain", { required: true })}
-  //                       value={chain}
-  //                       id="chain"
-  //                       onChange={(event) => {
-  //                         setChain(event.currentTarget.value);
-  //                         setSelectedChain(event.currentTarget.value);
-  //                         if (event.currentTarget.value === "ETH") {
-  //                           setProject("cryptopunks");
-  //                         } else if (event.currentTarget.value === "SOL") {
-  //                           setProject("okaybears");
-  //                         } else if (event.currentTarget.value === "KLAY") {
-  //                           setProject("themetakongzklaytn");
-  //                         }
-  //                       }}
-  //                     >
-  //                       <option value="ETH">ETH</option>
-  //                       <option value="SOL">SOL</option>
-  //                       <option value="KLAY">KLAY</option>
-  //                     </Select>
-  //                     {"|"}
-  //                     <Select
-  //                       id="nft"
-  //                       value={project}
-  //                       {...register("nft", { required: true })}
-  //                       onChange={(event) => {
-  //                         setProject(event.currentTarget.value);
-  //                       }}
-  //                     >
-  //                       {selectedChain === "ETH" ? (
-  //                         <>
-  //                           <option value="cryptopunks">CryptoPunks</option>
-  //                           <option value="boredapeyachtclub">
-  //                             Bored-Ape-Yacht-Club
-  //                           </option>
-  //                           <option value="otherdeedforotherside">
-  //                             Otherdeed-for-Otherside
-  //                           </option>
-  //                           <option value="azuki">Azuki</option>
-  //                           <option value="clonex">CLONE-X</option>
-  //                         </>
-  //                       ) : null}
-  //                       {selectedChain === "SOL" ? (
-  //                         <>
-  //                           <option value="okaybears">Okay-Bears</option>
-  //                           <option value="degods">DeGods</option>
-  //                           <option value="trippinapetribe">
-  //                             Trippin-Ape-Tribe
-  //                           </option>
-  //                           <option value="cetsoncreck">Cets-on-Creck</option>
-  //                           <option value="primates">Primates</option>
-  //                         </>
-  //                       ) : null}
-  //                       {selectedChain === "KLAY" ? (
-  //                         <>
-  //                           <option value="themetakongzklaytn">
-  //                             THE-META-KONGZ-KLAYTN
-  //                           </option>
-  //                           <option value="metatoydragonz">
-  //                             Meta-Toy-DragonZ
-  //                           </option>
-  //                           <option value="sunmiyaclubofficial">
-  //                             Sunmmiya-Club-Official
-  //                           </option>
-  //                           <option value="sheepfarm">SheepFarm</option>
-  //                         </>
-  //                       ) : null}
-  //                     </Select>
-  //                   </NewsTitleProjcetName>
-  //                   <NewsTitleCreatedAt>
-  //                     <Input
-  //                       {...register("createdAt", { required: true })}
-  //                       value={createdDate}
-  //                       type="datetime-local"
-  //                       style={{
-  //                         marginTop: "10px",
-  //                         opacity: "0.6",
-  //                         border: "none",
-  //                         width: "auto",
-  //                       }}
-  //                       onChange={(event) => {
-  //                         setCreatedDate(
-  //                           event.currentTarget.value.slice(0, 10) +
-  //                             "T" +
-  //                             event.currentTarget.value.slice(11, 16)
-  //                         );
-  //                         setCreatedAt(
-  //                           event.currentTarget.value.slice(0, 10) +
-  //                             " " +
-  //                             event.currentTarget.value.slice(11, 16)
-  //                         );
-  //                       }}
-  //                     ></Input>
-  //                   </NewsTitleCreatedAt>
-  //                 </NewsTitleLogoWrapper>
-  //                 <NewSnsContainer>
-  //                   <Select
-  //                     {...register("SNS", { required: true })}
-  //                     value={sns}
-  //                     id="sns"
-  //                     onChange={(event) => {
-  //                       setSns(event.currentTarget.value);
-  //                     }}
-  //                   >
-  //                     <option value="Twitter">Twitter</option>
-  //                     <option value="Discord">Discord</option>
-  //                   </Select>
-  //                 </NewSnsContainer>
-  //               </NewsTitleWrapper>
-  //               <hr style={{ width: "100%" }}></hr>
-  //               <ReactQuill
-  //                 ref={(element) => {
-  //                   if (element !== null) {
-  //                     quillRef.current = element;
-  //                   }
-  //                 }}
-  //                 className="editor"
-  //                 theme="snow"
-  //                 value={descriptionValue}
-  //                 onChange={setDescriptionValue}
-  //                 formats={formats}
-  //                 modules={modules}
-  //               />
-  //             </NewsContainer>
-  //           </div>
-  //           <Wrapper>
-  //             <LabelWrapper>
-  //               <Label htmlFor="thumbnail">Thumbnail</Label>
-  //             </LabelWrapper>
-  //             <Input
-  //               {...register("thumbnail", { required: true })}
-  //               placeholder="Img URL"
-  //               id="thumbnail"
-  //               value={thumbnail}
-  //               onChange={(event) => {
-  //                 setThumbnail(event.currentTarget.value);
-  //               }}
-  //             ></Input>
-  //           </Wrapper>
-  //           <div
-  //             style={{
-  //               width: "100%",
-  //               display: "flex",
-  //               height: "auto",
-  //               justifyContent: "center",
-  //               alignItems: "center",
-  //             }}
-  //           >
-  //             <LeftHome>
-  //               <InfoContainer>
-  //                 <InfoWrapper>
-  //                   <Info>
-  //                     <InfoNonHover>
-  //                       <InfoImage url={thumbnail}></InfoImage>
-  //                       <InfoMain>
-  //                         <InfoMainLogo
-  //                           logourl={
-  //                             AllNfts[chain.toLowerCase()][project]?.logourl
-  //                           }
-  //                         ></InfoMainLogo>
-  //                         <InfoMainText>
-  //                           <InfoMainTitle>
-  //                             <div>{title}</div>
-  //                           </InfoMainTitle>
-  //                           <InfoMainSubText>
-  //                             <h1>
-  //                               {AllNfts[chain.toLowerCase()][project].title}
-  //                             </h1>
-  //                             <h1>{createdAt}</h1>
-  //                           </InfoMainSubText>
-  //                         </InfoMainText>
-  //                       </InfoMain>
-  //                     </InfoNonHover>
-  //                   </Info>
-  //                   <Info>
-  //                     <InfoNonHover>
-  //                       <InfoNonImage url={thumbnail}>
-  //                         <InfoImageContext>{title}</InfoImageContext>
-  //                         <InfoImageHashTag>#eth #event</InfoImageHashTag>
-  //                       </InfoNonImage>
-  //                       <InfoMain>
-  //                         <InfoMainLogo
-  //                           logourl={
-  //                             AllNfts[chain.toLowerCase()][project]?.logourl
-  //                           }
-  //                         ></InfoMainLogo>
-  //                         <InfoMainText>
-  //                           <InfoMainTitle>
-  //                             <div>{title}</div>
-  //                           </InfoMainTitle>
-  //                           <InfoMainSubText>
-  //                             <h1>
-  //                               {AllNfts[chain.toLowerCase()][project].title}
-  //                             </h1>
-  //                             <h1>{createdAt}</h1>
-  //                           </InfoMainSubText>
-  //                         </InfoMainText>
-  //                       </InfoMain>
-  //                     </InfoNonHover>
-  //                   </Info>
-  //                 </InfoWrapper>
-  //               </InfoContainer>
-  //             </LeftHome>
-  //             <InfoHover>
-  //               <InfoImage url={thumbnail}>
-  //                 <InfoImageContext>{title}</InfoImageContext>
-  //                 <InfoImageHashTag>#eth #event</InfoImageHashTag>
-  //               </InfoImage>
-  //               <InfoMain>
-  //                 <InfoMainLogo
-  //                   logourl={AllNfts[chain.toLowerCase()][project].logourl}
-  //                 ></InfoMainLogo>
-  //                 <InfoMainText>
-  //                   <InfoMainTitle>
-  //                     <div>{title}</div>
-  //                   </InfoMainTitle>
-  //                   <InfoMainSubText>
-  //                     <h1>{AllNfts[chain.toLowerCase()][project].title}</h1>
-  //                     <h1>{createdAt}</h1>
-  //                   </InfoMainSubText>
-  //                 </InfoMainText>
-  //               </InfoMain>
-  //             </InfoHover>
-  //           </div>
-  //           <div
-  //             style={{
-  //               width: "50%",
-  //               display: "flex",
-  //               flexDirection: "column",
-  //               justifyContent: "center",
-  //               alignItems: "center",
-  //             }}
-  //           >
-  //             <ErrorMessage>{errorMessage}</ErrorMessage>
-  //             <div
-  //               style={{
-  //                 width: "100%",
-  //                 display: "flex",
-  //                 justifyContent: "center",
-  //                 alignItems: "center",
-  //               }}
-  //             >
-  //               <Button>{isEdit ? "Edit" : "Upload"}</Button>
-  //             </div>
-  //           </div>
-  //         </Form>
-  //       ) : (
-  //         <PageNotFound />
-  //       )}
-  //     </>
-  //   );
-  // }
-
   return (
     <>
       {isLoading ? null : (
         <Form onSubmit={handleSubmit(onValid)}>
           <Wrapper>
             <Title>Admin</Title>
-            {/* <LabelWrapper>
-                  <Label htmlFor="title">Title</Label>
-                </LabelWrapper>
-                <Input
-                  {...register("title", { required: true })}
-                  placeholder="Title"
-                  id="title"
-                  value={title}
-                  onChange={(event) => {
-                    setTitle(event.currentTarget.value);
-                  }}
-                ></Input> */}
-            {/* <LabelWrapper>
-              <Label>CreatedAt</Label>
-            </LabelWrapper>
-            <TextArea
-                  {...register("description", { required: true })}
-                  placeholder="Description"
-                  id="description"
-                  onChange={(event) => {
-                    setDescription(event.currentTarget.value);
-                  }}
-                ></TextArea> 
-            <TimeWrapper>
-               <Input
-                {...register("createdAt", { required: true })}
-                value={createdDate}
-                type="date"
-                style={{ marginTop: "10px" }}
-                onChange={(event) => setCreatedDate(event.currentTarget.value)}
-              ></Input>
-             <Input
-                {...register("createdTime", { required: true })}
-                value={createdTime}
-                type="time"
-                style={{ marginTop: "10px" }}
-                onChange={(event) => setCreatedTime(event.currentTarget.value)}
-              ></Input> 
-            </TimeWrapper> */}
           </Wrapper>
           <div style={{ display: "flex" }}>
             <NewsContainer>
@@ -1300,6 +950,21 @@ function Admin() {
               }}
             ></Input>
           </Wrapper>
+          <Wrapper>
+            <LabelWrapper>
+              <Label htmlFor="hashtags">HashTags</Label>
+            </LabelWrapper>
+            <Input
+              placeholder="Hash tags"
+              id="hashtags"
+              value={hashTags}
+              onChange={(event) => {
+                setHashTags(
+                  event.currentTarget.value.replaceAll(" ", "").split(",")
+                );
+              }}
+            ></Input>
+          </Wrapper>
           <div
             style={{
               width: "100%",
@@ -1339,7 +1004,17 @@ function Admin() {
                     <InfoNonHover>
                       <InfoNonImage url={thumbnail}>
                         <InfoImageContext>{title}</InfoImageContext>
-                        <InfoImageHashTag>#eth #event</InfoImageHashTag>
+                        <InfoImageHashTag>
+                          {hashTags.map((word, index) =>
+                            index === 0
+                              ? word.startsWith("#")
+                                ? word
+                                : `#${word}`
+                              : word.startsWith("#")
+                              ? ` ${word}`
+                              : ` #${word}`
+                          )}
+                        </InfoImageHashTag>
                       </InfoNonImage>
                       <InfoMain>
                         <InfoMainLogo
@@ -1367,7 +1042,18 @@ function Admin() {
             <InfoHover>
               <InfoImage url={thumbnail}>
                 <InfoImageContext>{title}</InfoImageContext>
-                <InfoImageHashTag>#eth #event</InfoImageHashTag>
+                <InfoImageHashTag>
+                  {" "}
+                  {hashTags.map((word, index) =>
+                    index === 0
+                      ? word.startsWith("#")
+                        ? word
+                        : `#${word}`
+                      : word.startsWith("#")
+                      ? ` ${word}`
+                      : ` #${word}`
+                  )}
+                </InfoImageHashTag>
               </InfoImage>
               <InfoMain>
                 <InfoMainLogo

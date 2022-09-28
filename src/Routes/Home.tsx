@@ -46,6 +46,7 @@ export interface IPost {
   likes: [string];
   unlikes: [string];
   SNS: string;
+  hashTags: [string];
 }
 
 function Home() {

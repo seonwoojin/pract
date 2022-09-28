@@ -13,6 +13,7 @@ export interface IData {
     likes: [string];
     unlikes: [string];
     SNS: string;
+    hashTags: [string];
   };
 }
 
@@ -54,7 +55,9 @@ export function getSearch(keyword: string) {
 }
 
 export function getInfoDetail(id: string) {
-  const data = axiosInstance.get(`/api/v1/nft/info/${id}`);
+  const data = axiosInstance.get(`/api/v1/nft/info/${id}`).catch((error) => {
+    throw new Error(error);
+  });
 
   return data;
 }

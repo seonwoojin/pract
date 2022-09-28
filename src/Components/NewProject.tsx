@@ -66,15 +66,11 @@ function NewProject({ NftData }: IProps) {
   const [readPost, setReadPost] = useState<IPost[]>([]);
   const [showReadPost, setShowReadPost] = useState<IPost[]>([]);
   const [user, setUser] = useState<IUser>();
-  const [lastProject, setLastProject] = useState<string[]>(
-    Object.keys(AllNftNonChains)
-  );
+  const [lastProject, setLastProject] = useState<string[]>([]);
   const [newPostProjectArray, setNewPostProjectArray] = useState<string[]>([]);
   const [nextProjectArray, setNextProjectArray] = useState<string[]>([]);
   const [currentProjectArray, setCurrentProjectArray] = useState<string[]>([]);
-  const [userFavorite, setUserFavorite] = useState(
-    Object.keys(AllNftNonChains)
-  );
+  const [userFavorite, setUserFavorite] = useState<string[]>([]);
   const [isLogin, setIsLogin] = useRecoilState(isLogined);
   const date = new Date();
   useEffect(() => {
@@ -219,7 +215,9 @@ function NewProject({ NftData }: IProps) {
       {newPost.map((post, index) => (
         <Link
           key={post.title + index}
-          to={`/${post.chain}/${post.nft}/${post._id}?banner=true`}
+          to={`/${post.chain.toLowerCase()}/${post.nft}/${
+            post._id
+          }?banner=true`}
         >
           <LogoBox isNew={true} logourl={AllNftNonChains[post.nft].logourl}>
             <RedPoint />
@@ -229,7 +227,9 @@ function NewProject({ NftData }: IProps) {
       {showReadPost.map((post, index) => (
         <Link
           key={post.title + index}
-          to={`/${post.chain}/${post.nft}/${post._id}?banner=true`}
+          to={`/${post.chain.toLowerCase()}/${post.nft}/${
+            post._id
+          }?banner=true`}
         >
           <LogoBox
             isNew={true}
@@ -237,14 +237,19 @@ function NewProject({ NftData }: IProps) {
           ></LogoBox>
         </Link>
       ))}
-      {lastProject.map((info, index) => (
-        <Link key={info + index} to={`${123}`}>
-          <LogoBox
-            isNew={false}
-            logourl={AllNftNonChains[info].logourl}
-          ></LogoBox>
-        </Link>
-      ))}
+      {isLogin
+        ? lastProject.map((info, index) => (
+            <Link
+              key={info + index}
+              to={`/${AllNftNonChain[info].chain.toLowerCase()}/${info}`}
+            >
+              <LogoBox
+                isNew={false}
+                logourl={AllNftNonChains[info].logourl}
+              ></LogoBox>
+            </Link>
+          ))
+        : null}
     </Wrapper>
   );
 }

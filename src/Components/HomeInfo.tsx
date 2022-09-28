@@ -252,6 +252,7 @@ interface IData {
   likes: [string];
   unlikes: [string];
   SNS: string;
+  hashTags: [string];
 }
 
 const hoverVariants: Variants = {
@@ -415,7 +416,7 @@ function HomeInfo({ nftData }: IProps) {
             {data.slice(i * offset, (i + 1) * offset).map((info, index) => (
               <Link
                 key={info._id}
-                to={`/${info.chain}/${info.nft}/${info._id}`}
+                to={`/${info.chain.toLowerCase()}/${info.nft}/${info._id}`}
               >
                 <Info
                   ref={(e) => {
@@ -438,7 +439,17 @@ function HomeInfo({ nftData }: IProps) {
                       >
                         <InfoImage url={info.thumbnail} detail={true}>
                           <InfoImageContext>{info.title}</InfoImageContext>
-                          <InfoImageHashTag>#eth #event</InfoImageHashTag>
+                          <InfoImageHashTag>
+                            {info.hashTags.map((word, index) =>
+                              index === 0
+                                ? word.startsWith("#")
+                                  ? word
+                                  : `#${word}`
+                                : word.startsWith("#")
+                                ? ` ${word}`
+                                : ` #${word}`
+                            )}
+                          </InfoImageHashTag>
                         </InfoImage>
                         <InfoMain>
                           <InfoMainLogo
@@ -492,7 +503,17 @@ function HomeInfo({ nftData }: IProps) {
                           detail={detail}
                         >
                           <InfoImageContext>{info.title}</InfoImageContext>
-                          <InfoImageHashTag>#eth #event</InfoImageHashTag>
+                          <InfoImageHashTag>
+                            {info.hashTags.map((word, index) =>
+                              index === 0
+                                ? word.startsWith("#")
+                                  ? word
+                                  : `#${word}`
+                                : word.startsWith("#")
+                                ? ` ${word}`
+                                : ` #${word}`
+                            )}
+                          </InfoImageHashTag>
                         </InfoImage>
                         <InfoMain>
                           <InfoMainLogo

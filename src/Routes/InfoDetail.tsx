@@ -10,6 +10,7 @@ import { axiosInstance } from "../axiosInstance";
 import { useCookies } from "react-cookie";
 import { response } from "./../constants/response";
 import { useScroll } from "framer-motion";
+import PageNotFound from "./PageNotFound";
 
 const HomeWrapper = styled.div`
   position: relative;
@@ -271,10 +272,14 @@ function InfoDetail() {
   const [token] = useCookies(["token"]);
   const AllNfts = AllNft;
   const { scrollYProgress } = useScroll();
-  const { isLoading, data: info } = useQuery<IInfo>([`${params.id}`], () =>
-    getInfoDetail(params.id!)
-  );
+  const {
+    isLoading,
+    data: info,
+    error,
+    isError,
+  } = useQuery<IInfo>([`${params.id}`], () => getInfoDetail(params.id!));
   let end = false;
+
   useEffect(() => {
     if (isBanner) {
       axiosInstance
@@ -296,11 +301,23 @@ function InfoDetail() {
   }, [user]);
   useEffect(() => {
     if (recentData && recentData?.length > 1) {
-      recentData.map((data, index) => {
-        if (params.id === data._id) {
-          setIndex(index);
-        }
-      });
+      recentData
+        .sort((a, b) => {
+          if (
+            new Date(a.createdAt).getTime() > new Date(b.createdAt).getTime()
+          ) {
+            return -1;
+          } else if (
+            new Date(a.createdAt).getTime() < new Date(b.createdAt).getTime()
+          )
+            return 1;
+          else return 0;
+        })
+        .map((data, index) => {
+          if (params.id === data._id) {
+            setIndex(index);
+          }
+        });
     }
   }, [recentData, params]);
   useEffect(() => {
@@ -347,9 +364,14 @@ function InfoDetail() {
     }
   };
 
+  if (isError) {
+    console.log(123);
+    return <PageNotFound />;
+  }
+
   return (
     <HomeWrapper>
-      {isBanner && recentData && recentData?.length > 1 ? (
+      {!isLoading && isBanner && recentData && recentData?.length > 1 ? (
         <>
           <TopIndexContainer>
             {recentData.map((data, ind) => (
@@ -400,21 +422,25 @@ function InfoDetail() {
           <>
             <NewsTitleWrapper>
               <NewsTitle>{info?.data.title}</NewsTitle>
-              <NewsTitleLogoWrapper>
-                <NewsTitleLogo
-                  url={
-                    AllNfts[info?.data.chain.toLowerCase()!][info?.data.nft!]
-                      ?.logourl
-                  }
-                ></NewsTitleLogo>
-                <NewsTitleProjcetName>
-                  {info?.data.chain +
-                    " | " +
-                    AllNfts[info?.data.chain.toLowerCase()!][info?.data.nft!]
-                      .title}
-                </NewsTitleProjcetName>
-                <NewsTitleCreatedAt>{info?.data.createdAt}</NewsTitleCreatedAt>
-              </NewsTitleLogoWrapper>
+              <Link to={`/${info.data.chain.toLowerCase()}/${info.data.nft}`}>
+                <NewsTitleLogoWrapper>
+                  <NewsTitleLogo
+                    url={
+                      AllNfts[info?.data.chain.toLowerCase()!][info?.data.nft!]
+                        ?.logourl
+                    }
+                  ></NewsTitleLogo>
+                  <NewsTitleProjcetName>
+                    {info?.data.chain +
+                      " | " +
+                      AllNfts[info?.data.chain.toLowerCase()!][info?.data.nft!]
+                        .title}
+                  </NewsTitleProjcetName>
+                  <NewsTitleCreatedAt>
+                    {info?.data.createdAt}
+                  </NewsTitleCreatedAt>
+                </NewsTitleLogoWrapper>
+              </Link>
               <NewSnsContainer>{info?.data.SNS}</NewSnsContainer>
             </NewsTitleWrapper>
             <hr style={{ width: "100%" }}></hr>

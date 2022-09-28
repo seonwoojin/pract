@@ -22,6 +22,7 @@ import Mode from "./Components/Mode";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import reset from "styled-reset";
 import { theme } from "./theme";
+import Subscribe from "./Routes/Subscribe";
 
 const GlobalStyle = createGlobalStyle`
 
@@ -69,6 +70,7 @@ function App() {
       <ThemeProvider theme={mode ? theme.white : theme.black}>
         <GlobalStyle />
         <Helmet>
+          //@ts-ignore
           <title>Blueroom</title>
           <link rel="canonical" href="https://www.tacobell.com/" />
           <meta property="og:type" content="website" />
@@ -98,6 +100,7 @@ function App() {
               <Route path="/:chain/:nft" element={<Info />}></Route>
               <Route path="/:chain/:nft/:id" element={<InfoDetail />}></Route>
               <Route path="/results/:search" element={<Search />} />
+              <Route path="/setting" element={<Subscribe />} />
               <Route path="/" element={<Home />} />
               <Route path="*" element={<PageNotFound />} />
             </Routes>

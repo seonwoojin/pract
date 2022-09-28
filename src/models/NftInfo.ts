@@ -10,6 +10,7 @@ const nftSchema = new mongoose.Schema({
   createdAt: { type: String, required: true },
   likes: { type: [String], default: [] },
   unlikes: { type: [String], default: [] },
+  hashTags: { type: [String] },
 });
 
 const NftInfo = mongoose.model("NftInfo", nftSchema);
