@@ -331,7 +331,7 @@ function InfoDetail() {
             (today.getTime() -
               new Date(info!.data.createdAt.slice(0, 10)).getTime()) /
               (1000 * 60 * 60 * 24) <=
-            15
+            recentDate + 1
           ) {
             if (token["token"]) {
               axiosInstance.get(`/api/v1/nft/read?id=${params.id}`, {
