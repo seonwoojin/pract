@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { AllNft, AllNftNonChain } from "../AllNft";
-import { isLogined, subscirbeProject } from "../atom";
+import { isLogined, recentPost, subscirbeProject } from "../atom";
 import { IInfo, IPost } from "../Routes/Home";
 import styled from "styled-components";
 import { DataContext, IUser } from "../context/DataProvider";
@@ -72,6 +72,7 @@ function NewProject({ NftData }: IProps) {
   const [currentProjectArray, setCurrentProjectArray] = useState<string[]>([]);
   const [userFavorite, setUserFavorite] = useState<string[]>([]);
   const [isLogin, setIsLogin] = useRecoilState(isLogined);
+  const recentPostDate = useRecoilValue(recentPost);
   const date = new Date();
   useEffect(() => {
     async function getUser() {
@@ -128,7 +129,7 @@ function NewProject({ NftData }: IProps) {
           .map((info) => {
             if (
               new Date(info.createdAt).getTime() -
-                new Date().setDate(date.getDate() - 14) >=
+                new Date().setDate(date.getDate() - recentPostDate) >=
               0
             ) {
               if (userPost.includes(info._id)) {
@@ -150,7 +151,7 @@ function NewProject({ NftData }: IProps) {
         Object.values(NftData!.data).map((info) => {
           if (
             new Date(info.createdAt).getTime() -
-              new Date().setDate(date.getDate() - 14) >=
+              new Date().setDate(date.getDate() - recentPostDate) >=
             0
           ) {
             if (!project.includes(info.nft)) {
@@ -167,7 +168,7 @@ function NewProject({ NftData }: IProps) {
         Object.values(NftData!.data).map((info) => {
           if (
             new Date(info.createdAt).getTime() -
-              new Date().setDate(date.getDate() - 14) >=
+              new Date().setDate(date.getDate() - recentPostDate) >=
               0 &&
             !project.includes(info.nft)
           ) {
@@ -238,7 +239,7 @@ function NewProject({ NftData }: IProps) {
         </Link>
       ))}
       {isLogin
-        ? lastProject.map((info, index) => (
+        ? lastProject.sort().map((info, index) => (
             <Link
               key={info + index}
               to={`/${AllNftNonChain[info].chain.toLowerCase()}/${info}`}

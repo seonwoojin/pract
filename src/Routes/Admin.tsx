@@ -110,15 +110,16 @@ const Input = styled.input`
 `;
 
 const TextArea = styled.textarea`
-  height: 100%;
+  height: 200px;
   width: 85%;
   background-color: transparent;
-  border: none;
-  border-bottom: 1px solid black;
+  border: 1px solid black;
   margin-bottom: 20px;
   padding-left: 10px;
   font-size: 15px;
   text-overflow: clip;
+  color: inherit;
+  padding: 10px;
 `;
 
 const Button = styled.button`
@@ -480,6 +481,7 @@ export interface INftInfo {
   description: string;
   _id?: string;
   hashTags: string[];
+  text: string;
 }
 
 interface IDate {
@@ -552,6 +554,7 @@ function Admin() {
   const [createdAt, setCreatedAt] = useState(defaultToday + " " + "00:00");
   const [createdDate, setCreatedDate] = useState(defaultToday + "T" + "00:00");
   const [descriptionValue, setDescriptionValue] = useState("");
+  const [text, setText] = useState<string>();
   const { register, handleSubmit, setValue } = useForm<INftInfo>();
   // const checkOnlyOne = (element: HTMLInputElement) => {
   //   const checkBoxes = document.getElementsByName(
@@ -646,6 +649,8 @@ function Admin() {
               " " +
               response.data.createdAt.slice(11, 16)
           );
+          setHashTags(response.data.hashTags);
+          setText(response.data.text);
           // const checkBoxes = document.getElementsByName(
           //   "SNS"
           // ) as NodeListOf<HTMLInputElement>;
@@ -755,6 +760,7 @@ function Admin() {
       createdAt,
       _id: query.search?.slice(4),
       hashTags,
+      text,
     };
     if (isEdit) {
       axiosInstance
@@ -965,6 +971,19 @@ function Admin() {
               }}
             ></Input>
           </Wrapper>
+          <Wrapper>
+            <LabelWrapper>
+              <Label htmlFor="Text">Text</Label>
+            </LabelWrapper>
+            <TextArea
+              placeholder="Text"
+              id="hashtags"
+              value={text}
+              onChange={(event) => {
+                setText(event.currentTarget.value);
+              }}
+            ></TextArea>
+          </Wrapper>
           <div
             style={{
               width: "100%",
@@ -1003,7 +1022,7 @@ function Admin() {
                   <Info>
                     <InfoNonHover>
                       <InfoNonImage url={thumbnail}>
-                        <InfoImageContext>{title}</InfoImageContext>
+                        <InfoImageContext>{text}</InfoImageContext>
                         <InfoImageHashTag>
                           {hashTags.map((word, index) =>
                             index === 0
@@ -1041,7 +1060,7 @@ function Admin() {
             </LeftHome>
             <InfoHover>
               <InfoImage url={thumbnail}>
-                <InfoImageContext>{title}</InfoImageContext>
+                <InfoImageContext>{text}</InfoImageContext>
                 <InfoImageHashTag>
                   {" "}
                   {hashTags.map((word, index) =>

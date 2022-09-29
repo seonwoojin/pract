@@ -1,8 +1,5 @@
 import styled from "styled-components";
 import { useScroll, useTransform, Variants, motion } from "framer-motion";
-import { useContext, useEffect, useRef, useState } from "react";
-import axios from "axios";
-import { useCookies } from "react-cookie";
 import { useQuery } from "@tanstack/react-query";
 import { getAllNft, IData } from "../axios";
 import { DataContext, IUser } from "../context/DataProvider";
@@ -11,9 +8,6 @@ import { AllNft, AllNftNonChain } from "../AllNft";
 import HomeInfo from "../Components/HomeInfo";
 import { breakingPoint } from "../constants/breakingPoint";
 import NewProject from "./../Components/NewProject";
-import { useRecoilState } from "recoil";
-import { isLogined } from "../atom";
-import { axiosInstance } from "../axiosInstance";
 
 const HomeContainer = styled(motion.div)`
   display: flex;
@@ -47,6 +41,7 @@ export interface IPost {
   unlikes: [string];
   SNS: string;
   hashTags: [string];
+  text: string;
 }
 
 function Home() {

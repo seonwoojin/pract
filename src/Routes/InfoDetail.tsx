@@ -11,6 +11,8 @@ import { useCookies } from "react-cookie";
 import { response } from "./../constants/response";
 import { useScroll } from "framer-motion";
 import PageNotFound from "./PageNotFound";
+import { useRecoilValue } from "recoil";
+import { recentPost } from "../atom";
 
 const HomeWrapper = styled.div`
   position: relative;
@@ -278,12 +280,13 @@ function InfoDetail() {
     error,
     isError,
   } = useQuery<IInfo>([`${params.id}`], () => getInfoDetail(params.id!));
+  const recentDate = useRecoilValue(recentPost);
   let end = false;
 
   useEffect(() => {
     if (isBanner) {
       axiosInstance
-        .get(`/api/v1/nft/recent?project=${params.nft}`)
+        .get(`/api/v1/nft/recent?project=${params.nft}&date=${recentDate}`)
         .then((response) => {
           setRecentData(response.data);
         });
@@ -455,3 +458,9 @@ function InfoDetail() {
 }
 
 export default InfoDetail;
+
+export const expireTime = localStorage.getItem("recentPostDate")
+  ? parseInt(localStorage.getItem("recentPostDate")!)
+  : 14;
+
+console.log(expireTime);

@@ -33,6 +33,7 @@ export const postAdmin = async (ctx: Context) => {
     SNS,
     createdAt,
     hashTags,
+    text,
   }: INftInfo = ctx.request.body;
   try {
     const user = ctx.user;
@@ -49,6 +50,7 @@ export const postAdmin = async (ctx: Context) => {
       SNS,
       createdAt,
       hashTags,
+      text,
     });
     const bucketParams = {
       Bucket: "blueroombucket",
@@ -161,6 +163,8 @@ export const updatePost = async (ctx: Context) => {
     SNS,
     createdAt,
     _id,
+    hashTags,
+    text,
   }: INftInfo = ctx.request.body;
   const user = ctx.user;
   try {
@@ -172,6 +176,8 @@ export const updatePost = async (ctx: Context) => {
       description,
       SNS,
       createdAt,
+      hashTags,
+      text,
     });
     const bucketParams = {
       Bucket: "blueroombucket",

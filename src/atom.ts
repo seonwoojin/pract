@@ -54,3 +54,24 @@ export const themeMode = atom({
   key: "theme",
   default: localStorage.getItem("mode") !== "false",
 });
+
+export const onlyDark = atom({
+  key: "onlyDark",
+  default: localStorage.getItem("onlyInfoDark")
+    ? localStorage.getItem("onlyInfoDark") !== "false"
+    : false,
+});
+
+export const blinkPost = atom({
+  key: "blinkPost",
+  default: localStorage.getItem("blinkTime")
+    ? parseInt(localStorage.getItem("blinkTime")!)
+    : 8,
+});
+
+export const recentPost = atom({
+  key: "recentPost",
+  default: localStorage.getItem("recentPostDate")
+    ? parseInt(localStorage.getItem("recentPostDate")!)
+    : 14,
+});

@@ -132,7 +132,7 @@ export const postRead = async (ctx: Context) => {
     const user: IUser = ctx.user;
     const post = await Post.exists({ user: user.id, post: id });
     if (!post) {
-      await Post.create({ user: user.id, post: id });
+      const newPost = await Post.create({ user: user.id, post: id });
     }
     ctx.status = response.HTTP_OK;
   } catch (error) {
@@ -143,12 +143,13 @@ export const postRead = async (ctx: Context) => {
 
 export const projectRecentData = async (ctx: Context) => {
   try {
-    const { project } = ctx.query;
+    const { project, date } = ctx.query;
+    console.log(date);
     const datas = await NftInfo.find({ nft: project });
     const post = datas.filter(
       (data) =>
         new Date(data?.createdAt!).getTime() -
-          new Date().setDate(new Date().getDate() - 14) >=
+          new Date().setDate(new Date().getDate() - parseInt(date as string)) >=
         0
     );
     ctx.body = post;

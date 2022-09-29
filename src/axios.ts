@@ -14,6 +14,7 @@ export interface IData {
     unlikes: [string];
     SNS: string;
     hashTags: [string];
+    text: string;
   };
 }
 

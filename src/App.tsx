@@ -22,7 +22,7 @@ import Mode from "./Components/Mode";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import reset from "styled-reset";
 import { theme } from "./theme";
-import Subscribe from "./Routes/Subscribe";
+import Setting from "./Routes/Setting";
 
 const GlobalStyle = createGlobalStyle`
 
@@ -44,6 +44,11 @@ input[type="datetime-local"]::-webkit-inner-spin-button,
 input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     display: none;
     -webkit-appearance: none;
+}
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
 }
 a {
   text-decoration: none;
@@ -100,7 +105,7 @@ function App() {
               <Route path="/:chain/:nft" element={<Info />}></Route>
               <Route path="/:chain/:nft/:id" element={<InfoDetail />}></Route>
               <Route path="/results/:search" element={<Search />} />
-              <Route path="/setting" element={<Subscribe />} />
+              <Route path="/setting" element={<Setting />} />
               <Route path="/" element={<Home />} />
               <Route path="*" element={<PageNotFound />} />
             </Routes>

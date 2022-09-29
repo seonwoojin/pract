@@ -5,9 +5,11 @@ import { IInfo } from "./../Routes/Home";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import useInterval from "../useInterval";
 import {
+  blinkPost,
   chainString,
   isFilterShow,
   isSelected,
+  onlyDark,
   pastString,
   projectString,
   snstString,
@@ -253,6 +255,7 @@ interface IData {
   unlikes: [string];
   SNS: string;
   hashTags: [string];
+  text: string;
 }
 
 const hoverVariants: Variants = {
@@ -287,8 +290,6 @@ const nonHoverVariants: Variants = {
 
 function HomeInfo({ nftData }: IProps) {
   const isMobile = isMobileChecker();
-  const divRef = useRef<HTMLDivElement>();
-  const divRefs = useRef<HTMLDivElement[]>([]);
   const AllNfts = AllNft;
   const [detail, setDetail] = useState(false);
   const [hover, setHover] = useState("");
@@ -308,7 +309,8 @@ function HomeInfo({ nftData }: IProps) {
   const today = useRecoilValue(todayString);
   const past = useRecoilValue(pastString);
   const subscribe = useRecoilValue(subscirbeProject);
-
+  const blinkTime = useRecoilValue(blinkPost);
+  const isOnlyDark = useRecoilValue(onlyDark);
   const filter = (info: IData) => {
     let chainBool: boolean = true;
     let projectBool: boolean = true;
@@ -346,28 +348,15 @@ function HomeInfo({ nftData }: IProps) {
     return chainBool && projectBool && snsBool && dateBool && subscribeBool;
   };
 
-  useInterval(() => {
-    setDetail((prev) => !prev);
-  }, 8000);
+  useInterval(
+    () => {
+      if (!isOnlyDark) setDetail((prev) => !prev);
+    },
+    detail ? 8000 : blinkTime * 1000
+  );
 
-  useInterval(() => {
-    if (isMobile) {
-      let offsetTop: number = 10000;
-      let target: HTMLDivElement;
-      divRefs.current.forEach((e, index) => {
-        if (
-          Math.abs(e.getBoundingClientRect().top - divRef.current?.offsetTop!) <
-          offsetTop
-        ) {
-          offsetTop = Math.abs(
-            e.getBoundingClientRect().top - divRef.current?.offsetTop!
-          );
-          target = e;
-        }
-        setHover(target.classList[2]);
-      });
-    }
-  }, 1000);
+  useEffect(() => setDetail(isOnlyDark), [isOnlyDark]);
+
   useEffect(() => setData(Object.values(nftData.data)), [nftData]);
 
   useEffect(() => {
@@ -403,13 +392,6 @@ function HomeInfo({ nftData }: IProps) {
   }, [chain, project, sns, today, past, subscribe, nftData]);
   return (
     <>
-      <CenterBox
-        ref={(element) => {
-          if (element !== null) {
-            divRef.current = element;
-          }
-        }}
-      />
       {indexArray.map((i) => (
         <InfoContainer key={i}>
           <InfoWrapper>
@@ -418,13 +400,7 @@ function HomeInfo({ nftData }: IProps) {
                 key={info._id}
                 to={`/${info.chain.toLowerCase()}/${info.nft}/${info._id}`}
               >
-                <Info
-                  ref={(e) => {
-                    divRefs.current[i] = e!;
-                  }}
-                  key={info._id + index}
-                  className={info._id}
-                >
+                <Info key={info._id + index} className={info._id}>
                   <AnimatePresence>
                     {hover === info._id ? (
                       <InfoHover
@@ -438,7 +414,7 @@ function HomeInfo({ nftData }: IProps) {
                         }}
                       >
                         <InfoImage url={info.thumbnail} detail={true}>
-                          <InfoImageContext>{info.title}</InfoImageContext>
+                          <InfoImageContext>{info.text}</InfoImageContext>
                           <InfoImageHashTag>
                             {info.hashTags.map((word, index) =>
                               index === 0
@@ -502,7 +478,7 @@ function HomeInfo({ nftData }: IProps) {
                           url={info.thumbnail}
                           detail={detail}
                         >
-                          <InfoImageContext>{info.title}</InfoImageContext>
+                          <InfoImageContext>{info.text}</InfoImageContext>
                           <InfoImageHashTag>
                             {info.hashTags.map((word, index) =>
                               index === 0
