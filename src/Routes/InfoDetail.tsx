@@ -368,7 +368,6 @@ function InfoDetail() {
   };
 
   if (isError) {
-    console.log(123);
     return <PageNotFound />;
   }
 
@@ -458,9 +457,3 @@ function InfoDetail() {
 }
 
 export default InfoDetail;
-
-export const expireTime = localStorage.getItem("recentPostDate")
-  ? parseInt(localStorage.getItem("recentPostDate")!)
-  : 14;
-
-console.log(expireTime);

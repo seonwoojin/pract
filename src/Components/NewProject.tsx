@@ -29,7 +29,7 @@ const LogoBox = styled.div<{ logourl: string; isNew: boolean }>`
   background-color: ${(props) => props.theme.darker};
   border: ${(props) => (props.isNew ? "5px solid red" : null)};
   border-image: linear-gradient(to right, #eaeaa7, #ffcdf3aa, #c1b0e6) 1;
-  opacity: ${(props) => (props.isNew ? null : "0.7")};
+  opacity: ${(props) => (props.isNew ? null : "0.6")};
   cursor: pointer;
   transition: all 0.5s linear;
   :hover {

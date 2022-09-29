@@ -55,7 +55,7 @@ function Home() {
       {isLoadingNft ? null : (
         <>
           <NewProject NftData={NftData!} />
-          <HomeInfo nftData={NftData!}></HomeInfo>
+          <HomeInfo isHome={true} nftData={NftData!}></HomeInfo>
         </>
       )}
     </HomeContainer>

@@ -241,6 +241,7 @@ const CenterBox = styled.div`
 
 interface IProps {
   nftData: IInfo;
+  isHome: boolean;
 }
 
 interface IData {
@@ -288,7 +289,7 @@ const nonHoverVariants: Variants = {
   },
 };
 
-function HomeInfo({ nftData }: IProps) {
+function HomeInfo({ nftData, isHome }: IProps) {
   const isMobile = isMobileChecker();
   const AllNfts = AllNft;
   const [detail, setDetail] = useState(false);
@@ -388,7 +389,9 @@ function HomeInfo({ nftData }: IProps) {
   }, [offset]);
 
   useEffect(() => {
-    setData(Object.values(nftData?.data).filter(filter));
+    if (isHome) {
+      setData(Object.values(nftData?.data).filter(filter));
+    }
   }, [chain, project, sns, today, past, subscribe, nftData]);
   return (
     <>

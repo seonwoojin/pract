@@ -57,11 +57,6 @@ const SettingWrapper = styled.div`
 
 const SubTilteWrapper = styled.div`
   margin-bottom: 30px;
-  :hover {
-    div {
-      font-weight: 600;
-    }
-  }
 `;
 
 const OptionContainer = styled.div`
@@ -70,6 +65,11 @@ const OptionContainer = styled.div`
   justify-content: space-between;
   svg {
     cursor: pointer;
+  }
+  :hover {
+    div {
+      font-weight: 600;
+    }
   }
 `;
 
@@ -82,6 +82,10 @@ const SubTitle = styled.div`
   font-size: 30px;
   font-weight: 500;
   margin: 10px 0px;
+  cursor: pointer;
+  :hover {
+    font-weight: 600;
+  }
 `;
 
 const ProjectTitle = styled.div<{ isSubscribed: boolean }>`
@@ -89,20 +93,23 @@ const ProjectTitle = styled.div<{ isSubscribed: boolean }>`
   align-items: center;
   justify-content: flex-start;
   margin-bottom: 10px;
-  font-weight: ${(props) => (props.isSubscribed ? 600 : 400)};
+  font-weight: ${(props) => (props.isSubscribed ? 400 : 400)};
   color: ${(props) => (props.isSubscribed ? "red" : null)};
   cursor: pointer;
+  :hover {
+    font-weight: 600;
+  }
 `;
 
 const Input = styled.input`
-  text-align: right;
-  width: 50px;
+  text-align: center;
+  width: 30px;
   height: 30px;
   border: none;
   background-color: inherit;
   color: inherit;
   font-size: 20px;
-  margin-right: 3px;
+  margin-right: 0px;
 `;
 
 const Div = styled.div<{ isOnlyDark: boolean }>`
@@ -115,7 +122,9 @@ function Setting() {
   const [user, setUser] = useState<IUser>();
   const [show, setShow] = useState<string[]>([]);
   const [blinkTime, setBlinkTime] = useRecoilState(blinkPost);
+  const [blinkValue, setBlinkValue] = useState(blinkTime.toString());
   const [recentPostDate, setRecentPostDate] = useRecoilState(recentPost);
+  const [recentValue, setRecentValue] = useState(recentPostDate.toString());
   const [onlyInfoDark, setOnlyInfoDark] = useRecoilState(onlyDark);
   async function getUser() {
     if (token["token"] && token["token"] !== "undefined") {
@@ -190,7 +199,9 @@ function Setting() {
                 justifyContent: "space-between",
               }}
             >
-              <SubTitle>{key.toUpperCase()}</SubTitle>
+              <SubTitle onClick={() => onclickShow(key)}>
+                {key.toUpperCase()}
+              </SubTitle>
               {!show.includes(key) ? (
                 <svg
                   style={{ cursor: "pointer" }}
@@ -252,24 +263,34 @@ function Setting() {
           <OptionContainer>
             <SubTitle>깜빡임 시간</SubTitle>
             <Div
-              isOnlyDark={onlyInfoDark}
+              isOnlyDark={onlyInfoDark && blinkTime > 0}
               style={{
                 display: "flex",
                 alignItems: "center",
               }}
             >
               <Input
-                disabled={onlyInfoDark}
-                value={blinkTime}
+                disabled={onlyInfoDark && blinkTime > 0}
+                value={blinkValue}
                 onChange={(event) => {
-                  if (parseInt(event.currentTarget.value) >= 30)
-                    setBlinkTime(30);
-                  else if (parseInt(event.currentTarget.value) > 0) {
-                    setBlinkTime(parseInt(event.currentTarget.value));
-                    setOnlyInfoDark(false);
-                  } else if (parseInt(event.currentTarget.value) <= 0) {
+                  setBlinkValue(event.currentTarget.value);
+                }}
+                onBlur={(event) => {
+                  if (blinkValue === "") {
+                    setBlinkValue("0");
                     setBlinkTime(0);
-                    setOnlyInfoDark(true);
+                  } else {
+                    if (parseInt(blinkValue) >= 30) {
+                      setBlinkTime(30);
+                      setBlinkValue("30");
+                    } else if (parseInt(blinkValue) > 0) {
+                      setBlinkTime(parseInt(blinkValue));
+                      setOnlyInfoDark(false);
+                    } else if (parseInt(blinkValue) <= 0) {
+                      setOnlyInfoDark(true);
+                      setBlinkTime(0);
+                      setBlinkValue("0");
+                    }
                   }
                 }}
                 type={"number"}
@@ -312,14 +333,24 @@ function Setting() {
               }}
             >
               <Input
-                value={recentPostDate}
+                value={recentValue}
                 onChange={(event) => {
-                  if (parseInt(event.currentTarget.value) >= 60)
-                    setRecentPostDate(60);
-                  else if (parseInt(event.currentTarget.value) > 0) {
-                    setRecentPostDate(parseInt(event.currentTarget.value));
-                  } else if (parseInt(event.currentTarget.value) <= 0) {
+                  setRecentValue(event.currentTarget.value);
+                }}
+                onBlur={(event) => {
+                  if (recentValue === "") {
+                    setRecentValue("0");
                     setRecentPostDate(0);
+                  } else {
+                    if (parseInt(recentValue) >= 60) {
+                      setRecentPostDate(60);
+                      setRecentValue("60");
+                    } else if (parseInt(recentValue) > 0) {
+                      setRecentPostDate(parseInt(recentValue));
+                    } else if (parseInt(recentValue) <= 0) {
+                      setRecentPostDate(0);
+                      setRecentValue("0");
+                    }
                   }
                 }}
                 type={"number"}
