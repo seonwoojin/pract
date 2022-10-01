@@ -1,7 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { AllNft, AllNftNonChain } from "../AllNft";
-import { isLogined, recentPost, subscirbeProject } from "../atom";
+import {
+  chainString,
+  isLogined,
+  projectString,
+  recentPost,
+  subscirbeProject,
+} from "../atom";
 import { IInfo, IPost } from "../Routes/Home";
 import styled from "styled-components";
 import { DataContext, IUser } from "../context/DataProvider";
@@ -58,7 +64,7 @@ interface IPostData {
 
 function NewProject({ NftData }: IProps) {
   const AllNftNonChains = AllNftNonChain;
-  const project: string[] = [];
+  const projects: string[] = [];
   const [token, setToken, removeToken] = useCookies(["token"]);
   const [newPost, setNewPost] = useState<IPost[]>([]);
   const [userPost, setUserPost] = useState<string[]>([]);
@@ -72,6 +78,8 @@ function NewProject({ NftData }: IProps) {
   const [currentProjectArray, setCurrentProjectArray] = useState<string[]>([]);
   const [userFavorite, setUserFavorite] = useState<string[]>([]);
   const [isLogin, setIsLogin] = useRecoilState(isLogined);
+  const [chain, setChain] = useRecoilState(chainString);
+  const [project, setProject] = useRecoilState(projectString);
   const recentPostDate = useRecoilValue(recentPost);
   const date = new Date();
   useEffect(() => {
@@ -135,17 +143,17 @@ function NewProject({ NftData }: IProps) {
               if (userPost.includes(info._id)) {
                 setReadPost((prev) => [...prev, info]);
                 setNewPostProjectArray((prev) => [...prev, info.nft]);
-              } else if (!project.includes(info.nft)) {
+              } else if (!projects.includes(info.nft)) {
                 setNewPost((prev) => [...prev, info]);
                 setNewPostProjectArray((prev) => [...prev, info.nft]);
-                project.push(info.nft);
+                projects.push(info.nft);
               } else {
                 setNextNewPost((prev) => [...prev, info]);
                 setNextProjectArray((prev) => [...prev, info.nft]);
               }
             }
           });
-        setCurrentProjectArray(project);
+        setCurrentProjectArray(projects);
         setUserFavorite(user.favoriteNft);
       } else {
         Object.values(NftData!.data).map((info) => {
@@ -154,9 +162,9 @@ function NewProject({ NftData }: IProps) {
               new Date().setDate(date.getDate() - recentPostDate) >=
             0
           ) {
-            if (!project.includes(info.nft)) {
+            if (!projects.includes(info.nft)) {
               setNewPost((prev) => [...prev, info]);
-              project.push(info.nft);
+              projects.push(info.nft);
             } else {
               setNextNewPost((prev) => [...prev, info]);
             }
@@ -170,11 +178,11 @@ function NewProject({ NftData }: IProps) {
             new Date(info.createdAt).getTime() -
               new Date().setDate(date.getDate() - recentPostDate) >=
               0 &&
-            !project.includes(info.nft)
+            !projects.includes(info.nft)
           ) {
-            if (!project.includes(info.nft)) {
+            if (!projects.includes(info.nft)) {
               setNewPost((prev) => [...prev, info]);
-              project.push(info.nft);
+              projects.push(info.nft);
             } else {
               setNextNewPost((prev) => [...prev, info]);
             }
@@ -226,29 +234,38 @@ function NewProject({ NftData }: IProps) {
         </Link>
       ))}
       {showReadPost.map((post, index) => (
-        <Link
-          key={post.title + index}
-          to={`/${post.chain.toLowerCase()}/${post.nft}/${
-            post._id
-          }?banner=true`}
-        >
-          <LogoBox
-            isNew={true}
-            logourl={AllNftNonChains[post.nft].logourl}
-          ></LogoBox>
-        </Link>
+        // <Link
+        //   key={post.title + index}
+        //   to={`/${post.chain.toLowerCase()}/${post.nft}/${
+        //     post._id
+        //   }?banner=true`}
+        // >
+        <LogoBox
+          isNew={true}
+          logourl={AllNftNonChains[post.nft].logourl}
+        ></LogoBox>
+        //</Link>
       ))}
       {isLogin
         ? lastProject.sort().map((info, index) => (
-            <Link
-              key={info + index}
-              to={`/${AllNftNonChain[info].chain.toLowerCase()}/${info}`}
-            >
-              <LogoBox
-                isNew={false}
-                logourl={AllNftNonChains[info].logourl}
-              ></LogoBox>
-            </Link>
+            // <Link
+            //   key={info + index}
+            //   to={`/${AllNftNonChain[info].chain.toLowerCase()}/${info}`}
+            // >
+            <LogoBox
+              isNew={false}
+              logourl={AllNftNonChains[info].logourl}
+              onClick={() => {
+                if (project !== AllNftNonChains[info].title) {
+                  setChain(AllNftNonChains[info].chain);
+                  setProject(AllNftNonChains[info].title);
+                } else {
+                  setChain("");
+                  setProject("");
+                }
+              }}
+            ></LogoBox>
+            // </Link>
           ))
         : null}
     </Wrapper>

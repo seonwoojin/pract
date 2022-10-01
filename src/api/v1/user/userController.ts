@@ -70,19 +70,24 @@ export const postJoin = async (ctx: Context) => {
 };
 
 export const userFavoriteNft = async (ctx: Context) => {
-  const params = ctx.query;
-  const user: IUser = ctx.user;
-  const preNfts: string[] = [];
-  if (user.favoriteNft.includes(params.nft as string)) {
-    user.favoriteNft.map((nft) => {
-      if (nft !== params.nft) preNfts.push(nft);
-    });
-    user.favoriteNft = preNfts;
-  } else {
-    user.favoriteNft.push(params.nft as string);
+  try {
+    const params = ctx.query;
+    const user: IUser = ctx.user;
+    const preNfts: string[] = [];
+    if (user.favoriteNft.includes(params.nft as string)) {
+      user.favoriteNft.map((nft) => {
+        if (nft !== params.nft) preNfts.push(nft);
+      });
+      user.favoriteNft = preNfts;
+    } else {
+      user.favoriteNft.push(params.nft as string);
+    }
+    user.save();
+    ctx.status = response.HTTP_OK;
+  } catch (error) {
+    ctx.body = error;
+    ctx.status = response.HTTP_BAD_REQUEST;
   }
-  user.save();
-  ctx.status = response.HTTP_OK;
 };
 
 export const showUserFavorite = async (ctx: Context) => {

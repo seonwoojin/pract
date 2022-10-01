@@ -70,10 +70,10 @@ const Info = styled.div`
   }
 `;
 
-const InfoHover = styled(motion.div)`
+const InfoHover = styled(motion.div)<{ index: number; offset: number }>`
   z-index: 98;
   position: absolute;
-  top: -20px;
+  top: -80px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -81,6 +81,8 @@ const InfoHover = styled(motion.div)`
   width: 600px;
   height: 600px;
   margin-right: 20px;
+  left: ${(props) => (props.index === 0 ? "0px" : null)};
+  right: ${(props) => (props.index === props.offset - 1 ? "0px" : null)};
   cursor: pointer;
   @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     width: 80vw;
@@ -93,6 +95,7 @@ const InfoNonHover = styled(motion.div)<{ ishovered: string }>`
   width: 100%;
   height: 100%;
   z-index: ${(props) => (props.ishovered === "true" ? 98 : 0)};
+
   @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     width: 50vw;
     height: 50vh;
@@ -259,36 +262,6 @@ interface IData {
   text: string;
 }
 
-const hoverVariants: Variants = {
-  initial: {
-    y: -100,
-    scale: 0.6,
-  },
-  animate: {
-    scale: 1,
-    transition: {
-      duration: 0.5,
-      type: "tween",
-    },
-  },
-  exit: {
-    scale: 0.6,
-  },
-};
-
-const nonHoverVariants: Variants = {
-  initial: {
-    scale: 1.5,
-  },
-  animate: {
-    scale: 1,
-    transition: {
-      duration: 0.5,
-      type: "tween",
-    },
-  },
-};
-
 function HomeInfo({ nftData, isHome }: IProps) {
   const isMobile = isMobileChecker();
   const AllNfts = AllNft;
@@ -395,7 +368,7 @@ function HomeInfo({ nftData, isHome }: IProps) {
   }, [chain, project, sns, today, past, subscribe, nftData]);
   return (
     <>
-      {indexArray.map((i) => (
+      {indexArray.map((i, offsetIndex) => (
         <InfoContainer key={i}>
           <InfoWrapper>
             {data.slice(i * offset, (i + 1) * offset).map((info, index) => (
@@ -407,10 +380,9 @@ function HomeInfo({ nftData, isHome }: IProps) {
                   <AnimatePresence>
                     {hover === info._id ? (
                       <InfoHover
-                        variants={hoverVariants}
-                        initial="initial"
-                        animate="animate"
-                        exit="exit"
+                        layoutId={info._id + offsetIndex + index}
+                        index={index}
+                        offset={offset}
                         onMouseLeave={() => {
                           setHover("");
                           timeoutId.map((id) => clearTimeout(id));
@@ -455,14 +427,13 @@ function HomeInfo({ nftData, isHome }: IProps) {
                       </InfoHover>
                     ) : (
                       <InfoNonHover
-                        variants={nonHoverVariants}
-                        initial="initial"
-                        animate="animate"
+                        layoutId={info._id + offsetIndex + index}
                         ishovered={info._id === hoveredId ? "true" : "false"}
                         onMouseLeave={() => {
                           setHover("");
                           timeoutId.map((id) => clearTimeout(id));
                         }}
+                        transition={{ duration: 0.5, type: "tween" }}
                       >
                         <InfoImage
                           onMouseEnter={() => {
