@@ -9,9 +9,10 @@ import { useCookies } from "react-cookie";
 import { useEffect, useState } from "react";
 import { IUser } from "./../context/DataProvider";
 import { axiosInstance } from "../axiosInstance";
-import HomeInfo from "../Components/HomeInfo";
+import InfoList from "../Components/InfoList";
 import { useQuery } from "@tanstack/react-query";
 import { IInfo } from "./Home";
+import useWindowDimensions from "../useWindowDimensions";
 
 const HomeWrapper = styled.div`
   padding-top: 20vh;
@@ -61,6 +62,20 @@ function Info() {
   const [subcribe, setSubcribe] = useState(false);
   const [user, setUser] = useState<IUser>();
   const [token] = useCookies(["token"]);
+  const { height, width } = useWindowDimensions();
+  const [offset, setOffset] = useState<number>(
+    width >= 2200
+      ? 5
+      : width >= 1800
+      ? 4
+      : width >= 1400
+      ? 3
+      : width >= 1000
+      ? 2
+      : width >= 600
+      ? 1
+      : 0
+  );
   const allNft = AllNft;
   const { isLoading: isLoadingNft, data: NftData } = useQuery<IInfo>(
     [`${params.nft!}Info`],
@@ -135,7 +150,11 @@ function Info() {
               {subcribe ? "Subscribing" : "Subcribe"}
             </SubscribeBox>
           </TitleWrapper>
-          <HomeInfo HomeOffset={0} isHome={false} nftData={NftData!}></HomeInfo>
+          <InfoList
+            HomeOffset={offset}
+            isHome={false}
+            nftData={NftData!}
+          ></InfoList>
         </>
       )}
     </HomeWrapper>

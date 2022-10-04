@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getSearch } from "../axios";
 import { IInfo } from "./Home";
 import { useLocation, useParams } from "react-router-dom";
-import HomeInfo from "../Components/HomeInfo";
+import InfoList from "../Components/InfoList";
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { AllNft, AllNftNonChain } from "../AllNft";
@@ -12,6 +12,7 @@ import { title } from "process";
 import { axiosInstance } from "../axiosInstance";
 import { IUser } from "../context/DataProvider";
 import { useCookies } from "react-cookie";
+import useWindowDimensions from "../useWindowDimensions";
 
 const HomeContainer = styled.div`
   display: flex;
@@ -36,6 +37,20 @@ function Search() {
   const [user, setUser] = useState<IUser>();
   const [isUserLoading, setIsUserLoading] = useState(true);
   const [isProjcet, setIsProject] = useState<string[]>([]);
+  const { height, width } = useWindowDimensions();
+  const [offset, setOffset] = useState<number>(
+    width >= 2200
+      ? 5
+      : width >= 1800
+      ? 4
+      : width >= 1400
+      ? 3
+      : width >= 1000
+      ? 2
+      : width >= 600
+      ? 1
+      : 0
+  );
   const { isLoading, data: searchedNft } = useQuery<IInfo>(
     [`search${params.search}`],
     () => getSearch(params.search!)
@@ -109,11 +124,11 @@ function Search() {
       {isLoading ? null : empty ? (
         <div>없음</div>
       ) : (
-        <HomeInfo
-          HomeOffset={5}
+        <InfoList
+          HomeOffset={offset}
           isHome={false}
           nftData={searchedNft!}
-        ></HomeInfo>
+        ></InfoList>
       )}
     </HomeContainer>
   );

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { AllNft } from "../AllNft";
-import { IInfo } from "./../Routes/Home";
+import { IInfo } from "../Routes/Home";
 import { AnimatePresence, motion, useScroll, Variants } from "framer-motion";
 import useInterval from "../useInterval";
 import {
@@ -16,7 +16,7 @@ import {
   snstString,
   subscirbeProject,
   todayString,
-} from "./../atom";
+} from "../atom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import useWindowDimensions from "../useWindowDimensions";
 import { Link } from "react-router-dom";
@@ -27,6 +27,7 @@ const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   width: 90%;
   margin-bottom: 50px;
   @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
@@ -38,7 +39,6 @@ const InfoTitle = styled.div`
   display: flex;
   font-size: 50px;
   font-weight: 600;
-
   h1 {
     border-top-right-radius: 15px;
     padding: 15px;
@@ -266,7 +266,7 @@ interface IData {
   text: string;
 }
 
-function HomeInfo({ nftData, isHome, HomeOffset }: IProps) {
+function InfoList({ nftData, isHome, HomeOffset }: IProps) {
   const isMobile = isMobileChecker();
   const AllNfts = AllNft;
   const [detail, setDetail] = useState(false);
@@ -387,7 +387,6 @@ function HomeInfo({ nftData, isHome, HomeOffset }: IProps) {
   }, [scrollYProgress, indexArray, maxIndex]);
 
   useEffect(() => {
-    console.log(offset * indexArray.length, data.length + offset * 2);
     if (offset * indexArray.length > data.length + offset * 2) {
       setIndexArray(() => {
         const arr = [];
@@ -565,4 +564,4 @@ function HomeInfo({ nftData, isHome, HomeOffset }: IProps) {
   );
 }
 
-export default HomeInfo;
+export default InfoList;

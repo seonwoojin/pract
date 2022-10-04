@@ -5,7 +5,7 @@ import { getAllNft, IData } from "../axios";
 import { DataContext, IUser } from "../context/DataProvider";
 import { NftChecker } from "../NftChecker";
 import { AllNft, AllNftNonChain } from "../AllNft";
-import HomeInfo from "../Components/HomeInfo";
+import InfoList from "../Components/InfoList";
 import { breakingPoint } from "../constants/breakingPoint";
 import NewProject from "./../Components/NewProject";
 import { useEffect, useState } from "react";
@@ -51,33 +51,31 @@ function Home() {
     ["homeInfo"],
     getAllNft
   );
-  const [offset, setOffset] = useState(5);
   const { height, width } = useWindowDimensions();
-
-  useEffect(() => {
-    if (width >= 2200) {
-      setOffset(5);
-    } else if (width >= 1800) {
-      setOffset(4);
-    } else if (width >= 1400) {
-      setOffset(3);
-    } else if (width >= 1000) {
-      setOffset(2);
-    } else if (width >= 600) {
-      setOffset(1);
-    }
-  }, [width]);
+  const [offset, setOffset] = useState<number>(
+    width >= 2200
+      ? 5
+      : width >= 1800
+      ? 4
+      : width >= 1400
+      ? 3
+      : width >= 1000
+      ? 2
+      : width >= 600
+      ? 1
+      : 0
+  );
 
   return (
     <HomeContainer>
       {isLoadingNft ? null : (
         <>
           <NewProject NftData={NftData!} />
-          <HomeInfo
+          <InfoList
             isHome={true}
             nftData={NftData!}
             HomeOffset={offset}
-          ></HomeInfo>
+          ></InfoList>
         </>
       )}
     </HomeContainer>
