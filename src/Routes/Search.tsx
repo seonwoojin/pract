@@ -109,7 +109,11 @@ function Search() {
       {isLoading ? null : empty ? (
         <div>없음</div>
       ) : (
-        <HomeInfo isHome={false} nftData={searchedNft!}></HomeInfo>
+        <HomeInfo
+          HomeOffset={5}
+          isHome={false}
+          nftData={searchedNft!}
+        ></HomeInfo>
       )}
     </HomeContainer>
   );

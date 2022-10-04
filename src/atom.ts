@@ -75,3 +75,8 @@ export const recentPost = atom({
     ? parseInt(localStorage.getItem("recentPostDate")!)
     : 14,
 });
+
+export const indexArrayAtom = atom({
+  key: "indexArray",
+  default: [0, 1, 2],
+});

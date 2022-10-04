@@ -8,6 +8,8 @@ import { AllNft, AllNftNonChain } from "../AllNft";
 import HomeInfo from "../Components/HomeInfo";
 import { breakingPoint } from "../constants/breakingPoint";
 import NewProject from "./../Components/NewProject";
+import { useEffect, useState } from "react";
+import useWindowDimensions from "../useWindowDimensions";
 
 const HomeContainer = styled(motion.div)`
   display: flex;
@@ -49,13 +51,33 @@ function Home() {
     ["homeInfo"],
     getAllNft
   );
+  const [offset, setOffset] = useState(5);
+  const { height, width } = useWindowDimensions();
+
+  useEffect(() => {
+    if (width >= 2200) {
+      setOffset(5);
+    } else if (width >= 1800) {
+      setOffset(4);
+    } else if (width >= 1400) {
+      setOffset(3);
+    } else if (width >= 1000) {
+      setOffset(2);
+    } else if (width >= 600) {
+      setOffset(1);
+    }
+  }, [width]);
 
   return (
     <HomeContainer>
       {isLoadingNft ? null : (
         <>
           <NewProject NftData={NftData!} />
-          <HomeInfo isHome={true} nftData={NftData!}></HomeInfo>
+          <HomeInfo
+            isHome={true}
+            nftData={NftData!}
+            HomeOffset={offset}
+          ></HomeInfo>
         </>
       )}
     </HomeContainer>

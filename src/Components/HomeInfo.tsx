@@ -2,11 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { AllNft } from "../AllNft";
 import { IInfo } from "./../Routes/Home";
-import { AnimatePresence, motion, Variants } from "framer-motion";
+import { AnimatePresence, motion, useScroll, Variants } from "framer-motion";
 import useInterval from "../useInterval";
 import {
   blinkPost,
   chainString,
+  indexArrayAtom,
   isFilterShow,
   isSelected,
   onlyDark,
@@ -65,7 +66,9 @@ const Info = styled.div`
   cursor: pointer;
   @media screen and (max-width: ${breakingPoint.deviceSizes.tablet}) {
     width: 80vw;
-    height: 80vw;
+    height: 400px;
+    /* width: 80vw;
+    height: 80vw; */
     margin-right: 0px;
   }
 `;
@@ -245,6 +248,7 @@ const CenterBox = styled.div`
 interface IProps {
   nftData: IInfo;
   isHome: boolean;
+  HomeOffset: number;
 }
 
 interface IData {
@@ -262,7 +266,7 @@ interface IData {
   text: string;
 }
 
-function HomeInfo({ nftData, isHome }: IProps) {
+function HomeInfo({ nftData, isHome, HomeOffset }: IProps) {
   const isMobile = isMobileChecker();
   const AllNfts = AllNft;
   const [detail, setDetail] = useState(false);
@@ -270,12 +274,15 @@ function HomeInfo({ nftData, isHome }: IProps) {
   const [timeoutId, setTimeoutId] = useState<ReturnType<typeof setTimeout>[]>(
     []
   );
+  const { scrollYProgress } = useScroll();
   const [data, setData] = useState<IData[]>(Object.values(nftData?.data));
   const [hoveredId, sethoverdId] = useRecoilState(isSelected);
-  const [indexArray, setIndexArray] = useState<number[]>([]);
+  const [indexArray, setIndexArray] = useRecoilState(indexArrayAtom);
   const { height, width } = useWindowDimensions();
-  const [offset, setOffset] = useState(1);
-  const [maxIndex, setMaxIndex] = useState(1);
+  const [offset, setOffset] = useState(HomeOffset);
+  const [maxIndex, setMaxIndex] = useState(
+    Math.ceil(Object.values(nftData?.data!).length / offset)
+  );
   const isShow = useRecoilValue(isFilterShow);
   const chain = useRecoilValue(chainString);
   const project = useRecoilValue(projectString);
@@ -285,6 +292,8 @@ function HomeInfo({ nftData, isHome }: IProps) {
   const subscribe = useRecoilValue(subscirbeProject);
   const blinkTime = useRecoilValue(blinkPost);
   const isOnlyDark = useRecoilValue(onlyDark);
+  let mouseWheel: boolean = false;
+
   const filter = (info: IData) => {
     let chainBool: boolean = true;
     let projectBool: boolean = true;
@@ -333,13 +342,67 @@ function HomeInfo({ nftData, isHome }: IProps) {
 
   useEffect(() => setData(Object.values(nftData.data)), [nftData]);
 
+  // useEffect(() => {
+  //   if (maxIndex >= 3) {
+  //     setIndexArray([0, 1, 2]);
+  //   } else {
+  //     const prevArray: number[] = [];
+  //     for (let i = 0; i < maxIndex; i++) {
+  //       prevArray.push(i);
+  //     }
+  //     setIndexArray([...prevArray]);
+  //   }
+  // }, [maxIndex]);
+
   useEffect(() => {
-    const prevArray: number[] = [];
-    for (let i = 0; i < maxIndex; i++) {
-      prevArray.push(i);
+    scrollYProgress.onChange(() => {
+      if (scrollYProgress.get() <= 85) {
+        mouseWheel = true;
+      }
+      if (scrollYProgress.get() >= 1 && mouseWheel) {
+        mouseWheel = false;
+        if (
+          !indexArray.includes(indexArray.length) &&
+          indexArray.length < maxIndex
+        ) {
+          setIndexArray(() => {
+            const arr = [];
+            for (let i = 0; i < indexArray.length + 1; i++) {
+              arr.push(i);
+            }
+            return [...arr];
+          });
+        }
+        // else if (maxIndex < indexArray.length) {
+        //   setIndexArray(() => {
+        //     const arr = [];
+        //     for (let i = 0; i < maxIndex; i++) {
+        //       arr.push(i);
+        //     }
+        //     return [...arr];
+        //   });
+        // }
+      }
+    });
+  }, [scrollYProgress, indexArray, maxIndex]);
+
+  useEffect(() => {
+    console.log(offset * indexArray.length, data.length + offset * 2);
+    if (offset * indexArray.length > data.length + offset * 2) {
+      setIndexArray(() => {
+        const arr = [];
+        for (
+          let i = 0;
+          i < Math.ceil(Object.values(nftData?.data!).length / offset);
+          i++
+        ) {
+          arr.push(i);
+        }
+        return [...arr];
+      });
     }
-    setIndexArray([...prevArray]);
-  }, [maxIndex]);
+  }, [indexArray, offset]);
+
   useEffect(() => {
     if (width >= 2200) {
       setOffset(5);
@@ -366,6 +429,7 @@ function HomeInfo({ nftData, isHome }: IProps) {
       setData(Object.values(nftData?.data).filter(filter));
     }
   }, [chain, project, sns, today, past, subscribe, nftData]);
+
   return (
     <>
       {indexArray.map((i, offsetIndex) => (
@@ -428,6 +492,7 @@ function HomeInfo({ nftData, isHome }: IProps) {
                     ) : (
                       <InfoNonHover
                         layoutId={info._id + offsetIndex + index}
+                        className={info._id + offsetIndex + index + offset}
                         ishovered={info._id === hoveredId ? "true" : "false"}
                         onMouseLeave={() => {
                           setHover("");

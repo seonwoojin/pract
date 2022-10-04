@@ -135,7 +135,7 @@ function Info() {
               {subcribe ? "Subscribing" : "Subcribe"}
             </SubscribeBox>
           </TitleWrapper>
-          <HomeInfo isHome={false} nftData={NftData!}></HomeInfo>
+          <HomeInfo HomeOffset={0} isHome={false} nftData={NftData!}></HomeInfo>
         </>
       )}
     </HomeWrapper>

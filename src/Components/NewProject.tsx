@@ -241,8 +241,18 @@ function NewProject({ NftData }: IProps) {
         //   }?banner=true`}
         // >
         <LogoBox
+          key={post.title + index}
           isNew={true}
           logourl={AllNftNonChains[post.nft].logourl}
+          onClick={() => {
+            if (project !== AllNftNonChains[post.nft].title) {
+              setChain(AllNftNonChains[post.nft].chain);
+              setProject(AllNftNonChains[post.nft].title);
+            } else {
+              setChain("");
+              setProject("");
+            }
+          }}
         ></LogoBox>
         //</Link>
       ))}
@@ -253,6 +263,7 @@ function NewProject({ NftData }: IProps) {
             //   to={`/${AllNftNonChain[info].chain.toLowerCase()}/${info}`}
             // >
             <LogoBox
+              key={info + index}
               isNew={false}
               logourl={AllNftNonChains[info].logourl}
               onClick={() => {
